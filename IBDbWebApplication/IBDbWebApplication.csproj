@@ -11,4 +11,12 @@
       <ProjectReference Include="..\Data\Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Views\Admin\Book\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.5" />
+    </ItemGroup>
+
 </Project>

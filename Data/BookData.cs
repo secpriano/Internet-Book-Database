@@ -9,7 +9,7 @@ public sealed class BookData : Database, IBookData
 {
 public bool Add(BookDTO entity)
 {
-    using SqlConnection sqlConnection = new(connectionString);
+    using SqlConnection sqlConnection = new(ConnectionString);
     sqlConnection.Open();
     using SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
     try

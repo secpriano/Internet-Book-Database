@@ -1,0 +1,40 @@
+@using IBDbWebApplication.Models.AdminModels.BookModels
+
+@{
+    ViewData["Title"] = "IBDb | Admin book";
+}
+
+@if (Model.Books is not null)
+{
+    @foreach (BookModel book in Model.Books)
+    {
+        <div>
+            <div>
+                <h3>@book.Title</h3>
+                <p>@book.Isbn</p>
+                <p>@book.Publisher.Name</p>
+                <p>@book.AmountPages</p>
+
+                @foreach (AuthorModel author in Model.Books.Authors)
+                {
+                    <p>@author.Name</p>
+                }
+
+                @foreach (GenreModel genre in Model.Books.Genres)
+                {
+                    <p>@genre.Name</p>
+                }
+
+                @foreach (ThemeModel theme in Model.Books.Themes)
+                {
+                    <p>@theme.Description</p>
+                }
+
+                @foreach (SettingModel setting in Model.Books.Settings)
+                {
+                    <p>@setting.Description</p>
+                }
+            </div>
+        </div>
+    }
+}

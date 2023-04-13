@@ -11,4 +11,4 @@ public record Genre(long? Id, string Name)
     {
         return Id == otherGenre.Id && Name == otherGenre.Name;
     }
-};
+}

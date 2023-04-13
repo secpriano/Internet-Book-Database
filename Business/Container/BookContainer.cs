@@ -1,36 +1,39 @@
 ﻿using System.Collections;
+using System.Text.RegularExpressions;
 using Business.Entity;
 using Interface.DTO;
 using Interface.Interfaces;
 
 namespace Business.Container;
 
-public readonly struct BookContainer
+public class BookContainer
 {
     private readonly IBookData _bookData;
+    private ICollection<ArgumentException> _exceptions;
     
     public BookContainer(IBookData bookData)
     {
         _bookData = bookData;
+        _exceptions = new List<ArgumentException>();
     }   
     
     public bool Add(Book book)
     {
-        ValidateBook(in book);
+        ValidateBook(book);
         
         return _bookData.Add(book.GetDto());
     }
 
     public BookDTO Update(Book book)
     {
-        ValidateBook(in book);
+        ValidateBook(book);
         
         return _bookData.Update(book.GetDto());
     }
 
     public bool Delete(long id) => _bookData.Delete(id);
     
-    private static void ValidateBook(in Book book)
+    private void ValidateBook(Book book)
     {
         ValidateIsbn(book.Isbn);
         ValidateTitle(book.Title);
@@ -41,79 +44,46 @@ public readonly struct BookContainer
         ValidateDuplicate(book.Genres);
         ValidateDuplicate(book.Settings);
         ValidateDuplicate(book.Themes);
-    }
-    
-    private static void ValidateIsbn(string isbn)
-    {
-        if (isbn.Length is not 13)
-        {
-            throw new ArgumentException("ISBN must be exactly 13 characters.");
-        }
         
-        if (isbn.Any(character => !char.IsDigit(character)))
+        if (_exceptions.Count > 0)
         {
-            throw new ArgumentException("ISBN must only contain numbers.");
+            throw new AggregateException(_exceptions);
         }
     }
     
-    private static void ValidateTitle(string title)
+    private void ValidateIsbn(string isbn)
     {
-        if (title.Length > 100)
-        {
-            throw new ArgumentException("Title must be less or equal to 100 characters.");
-        }
+        ValidateExactValue((ulong)isbn.Length, 13, "ISBN", "character");
 
-        if (title.Length < 1)
-        {
-            throw new ArgumentException("Title must be more than 1 character.");
-        }
-        
-        if (title.Any(character => !char.IsLetterOrDigit(character)  && !char.IsWhiteSpace(character)))
-        {
-            throw new ArgumentException("Title must only contain letters, and spaces.");
-        }
+        ValidateExpression(isbn, "^[0-9]+$", "ISBN must only contain numbers.");
     }
     
-    private static void ValidateSynopsis(string synopsis, string title)
+    private void ValidateTitle(string title)
     {
-        if (synopsis.Length > 1000)
-        {
-            throw new ArgumentException("Synopsis must be less or equal to 1000 characters.");
-        }
+        ValidateOutOfRange((ulong)title.Length, 1, 100 ,"Title", "character");
         
-        if (synopsis.Length < title.Length)
-        {
-            throw new ArgumentException("Synopsis must have more characters than the title.");
-        }
-        
-        if (synopsis.Any(character => !char.IsLetter(character) && !char.IsWhiteSpace(character) && !char.IsPunctuation(character)))
-        {
-            throw new ArgumentException("Synopsis must only contain letters, and punctuation.");
-        }
+        ValidateExpression(title, "^[a-zA-Z ]+$", "Title must only contain letters, and spaces.");
     }
     
-    private static void ValidatePublishDate(DateTime publishDate, DateTime authorBirthdate)
+    private void ValidateSynopsis(string synopsis, string title)
+    {
+        ValidateOutOfRange((ulong)synopsis.Length, (ulong)title.Length, 1000, "Synopsis", "character");
+
+        ValidateExpression(synopsis, "^[a-zA-Z ,.?!]+$", "Synopsis must only contain letters, spaces, and punctuation.");
+    }
+    
+    private void ValidatePublishDate(DateTime publishDate, DateTime authorBirthdate)
     {
         if (publishDate < authorBirthdate)
-        {
-            throw new ArgumentException("Publish date cannot be earlier than author's birthdate unless you travel back in time.");
-        }
+            _exceptions.Add(new("Publish date cannot be earlier than author's birthdate unless you travel back in time."));
     }
     
-    private static void ValidateAmountPages(ulong amountPages)
+    private void ValidateAmountPages(ulong amountPages)
     {
-        if (amountPages > 50000)
-        {
-            throw new ArgumentException("Amount of pages must be less or equal to 50000.");
-        }
-        
-        if (amountPages < 1)
-        {
-            throw new ArgumentException("Amount of pages must be more than 0.");
-        }
+        ValidateOutOfRange(amountPages, 1, 50000, "Amount of pages", "page");
     }
 
-    private static void ValidateDuplicate<T>(IEnumerable<T> entities)
+    private void ValidateDuplicate<T>(IEnumerable<T> entities)
     {
         byte count = 0;
         
@@ -125,22 +95,43 @@ public readonly struct BookContainer
                 {
                     case IEnumerable<Author> authors:
                         if (i != j && authors.ElementAt(i).ThisEquals(authors.ElementAt(j)))
-                            throw new ArgumentException("Author is already added.");
+                            _exceptions.Add(new("Author is already added."));
                         break;
                     case IEnumerable<Genre> genres:
                         if (i != j && genres.ElementAt(i).ThisEquals(genres.ElementAt(j)))
-                            throw new ArgumentException("Genre is already added.");
+                            _exceptions.Add(new("Genre is already added."));
                         break;
                     case IEnumerable<Setting> settings:
                         if (i != j && settings.ElementAt(i).ThisEquals(settings.ElementAt(j)))
-                            throw new ArgumentException("Setting is already added.");
+                            _exceptions.Add(new("Setting is already added."));
                         break;
                     case IEnumerable<Theme> themes:
                         if (i != j && themes.ElementAt(i).ThisEquals(themes.ElementAt(j)))
-                            throw new ArgumentException("Theme is already added.");
+                            _exceptions.Add(new("Theme is already added."));
                         break;
                 }
             }
         }
     }
+    
+    private void ValidateOutOfRange(in ulong value, in ulong min, in ulong max, in string name, in string unit)
+    {
+        if (value < min)
+            _exceptions.Add(new($"{name} must be more than or equal to {min} {unit}."));
+
+        if (value > max)
+            _exceptions.Add(new($"{name} must be less or equal to {max} {unit}."));
+    }
+    
+    private void ValidateExactValue(in ulong value, in ulong exact, in string name, in string unit)
+    {
+        if (value != exact)
+            _exceptions.Add(new($"{name} must be exactly {exact} {unit}."));
+    }
+    
+    private void ValidateExpression(in string input, in string pattern, in string message)
+    {
+        if (!Regex.IsMatch(input, pattern))
+            _exceptions.Add(new(message));
+    }   
 }
