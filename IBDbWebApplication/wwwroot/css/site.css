@@ -101,8 +101,8 @@ Main {
   gap: 2rem;
 }
 
-.admin li {
-  max-width: 150px;
+.admin li a {
+  width: 150px;
   height: 150px;
   display: flex;
   justify-content: center;
@@ -112,11 +112,10 @@ Main {
   border-radius: 25px;
   transition: 0.2s ease-in-out;
   text-align: center;
-  width: 100%;
   cursor: pointer;
 }
 
-.admin li:hover {
+.admin li a:hover {
     box-shadow: 0 0 0 0.25rem var(--text);
 }
 
@@ -126,4 +125,5 @@ footer {
   display: flex;
   justify-content: center;
   box-shadow: var(--shadow);
+  margin-top: 100vh;
 }

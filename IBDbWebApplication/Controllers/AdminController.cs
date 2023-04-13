@@ -17,4 +17,29 @@ public class AdminController : Controller
     {
         return View("Book/Index");
     }
+    
+    public IActionResult Author()
+    {
+        return View("Author/Index");
+    }
+    
+    public IActionResult Publisher()
+    {
+        return View("Publisher/Index");
+    }
+    
+    public IActionResult Genre()
+    {
+        return View("Genre/Index");
+    }
+    
+    public IActionResult Setting()
+    {
+        return View("Setting/Index");
+    }
+    
+    public IActionResult Theme()
+    {
+        return View("Theme/Index");
+    }
 }

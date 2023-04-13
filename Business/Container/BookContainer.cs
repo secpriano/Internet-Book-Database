@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Text.RegularExpressions;
+﻿using System.Collections.ObjectModel;
 using Business.Entity;
 using Interface.DTO;
 using Interface.Interfaces;
@@ -9,12 +8,11 @@ namespace Business.Container;
 public class BookContainer
 {
     private readonly IBookData _bookData;
-    private ICollection<ArgumentException> _exceptions;
-    
+    private Collection<ArgumentException?> _exceptions;
     public BookContainer(IBookData bookData)
     {
         _bookData = bookData;
-        _exceptions = new List<ArgumentException>();
+        _exceptions = new();
     }   
     
     public bool Add(Book book)
@@ -53,23 +51,23 @@ public class BookContainer
     
     private void ValidateIsbn(string isbn)
     {
-        ValidateExactValue((ulong)isbn.Length, 13, "ISBN", "character");
+        _exceptions.Add(Validate.ExactValue((ulong)isbn.Length, 13, "ISBN", "character"));
 
-        ValidateExpression(isbn, "^[0-9]+$", "ISBN must only contain numbers.");
+        _exceptions.Add(Validate.ValidateExpression(isbn, "^[0-9]+$", "ISBN must only contain numbers."));
     }
     
     private void ValidateTitle(string title)
     {
-        ValidateOutOfRange((ulong)title.Length, 1, 100 ,"Title", "character");
+        _exceptions.Add(Validate.OutOfRange((ulong)title.Length, 1, 100 ,"Title", "character"));
         
-        ValidateExpression(title, "^[a-zA-Z ]+$", "Title must only contain letters, and spaces.");
+        _exceptions.Add(Validate.ValidateExpression(title, "^[a-zA-Z ]+$", "Title must only contain letters, and spaces."));
     }
     
     private void ValidateSynopsis(string synopsis, string title)
     {
-        ValidateOutOfRange((ulong)synopsis.Length, (ulong)title.Length, 1000, "Synopsis", "character");
+        _exceptions.Add(Validate.OutOfRange((ulong)synopsis.Length, (ulong)title.Length, 1000, "Synopsis", "character"));
 
-        ValidateExpression(synopsis, "^[a-zA-Z ,.?!]+$", "Synopsis must only contain letters, spaces, and punctuation.");
+        _exceptions.Add(Validate.ValidateExpression(synopsis, "^[a-zA-Z ,.?!]+$", "Synopsis must only contain letters, spaces, and punctuation."));
     }
     
     private void ValidatePublishDate(DateTime publishDate, DateTime authorBirthdate)
@@ -80,7 +78,7 @@ public class BookContainer
     
     private void ValidateAmountPages(ulong amountPages)
     {
-        ValidateOutOfRange(amountPages, 1, 50000, "Amount of pages", "page");
+        _exceptions.Add(Validate.OutOfRange(amountPages, 1, 50000, "Amount of pages", "page"));
     }
 
     private void ValidateDuplicate<T>(IEnumerable<T> entities)
@@ -113,25 +111,4 @@ public class BookContainer
             }
         }
     }
-    
-    private void ValidateOutOfRange(in ulong value, in ulong min, in ulong max, in string name, in string unit)
-    {
-        if (value < min)
-            _exceptions.Add(new($"{name} must be more than or equal to {min} {unit}."));
-
-        if (value > max)
-            _exceptions.Add(new($"{name} must be less or equal to {max} {unit}."));
-    }
-    
-    private void ValidateExactValue(in ulong value, in ulong exact, in string name, in string unit)
-    {
-        if (value != exact)
-            _exceptions.Add(new($"{name} must be exactly {exact} {unit}."));
-    }
-    
-    private void ValidateExpression(in string input, in string pattern, in string message)
-    {
-        if (!Regex.IsMatch(input, pattern))
-            _exceptions.Add(new(message));
-    }   
 }
