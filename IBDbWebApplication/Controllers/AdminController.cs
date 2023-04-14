@@ -1,5 +1,6 @@
 ﻿using Business.Container;
 using Data;
+using IBDbWebApplication.Models.AdminModels.BookModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IBDbWebApplication.Controllers;
@@ -15,7 +16,8 @@ public class AdminController : Controller
     
     public IActionResult Book()
     {
-        return View("Book/Index");
+        BookViewModel bookViewModel = new();
+        return View("Book/Index", bookViewModel);
     }
     
     public IActionResult Author()

@@ -28,4 +28,9 @@ public class BookModel
         IEnumerable<SettingModel> settings) =>
         (Id, Isbn, Title, Synopsis, PublishDate, AmountPages, Authors, Publisher, Genres, Themes, Settings) =
         (id, isbn, title, synopsis, publishDate, amountPages, authors, publisher, genres, themes, settings);
+
+    public BookModel()
+    {
+        
+    }
 }

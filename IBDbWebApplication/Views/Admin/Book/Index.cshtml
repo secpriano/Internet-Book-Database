@@ -8,9 +8,92 @@
     <div class="hero">
         <h1>Manage books</h1>
     </div>
-    @if (Model != null && Model.Books is not null)
+    <section>
+        <ul class="operations">
+            <li>
+                <div class="operation-button" onclick="ShowDialogAddBook()">
+                    <p>➕</p>
+                    <h2>Create</h2>
+                </div>
+                <dialog id="AddBookForm">
+                    <h3>Add a book</h3>
+                    @using (Html.BeginForm("Index", "Book", FormMethod.Post))
+                    {
+                        <button type="button" class="btn-close" onclick="CloseDialogAddBook()">X</button>
+                        <fieldset>
+                            <label>Isbn</label>
+                            <input type="text" value="" placeholder="0123456789123" required="true" Name="Isbn"/>
+                        </fieldset>
+                        <fieldset>
+                            <label>Title</label>
+                            <input type="text" value="" placeholder="The Hobbit" required="true" Name="Title"/>
+                        </fieldset>
+                        <fieldset>
+                            <label>Synopsis</label>
+                            <textarea value="" placeholder="The Hobbit is a children's fantasy novel by J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature." required="true" Name="Synopsis"></textarea>
+                        </fieldset>
+                        <fieldset>
+                            <label>Publish date</label>
+                            <input id="PublishDate" type="datetime-local" Name="PublishDate"/>
+                        </fieldset>
+                        <fieldset>
+                            <label>Amount pages</label>
+                            <input type="number" value="" placeholder="295" required="true" min="1" max="50000" Name="AmountPages"/>
+                        </fieldset>
+                        <fieldset>
+                            <label>Authors</label>
+                            <select id="SelectType" name="MeldingTypeID">
+                                @foreach (AuthorModel authorModel in Model.AuthorModels)
+                                {
+                                    <option value="@authorModel.Id">@authorModel.Name</option>
+                                }
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <label>Publisher</label>
+                            <select id="SelectType" name="MeldingTypeID">
+                                @foreach (PublisherModel publisherModel in Model.PublisherModels)
+                                {
+                                    <option value="@publisherModel.Id">@publisherModel.Name</option>
+                                }
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <label>Genre</label>
+                            <select id="SelectType" name="MeldingTypeID">
+                                @foreach (GenreModel genreModel in Model.GenreModels)
+                                {
+                                    <option value="@genreModel.Id">@genreModel.Name</option>
+                                }
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <label>Theme</label>
+                            <select id="SelectType" name="MeldingTypeID">
+                                @foreach (ThemeModel themeModel in Model.ThemeModels)
+                                {
+                                    <option value="@themeModel.Id">@themeModel.Description</option>
+                                }
+                            </select>
+                        </fieldset>
+                        <fieldset>
+                            <label>Setting</label>
+                            <select id="SelectType" name="MeldingTypeID">
+                                @foreach (SettingModel settingModel in Model.SettingModels)
+                                {
+                                    <option value="@settingModel.Id">@settingModel.Description</option>
+                                }
+                            </select>
+                        </fieldset>
+                        <button id="ButtonMelding" class="button announcementBtn" type="submit"></button>
+                    }
+                </dialog>
+            </li>
+        </ul>
+    </section>
+    @if (Model.BookModels is not null)
     {
-        @foreach (BookModel book in Model.Books)
+        @foreach (BookModel book in Model.BookModels)
         {
             <div>
                 <div>
@@ -43,3 +126,13 @@
         }
     }
 </div>
+
+<script>
+    function ShowDialogAddBook() {
+        document.getElementById("AddBookForm").showModal();
+    }
+
+    function CloseDialogAddBook() {
+        document.getElementById("AddBookForm").close();
+    }
+</script>

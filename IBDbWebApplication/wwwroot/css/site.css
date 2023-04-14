@@ -39,6 +39,28 @@ ul {
   list-style: none;
 }
 
+fieldset {
+  border: none;
+}
+
+dialog {
+  border: none;
+  box-shadow: var(--shadow);
+  border-radius: 25px;
+  padding: 25px;
+}
+
+dialog .btn-close {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: red;
+  transform: translate(50%, -50%);
+}
+
 /* Text */
 
 p, h1, h2, h3, h4, h5, h6 {
@@ -93,7 +115,7 @@ Main {
   padding: 75px 0;
 }
 
-.admin ul {
+.operations {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -101,7 +123,8 @@ Main {
   gap: 2rem;
 }
 
-.admin li a {
+.operations a,
+.operation-button {
   width: 150px;
   height: 150px;
   display: flex;
@@ -113,9 +136,12 @@ Main {
   transition: 0.2s ease-in-out;
   text-align: center;
   cursor: pointer;
+  background-color: white;
+  border: none;
 }
 
-.admin li a:hover {
+.operations a:hover,
+.operations-button:hover {
     box-shadow: 0 0 0 0.25rem var(--text);
 }
 
