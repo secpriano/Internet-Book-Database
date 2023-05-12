@@ -1,5 +1,4 @@
-@using IBDbWebApplication.Models.AdminModels.BookModels
-
+@model IBDbWebApplication.Models.AdminModels.BookModels.BookViewModel
 @{
     ViewData["Title"] = "IBDb | Admin book";
 }
@@ -17,42 +16,40 @@
                 </div>
                 <dialog id="AddBookForm">
                     <h3>Add a book</h3>
-                    @using (Html.BeginForm("Index", "Book", FormMethod.Post))
+                    @using (Html.BeginForm("AddBook", "Book", FormMethod.Post))
                     {
                         <button type="button" class="btn-close" onclick="CloseDialogAddBook()">X</button>
                         <fieldset>
                             <label>Isbn</label>
-                            <input type="text" value="" placeholder="0123456789123" required="true" Name="Isbn"/>
+                            <input placeholder="0123456789123" asp-for="Isbn"/>
                         </fieldset>
                         <fieldset>
                             <label>Title</label>
-                            <input type="text" value="" placeholder="The Hobbit" required="true" Name="Title"/>
+                            <input placeholder="The Hobbit" asp-for="Title"/>
                         </fieldset>
                         <fieldset>
                             <label>Synopsis</label>
-                            <textarea value="" placeholder="The Hobbit is a children's fantasy novel by J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature." required="true" Name="Synopsis"></textarea>
+                            <textarea placeholder="The Hobbit is a children's fantasy novel by J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature." asp-for="Synopsis"></textarea>
                         </fieldset>
                         <fieldset>
                             <label>Publish date</label>
-                            <input id="PublishDate" type="datetime-local" Name="PublishDate"/>
+                            <input id="PublishDate" asp-for="PublishDate"/>
                         </fieldset>
                         <fieldset>
                             <label>Amount pages</label>
-                            <input type="number" value="" placeholder="295" required="true" min="1" max="50000" Name="AmountPages"/>
+                            <input placeholder="295" asp-for="AmountPages"/>
                         </fieldset>
-                        <fieldset>
-                            <label>Authors</label>
-                            <select id="SelectType" name="MeldingTypeID">
-                                @foreach (AuthorModel authorModel in Model.AuthorModels)
-                                {
-                                    <option value="@authorModel.Id">@authorModel.Name</option>
-                                }
-                            </select>
-                        </fieldset>
+                        
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Authors)
+                            @Html.DropDownListFor(Model => Model.Authors , new SelectList(Model.AuthorModels, "Id", "Name", Model.Authors), "-- Select Author --", new { @class = "form-control",  @id = "select-genre" })
+                            @Html.ValidationMessageFor(Model => Model.Authors, "", new { @class = "text-danger" })
+                        </div>
+
                         <fieldset>
                             <label>Publisher</label>
-                            <select id="SelectType" name="MeldingTypeID">
-                                @foreach (PublisherModel publisherModel in Model.PublisherModels)
+                            <select id="SelectType" asp-for="Publisher">
+                                @foreach (var publisherModel in Model.PublisherModels)
                                 {
                                     <option value="@publisherModel.Id">@publisherModel.Name</option>
                                 }
@@ -60,8 +57,8 @@
                         </fieldset>
                         <fieldset>
                             <label>Genre</label>
-                            <select id="SelectType" name="MeldingTypeID">
-                                @foreach (GenreModel genreModel in Model.GenreModels)
+                            <select id="SelectType" asp-for="Genres">
+                                @foreach (var genreModel in Model.GenreModels)
                                 {
                                     <option value="@genreModel.Id">@genreModel.Name</option>
                                 }
@@ -69,8 +66,8 @@
                         </fieldset>
                         <fieldset>
                             <label>Theme</label>
-                            <select id="SelectType" name="MeldingTypeID">
-                                @foreach (ThemeModel themeModel in Model.ThemeModels)
+                            <select id="SelectType" asp-for="Themes">
+                                @foreach (var themeModel in Model.ThemeModels)
                                 {
                                     <option value="@themeModel.Id">@themeModel.Description</option>
                                 }
@@ -78,8 +75,8 @@
                         </fieldset>
                         <fieldset>
                             <label>Setting</label>
-                            <select id="SelectType" name="MeldingTypeID">
-                                @foreach (SettingModel settingModel in Model.SettingModels)
+                            <select id="SelectType" asp-for="Settings">
+                                @foreach (var settingModel in Model.SettingModels)
                                 {
                                     <option value="@settingModel.Id">@settingModel.Description</option>
                                 }
@@ -93,7 +90,7 @@
     </section>
     @if (Model.BookModels is not null)
     {
-        @foreach (BookModel book in Model.BookModels)
+        @foreach (var book in Model.BookModels)
         {
             <div>
                 <div>
@@ -102,22 +99,22 @@
                     <p>@book.Publisher.Name</p>
                     <p>@book.AmountPages</p>
 
-                    @foreach (AuthorModel author in Model.Books.Authors)
+                    @foreach (var author in Model.AuthorModels)
                     {
                         <p>@author.Name</p>
                     }
 
-                    @foreach (GenreModel genre in Model.Books.Genres)
+                    @foreach (var genre in Model.GenreModels)
                     {
                         <p>@genre.Name</p>
                     }
 
-                    @foreach (ThemeModel theme in Model.Books.Themes)
+                    @foreach (var theme in Model.ThemeModels)
                     {
                         <p>@theme.Description</p>
                     }
 
-                    @foreach (SettingModel setting in Model.Books.Settings)
+                    @foreach (var setting in Model.SettingModels)
                     {
                         <p>@setting.Description</p>
                     }
@@ -126,8 +123,33 @@
         }
     }
 </div>
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.LabelFor(model => model.Authors, "Genre")
+        @Html.DropDownListFor(model => model.Authors, new SelectList(Model.Authors), "Select a genre", new { @class = "form-control", @id = "select-genre" })
+    </div>
+    <!-- Other input fields -->
 
+    <input type="submit" value="Create" class="btn btn-primary" />
+
+    <!-- Include Select2 CSS and JavaScript files -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#select-genre').select2();
+        });
+    </script>
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script>
+    $(document).ready(function () {
+        $('#select-genre').select2();
+    });
+    
     function ShowDialogAddBook() {
         document.getElementById("AddBookForm").showModal();
     }

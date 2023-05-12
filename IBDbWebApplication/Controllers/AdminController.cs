@@ -1,13 +1,21 @@
 ﻿using Business.Container;
+using Business.Entity;
 using Data;
 using IBDbWebApplication.Models.AdminModels.BookModels;
+using IBDbWebApplication.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IBDbWebApplication.Controllers;
 
 public class AdminController : Controller
 {
-    BookContainer bookContainer = new(new BookData());
+    private BookContainer _bookContainer = new(new BookData());
+    private AuthorContainer _authorContainer = new(new AuthorData());
+    private PublisherContainer _publisherContainer = new(new PublisherData());
+    private GenreContainer _genreContainer = new(new GenreData());
+    private ThemeContainer _themeContainer = new(new ThemeData());
+    private SettingContainer _settingContainer = new(new SettingData());
+    
     // GET
     public IActionResult Index()
     {
@@ -16,7 +24,14 @@ public class AdminController : Controller
     
     public IActionResult Book()
     {
-        BookViewModel bookViewModel = new();
+        BookViewModel bookViewModel = new(
+            GetBookModels(),
+            _authorContainer.GetAll().Select(author => new AuthorModel(author.Id, author.Name, author.Description, author.BirthDate, author.DeathDate)),
+            _publisherContainer.GetAll().Select(publisher => new PublisherModel(publisher.Id, publisher.Name, publisher.Description)),
+            _genreContainer.GetAll().Select(genre => new GenreModel(genre.Id, genre.Name)),
+            _themeContainer.GetAll().Select(theme => new ThemeModel(theme.Id, theme.Description)),
+            _settingContainer.GetAll().Select(setting => new SettingModel(setting.Id, setting.Description))
+        );
         return View("Book/Index", bookViewModel);
     }
     
@@ -43,5 +58,47 @@ public class AdminController : Controller
     public IActionResult Theme()
     {
         return View("Theme/Index");
+    }
+
+    private IEnumerable<BookModel> GetBookModels()
+    {
+        return _bookContainer.GetAll().Select(book =>
+            new BookModel(
+                book.Id,
+                book.Isbn,
+                book.Title,
+                book.Synopsis,
+                book.PublishDate,
+                book.AmountPages,
+                book.Authors.Select(author =>
+                    new AuthorModel(
+                        author.Id,
+                        author.Name,
+                        author.Description,
+                        author.BirthDate,
+                        author.DeathDate
+                    )
+                ),
+                new(book.Publisher.Id, book.Publisher.Name, book.Publisher.Description),
+                book.Genres.Select(genre =>
+                    new GenreModel(
+                        genre.Id,
+                        genre.Name
+                    )
+                ),
+                book.Themes.Select(theme =>
+                    new ThemeModel(
+                        theme.Id,
+                        theme.Description
+                    )
+                ),
+                book.Settings.Select(setting =>
+                    new SettingModel(
+                        setting.Id,
+                        setting.Description
+                    )
+                )
+            )
+        );
     }
 }

@@ -44,8 +44,8 @@ public class TestOperations
             800,
             authorStub.Authors.FindAll(author => author is { Id: 1 })
                 .Select(author => new Author(author.Id, author.Name, author.Description, author.BirthDate, 
-                    author.DeathDate, author.Genres.Select(genres => new Genre(genres.Id, genres.Name)))),
-            new(publisher.Id, publisher.Name, publisher.Description),
+                    author.DeathDate)),
+            new(publisher.Id, publisher.Name, publisher.FoundingDate, publisher.Description),
             genreStub.Genres.FindAll(genre => genre is { Id: 1 } or { Id: 3 })
                 .Select(genre => new Genre(genre.Id, genre.Name)),
             themeStub.Themes.FindAll(theme => theme is { Id: 1 } or { Id: 2 })
@@ -65,7 +65,7 @@ public class TestOperations
             Assert.That(_bookStub.Books, Is.Not.Null);
             Assert.That(_bookStub.Books, Is.Not.Empty);
             Assert.That(actual, Is.True);   
-            Assert.That(_bookStub.Books.Any(book => 
+            Assert.That(_bookStub.Books.Exists(book => 
                 book.Id == expectedBookDto.Id &&
                 book.Isbn == expectedBookDto.Isbn &&
                 book.Title == expectedBookDto.Title &&
@@ -164,12 +164,12 @@ public class TestOperations
     {
         public bool Equals(AuthorDTO x, AuthorDTO y)
         {
-            return x.Id == y.Id && x.Name == y.Name && x.Description == y.Description && x.BirthDate.Equals(y.BirthDate) && Nullable.Equals(x.DeathDate, y.DeathDate) && x.Genres.SequenceEqual(y.Genres, new GenreComparer());
+            return x.Id == y.Id && x.Name == y.Name && x.Description == y.Description && x.BirthDate.Equals(y.BirthDate) && Nullable.Equals(x.DeathDate, y.DeathDate);
         }
 
         public int GetHashCode(AuthorDTO obj)
         {
-            return HashCode.Combine(obj.Id, obj.Name, obj.Description, obj.BirthDate, obj.DeathDate, obj.Genres);
+            return HashCode.Combine(obj.Id, obj.Name, obj.Description, obj.BirthDate, obj.DeathDate);
         }
     }
     

@@ -1,4 +1,5 @@
-﻿using Business.Entity;
+﻿using System.Collections.ObjectModel;
+using Business.Entity;
 using Interface.Interfaces;
 
 namespace Business.Container;
@@ -6,33 +7,38 @@ namespace Business.Container;
 public class GenreContainer
 {
     private readonly IGenreData _genreData;
-    private ICollection<ArgumentException> _exceptions;
     
     public GenreContainer(IGenreData genreData)
     {
         _genreData = genreData;
-        _exceptions = new List<ArgumentException>();
+    }
+    
+    public IEnumerable<Genre> GetAll()
+    {
+        return _genreData.GetAll().Select(genre => new Genre(genre.Id, genre.Name));
     }
     
     public bool Add(Genre genre)
     {
         ValidateGenre(genre);
         
-        return _genreData.Add(genre.GetDto());
+        return _genreData.Add(genre.ToDto());
     }
     
     private void ValidateGenre(Genre genre)
     {
         ValidateName(genre.Name);
         
-        if (_exceptions.Count > 0)
+        if (Validate.Exceptions.InnerExceptions.Count > 0)
         {
-            throw new AggregateException(_exceptions);
+            throw Validate.Exceptions;
         }
     }
     
     private void ValidateName(string name)
     {
+        Validate.OutOfRange((ulong)name.Length, 2, 25, "Genre", Validate.Unit.Character);
         
+        Validate.Regex(name, @"^[a-zA-Z0-9 ]+$", "Name must be alphanumeric");
     }
 }

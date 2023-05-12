@@ -52,13 +52,13 @@ public class Book : IEqualityComparer<Book>
         Synopsis, 
         PublishDate, 
         AmountPages, 
-        Authors.Select(author => author.GetDto()), 
+        Authors.Select(author => author.ToDto()), 
         Publisher.GetDto(), 
-        Genres.Select(genre => genre.GetDto()), 
+        Genres.Select(genre => genre.ToDto()), 
         Themes.Select(theme => theme.GetDto()), 
         Settings.Select(setting => setting.GetDto())
     );
-    
+
     public bool Equals(Book x, Book y)
     {
         if (ReferenceEquals(x, y)) return true;

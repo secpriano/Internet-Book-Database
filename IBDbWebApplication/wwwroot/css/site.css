@@ -61,10 +61,23 @@ dialog .btn-close {
   transform: translate(50%, -50%);
 }
 
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input {
+  padding: 10px 20px;
+  border-radius: 25px;
+  border: 1px solid #777;
+}
+
 /* Text */
 
+input, textarea, select, button,
 p, h1, h2, h3, h4, h5, h6 {
   margin: 0;
+  font-family: "Segoe UI";
 }
 
 /* Header */
