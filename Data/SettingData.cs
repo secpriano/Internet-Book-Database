@@ -38,7 +38,7 @@ public class SettingData : Database, ISettingData
         while (sqlDataReader.Read())
         {
             settings.Add(new(
-                sqlDataReader.GetInt64(0),
+                sqlDataReader.GetByte(0),
                 sqlDataReader.GetString(1)
             ));
         }

@@ -1,3 +1,3 @@
 ﻿namespace Interface.DTO;
 
-public record struct ThemeDTO(long? Id, string Description);
+public record struct ThemeDTO(byte? Id, string Description);

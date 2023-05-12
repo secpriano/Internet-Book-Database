@@ -38,7 +38,7 @@ public class GenreData : Database, IGenreData
         while (sqlDataReader.Read())
         {
             genres.Add(new(
-                sqlDataReader.GetInt64(0),
+                sqlDataReader.GetByte(0),
                 sqlDataReader.GetString(1)
             ));
         }

@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "IBDb | Admin book";
 }
-
 <div class="container">
     <div class="hero">
         <h1>Manage books</h1>
@@ -16,37 +15,35 @@
                 </div>
                 <dialog id="AddBookForm">
                     <h3>Add a book</h3>
-                    @using (Html.BeginForm("AddBook", "Book", FormMethod.Post))
-                    {
-                        <button type="button" class="btn-close" onclick="CloseDialogAddBook()">X</button>
+                    <form action="/Book/AddBook" method="post">
                         <fieldset>
+                        <button type="button" class="btn-close" onclick="CloseDialogAddBook()">X</button>
+                        <div class="form-group">
                             <label>Isbn</label>
                             <input placeholder="0123456789123" asp-for="Isbn"/>
-                        </fieldset>
-                        <fieldset>
+                        </div>
+                        <div class="form-group">
                             <label>Title</label>
                             <input placeholder="The Hobbit" asp-for="Title"/>
-                        </fieldset>
-                        <fieldset>
+                        </div>
+                        <div class="form-group">
                             <label>Synopsis</label>
                             <textarea placeholder="The Hobbit is a children's fantasy novel by J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature." asp-for="Synopsis"></textarea>
-                        </fieldset>
-                        <fieldset>
+                        </div>
+                        <div class="form-group">
                             <label>Publish date</label>
                             <input id="PublishDate" asp-for="PublishDate"/>
-                        </fieldset>
-                        <fieldset>
+                        </div>
+                        <div class="form-group">
                             <label>Amount pages</label>
                             <input placeholder="295" asp-for="AmountPages"/>
-                        </fieldset>
-                        
+                        </div>
                         <div class="form-group">
-                            @Html.LabelFor(model => model.Authors)
-                            @Html.DropDownListFor(Model => Model.Authors , new SelectList(Model.AuthorModels, "Id", "Name", Model.Authors), "-- Select Author --", new { @class = "form-control",  @id = "select-genre" })
+                            @Html.LabelFor(model => model.Authors, "Authors")
+                            @Html.DropDownListFor(Model => Model.Authors, new MultiSelectList(Model.AuthorModels, "Id", "Name"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
                             @Html.ValidationMessageFor(Model => Model.Authors, "", new { @class = "text-danger" })
                         </div>
-
-                        <fieldset>
+                        <div class="form-group">
                             <label>Publisher</label>
                             <select id="SelectType" asp-for="Publisher">
                                 @foreach (var publisherModel in Model.PublisherModels)
@@ -54,36 +51,25 @@
                                     <option value="@publisherModel.Id">@publisherModel.Name</option>
                                 }
                             </select>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Genres, "Genres")
+                            @Html.DropDownListFor(Model => Model.Genres, new MultiSelectList(Model.GenreModels, "Id", "Name"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
+                            @Html.ValidationMessageFor(Model => Model.Genres, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Themes, "Themes")
+                            @Html.DropDownListFor(Model => Model.Themes, new MultiSelectList(Model.ThemeModels, "Id", "Description"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
+                            @Html.ValidationMessageFor(Model => Model.Themes, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Settings, "Settings")
+                            @Html.DropDownListFor(Model => Model.Settings, new MultiSelectList(Model.SettingModels, "Id", "Description"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
+                            @Html.ValidationMessageFor(Model => Model.Settings, "", new { @class = "text-danger" })
+                        </div>
                         </fieldset>
-                        <fieldset>
-                            <label>Genre</label>
-                            <select id="SelectType" asp-for="Genres">
-                                @foreach (var genreModel in Model.GenreModels)
-                                {
-                                    <option value="@genreModel.Id">@genreModel.Name</option>
-                                }
-                            </select>
-                        </fieldset>
-                        <fieldset>
-                            <label>Theme</label>
-                            <select id="SelectType" asp-for="Themes">
-                                @foreach (var themeModel in Model.ThemeModels)
-                                {
-                                    <option value="@themeModel.Id">@themeModel.Description</option>
-                                }
-                            </select>
-                        </fieldset>
-                        <fieldset>
-                            <label>Setting</label>
-                            <select id="SelectType" asp-for="Settings">
-                                @foreach (var settingModel in Model.SettingModels)
-                                {
-                                    <option value="@settingModel.Id">@settingModel.Description</option>
-                                }
-                            </select>
-                        </fieldset>
-                        <button id="ButtonMelding" class="button announcementBtn" type="submit"></button>
-                    }
+                        <button id="ButtonMelding" class="button announcementBtn" type="submit">Add book</button>
+                    </form>
                 </dialog>
             </li>
         </ul>
@@ -123,35 +109,11 @@
         }
     }
 </div>
-@using (Html.BeginForm())
-{
-    <div class="form-group">
-        @Html.LabelFor(model => model.Authors, "Genre")
-        @Html.DropDownListFor(model => model.Authors, new SelectList(Model.Authors), "Select a genre", new { @class = "form-control", @id = "select-genre" })
-    </div>
-    <!-- Other input fields -->
 
-    <input type="submit" value="Create" class="btn btn-primary" />
-
-    <!-- Include Select2 CSS and JavaScript files -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#select-genre').select2();
-        });
-    </script>
-}
-
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#select-genre').select2();
-    });
-    
+<script>          
     function ShowDialogAddBook() {
         document.getElementById("AddBookForm").showModal();
+        $('.js-example-basic-multiple').select2();
     }
 
     function CloseDialogAddBook() {

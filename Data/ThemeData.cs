@@ -38,7 +38,7 @@ public class ThemeData : Database, IThemeData
         while (sqlDataReader.Read())
         {
             themes.Add(new(
-                sqlDataReader.GetInt64(0),
+                sqlDataReader.GetByte(0),
                 sqlDataReader.GetString(1)
             ));
         }

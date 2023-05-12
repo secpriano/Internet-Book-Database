@@ -72,6 +72,10 @@ input {
   border: 1px solid #777;
 }
 
+.select2-container {
+  width: 100% !important;
+}
+
 /* Text */
 
 input, textarea, select, button,

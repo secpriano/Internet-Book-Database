@@ -1,3 +1,3 @@
 ﻿namespace Interface.DTO;
 
-public record struct GenreDTO(long? Id, string Name);
+public record struct GenreDTO(byte? Id, string Name);

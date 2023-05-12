@@ -44,22 +44,18 @@ public class BookViewModel
     
     [DisplayName("Publisher")]
     [Required(ErrorMessage = "An publisher is required")]
-    [StringLength(1, ErrorMessage = "A", MinimumLength = 0 )]
     public PublisherModel Publisher { get; set; }
     
     [DisplayName("Genres")]
     [Required(ErrorMessage = "An genres is required")]
-    [StringLength(1, ErrorMessage = "A", MinimumLength = 0 )]
     public IEnumerable<GenreModel> Genres { get; set; }
     
     [DisplayName("Themes")]
     [Required(ErrorMessage = "An themes is required")]
-    [StringLength(1, ErrorMessage = "A", MinimumLength = 0 )]
     public IEnumerable<ThemeModel> Themes { get; set; }
     
     [DisplayName("Settings")]
     [Required(ErrorMessage = "An settings is required")]
-    [StringLength(1, ErrorMessage = "A", MinimumLength = 0 )]
     public IEnumerable<SettingModel> Settings { get; set; }
     public IEnumerable<BookModel> BookModels { get; set; }
     public IEnumerable<AuthorModel> AuthorModels { get; set; }  = new List<AuthorModel>();

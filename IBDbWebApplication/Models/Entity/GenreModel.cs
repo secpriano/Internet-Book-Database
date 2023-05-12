@@ -2,10 +2,10 @@
 
 public class GenreModel
 {
-    public long? Id { get; set; }
+    public byte? Id { get; set; }
     public string Name { get; set; }
 
-    public GenreModel(long? id, string name) =>
+    public GenreModel(byte? id, string name) =>
         (Id, Name) = (id, name);
     
     public GenreModel()
