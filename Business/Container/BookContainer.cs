@@ -72,7 +72,7 @@ public class BookContainer
     Validate.Regex(synopsis, "^[a-zA-Z ,.?!]+$", "Synopsis must only contain letters, spaces, and punctuation.");
     }
     
-    private void ValidatePublishDate(DateTime publishDate, DateTime authorBirthdate)
+    private void ValidatePublishDate(DateOnly publishDate, DateOnly authorBirthdate)
     {
         if (publishDate < authorBirthdate)
             Validate.Exceptions.InnerExceptions.Append(new("Publish date cannot be earlier than author's birthdate unless you travel back in time."));

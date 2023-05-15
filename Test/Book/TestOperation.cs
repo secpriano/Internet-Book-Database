@@ -44,7 +44,7 @@ public class TestOperations
             800,
             authorStub.Authors.FindAll(author => author is { Id: 1 })
                 .Select(author => new Author(author.Id, author.Name, author.Description, author.BirthDate, 
-                    author.DeathDate)),
+                    author.DeathDate, new List<Genre>())),
             new(publisher.Id, publisher.Name, publisher.FoundingDate, publisher.Description),
             genreStub.Genres.FindAll(genre => genre is { Id: 1 } or { Id: 3 })
                 .Select(genre => new Genre(genre.Id, genre.Name)),

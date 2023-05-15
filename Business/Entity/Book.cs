@@ -8,7 +8,7 @@ public class Book : IEqualityComparer<Book>
     public string Isbn { get; }
     public string Title { get; }
     public string Synopsis { get; set; }
-    public DateTime PublishDate { get; set; }
+    public DateOnly PublishDate { get; set; }
     public ushort AmountPages { get; set; }
     public IEnumerable<Author> Authors { get; set; }
     public Publisher Publisher { get; }
@@ -21,7 +21,7 @@ public class Book : IEqualityComparer<Book>
         string isbn, 
         string title, 
         string synopsis, 
-        DateTime publishDate, 
+        DateOnly publishDate, 
         ushort amountPages, 
         IEnumerable<Author> authors, 
         Publisher publisher, 

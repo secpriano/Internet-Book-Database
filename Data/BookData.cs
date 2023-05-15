@@ -85,20 +85,20 @@ private void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long boo
         sqlConnection.Open();
         
         using SqlCommand sqlCommand = new("SELECT b.BookID, b.Isbn, b.Title, b.Synopsis, b.PublishDate, b.AmountPages, a.AuthorID AS AuthorId, a.Name AS AuthorName, p.PublisherID AS PublisherId, p.Name AS PublisherName, g.GenreID AS GenreId, g.GenreText AS GenreName, t.ThemeID AS ThemeId, t.ThemeText AS ThemeName, s.SettingID AS SettingId, s.SettingText AS SettingName FROM Book AS b LEFT JOIN BookAuthor AS ba ON b.BookID = ba.BookID LEFT JOIN Author AS a ON ba.AuthorID = a.AuthorID LEFT JOIN Publisher AS p ON b.PublisherID = p.PublisherID LEFT JOIN BookGenre AS bg ON b.BookID = bg.BookID LEFT JOIN Genre AS g ON bg.GenreID = g.GenreID LEFT JOIN BookTheme AS bt ON b.BookID = bt.BookID LEFT JOIN Theme AS t ON bt.ThemeID = t.ThemeID LEFT JOIN BookSetting AS bs ON b.BookID = bs.BookID LEFT JOIN Setting AS s ON bs.SettingID = s.SettingID", sqlConnection);
-        using SqlDataReader reader = sqlCommand.ExecuteReader();
-        while (reader.Read())
+        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        while (sqlDataReader.Read())
         {
-            long? bookId = reader.IsDBNull(reader.GetOrdinal("BookId")) ? null : (long?)reader["BookId"];
-            string isbn = reader.GetString(reader.GetOrdinal("Isbn"));
-            string title = reader.GetString(reader.GetOrdinal("Title"));
-            string synopsis = reader.GetString(reader.GetOrdinal("Synopsis"));
-            DateTime publishDate = reader.GetDateTime(reader.GetOrdinal("PublishDate"));
-            short amountPages = (short)reader["AmountPages"];
+            long? bookId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("BookId")) ? null : (long?)sqlDataReader["BookId"];
+            string isbn = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Isbn"));
+            string title = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Title"));
+            string synopsis = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Synopsis"));
+            DateTime publishDate = sqlDataReader.GetDateTime(sqlDataReader.GetOrdinal("PublishDate"));
+            short amountPages = (short)sqlDataReader["AmountPages"];
         
             List<AuthorDTO> authors = new();
         
-            long? publisherId = reader.IsDBNull(reader.GetOrdinal("PublisherId")) ? null : (long?)reader["PublisherId"];
-            string publisherName = reader.IsDBNull(reader.GetOrdinal("PublisherName")) ? null : reader.GetString(reader.GetOrdinal("PublisherName"));
+            long? publisherId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("PublisherId")) ? null : (long?)sqlDataReader["PublisherId"];
+            string publisherName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("PublisherName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("PublisherName"));
             PublisherDTO publisher = new() { Id = publisherId, Name = publisherName };
         
             List<GenreDTO> genres = new();
@@ -107,59 +107,57 @@ private void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long boo
         
             List<SettingDTO> settings = new();
         
-            while (bookId == (long)reader["BookId"])
+            while (bookId == (long)sqlDataReader["BookId"])
             {
-                long? authorId = reader.IsDBNull(reader.GetOrdinal("AuthorId")) ? null : (long?)reader["AuthorId"];
-                string authorName = reader.IsDBNull(reader.GetOrdinal("AuthorName")) ? null : reader.GetString(reader.GetOrdinal("AuthorName"));
+                long? authorId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorId")) ? null : (long?)sqlDataReader["AuthorId"];
+                string authorName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("AuthorName"));
                 AuthorDTO author = new() { Id = authorId, Name = authorName };
                 if (authorId != null)
                 {
                     authors.Add(author);
                 }
                             
-                byte? genreId = reader.IsDBNull(reader.GetOrdinal("GenreId")) ? null : reader["GenreId"] as byte?;
-                string genreName = reader.IsDBNull(reader.GetOrdinal("GenreName")) ? null : reader.GetString(reader.GetOrdinal("GenreName"));
+                byte? genreId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreId")) ? null : sqlDataReader["GenreId"] as byte?;
+                string genreName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("GenreName"));
                 if (genreId != null)
                 {
                     genres.Add(new() { Id = genreId, Name = genreName });
                 }
         
-                byte? themeId = reader.IsDBNull(reader.GetOrdinal("ThemeId")) ? null : reader["ThemeId"] as byte?;
-                string themeName = reader.IsDBNull(reader.GetOrdinal("ThemeName")) ? null : reader.GetString(reader.GetOrdinal("ThemeName"));
+                byte? themeId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("ThemeId")) ? null : sqlDataReader["ThemeId"] as byte?;
+                string themeName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("ThemeName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("ThemeName"));
                 if (themeId != null)
                 {
                     themes.Add(new() { Id = themeId, Description = themeName });
                 }
         
-                byte? settingId = reader.IsDBNull(reader.GetOrdinal("SettingId")) ? null : reader["SettingId"] as byte?;
-                string settingName = reader.IsDBNull(reader.GetOrdinal("SettingName")) ? null : reader.GetString(reader.GetOrdinal("SettingName"));
+                byte? settingId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("SettingId")) ? null : sqlDataReader["SettingId"] as byte?;
+                string settingName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("SettingName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("SettingName"));
                 if (settingId != null)
                 {
                     settings.Add(new() { Id = settingId, Description = settingName });
                 }
         
-                if (!reader.Read())
+                if (!sqlDataReader.Read())
                 {
                     break;
                 }
             }
         
-            BookDTO book = new()
+            books.Add(new()
             {
                 Id = bookId,
                 Isbn = isbn,
                 Title = title,
                 Synopsis = synopsis,
-                PublishDate = publishDate,
+                PublishDate = DateOnly.FromDateTime(publishDate),
                 AmountPages = (ushort) amountPages,
                 Authors = authors.Distinct(),
                 Publisher = publisher,
                 Genres = genres.Distinct(),
                 Themes = themes.Distinct(),
                 Settings = settings.Distinct()
-            };
-        
-            books.Add(book);
+            });
         }
         
         return books; 

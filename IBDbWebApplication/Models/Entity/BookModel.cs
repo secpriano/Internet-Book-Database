@@ -27,7 +27,7 @@ public class BookModel
     [Required(ErrorMessage = "A publish date is required")]
     // TODO: date validation
     [RegularExpression(@"", ErrorMessage = "7")]*/
-    public DateTime PublishDate { get; set; }
+    public DateOnly PublishDate { get; set; }
     
     /*[DisplayName("AmountPages")]
     [Required(ErrorMessage = "An amount of pages is required")]
@@ -74,7 +74,7 @@ public class BookModel
         string isbn, 
         string title, 
         string synopsis, 
-        DateTime publishDate, 
+        DateOnly publishDate, 
         ulong amountPages, 
         IEnumerable<AuthorModel> authors, 
         PublisherModel publisher, 

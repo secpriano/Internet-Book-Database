@@ -1,45 +1,96 @@
 @using IBDbWebApplication.Models.Entity
-
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IBDbWebApplication.Models.AdminModels.AuthorModels.AuthorViewModel
 @{
-    ViewData["Title"] = "IBDb | Admin author";
+    ViewData["Title"] = "IBDb | Admin ";
 }
 
 <div class="container">
     <div class="hero">
-        <h1>Manage authors</h1>
+        <h1>Manage Authors</h1>
     </div>
-    @if (Model != null && Model.Books is not null)
-    {
-        @foreach (BookModel book in Model.Books)
-        {
-            <div>
-                <div>
-                    <h3>@book.Title</h3>
-                    <p>@book.Isbn</p>
-                    <p>@book.Publisher.Name</p>
-                    <p>@book.AmountPages</p>
-
-                    @foreach (AuthorModel author in Model.Books.Authors)
+    <section>
+        <ul class="operations">
+            <li>
+                <div class="operation-button" onclick="ShowDialogAddAuthor()">
+                    <p>➕</p>
+                    <h2>Create</h2>
+                </div>
+                <dialog id="AddForm">
+                    <div class="modal-content">
+                    @using (@Html.BeginForm("AddAuthor", "Author", FormMethod.Post))
                     {
-                        <p>@author.Name</p>
+                        <button type="button" class="btn-close" onclick="CloseDialogAdd()">X</button>
+                        <fieldset>
+                            <legend>Add an Author</legend>
+                            <div class="split">
+                                <div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(AuthorViewModel => AuthorViewModel.Name, "Name")
+                                        @Html.TextBoxFor(model => model.Name, new { @placeholder = "J.K. Rowling" })
+                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(AuthorViewModel => AuthorViewModel.Description, "Description")
+                                        @Html.TextBoxFor(model => model.Description, new { @placeholder = "Queen of wizardry" })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(AuthorViewModel => AuthorViewModel.BirthDate, "BirthDate")
+                                        <input asp-for="BirthDate"/>
+                                        @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(AuthorViewModel => AuthorViewModel.DeathDate, "DeathDate")
+                                        <input asp-for="DeathDate"/>
+                                        @Html.ValidationMessageFor(model => model.DeathDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(AuthorViewModel => AuthorViewModel.GenreIds, "Genres")
+                                        @Html.DropDownListFor(AuthorViewModel => AuthorViewModel.GenreIds, new MultiSelectList(Model.GenreModels, "Id", "Name"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
+                                        @Html.ValidationMessageFor(AuthorViewModel => AuthorViewModel.GenreIds, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <button id="ButtonMelding" type="submit">Add Author</button>
                     }
-
-                    @foreach (GenreModel genre in Model.Books.Genres)
+                    </div>
+                </dialog>
+            </li>
+        </ul>
+    </section>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>BirthDate</th>
+            <th>DeathDate</th>
+            <th>Genres</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (AuthorModel author in Model.AuthorModels)
+        {
+            <tr>
+                <td>@author.Id</td>
+                <td>@author.Name</td>
+                <td>@author.Description</td>
+                <td>@author.BirthDate</td>
+                <td>@author.DeathDate</td>
+                <td>
+                    @foreach (GenreModel genre in author.Genres)
                     {
+                        <p>@genre.Id</p>
                         <p>@genre.Name</p>
                     }
-
-                    @foreach (ThemeModel theme in Model.Books.Themes)
-                    {
-                        <p>@theme.Description</p>
-                    }
-
-                    @foreach (SettingModel setting in Model.Books.Settings)
-                    {
-                        <p>@setting.Description</p>
-                    }
-                </div>
-            </div>
+                </td>
+            </tr>
         }
-    }
+        </tbody>
+    </table>
 </div>

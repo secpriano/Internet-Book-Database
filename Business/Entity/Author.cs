@@ -7,14 +7,15 @@ public class Author : IEqualityComparer<Author>
     public long? Id { get; set; } 
     public string Name { get; set; } 
     public string Description { get; set; } 
-    public DateTime BirthDate { get; set; } 
-    public DateTime? DeathDate { get; set; } 
+    public DateOnly BirthDate { get; set; } 
+    public DateOnly? DeathDate { get; set; }
+    public IEnumerable<Genre> Genres { get; set; }
 
-    public Author(long? id, string name, string description, DateTime birthDate, DateTime? deathDate) => 
-        (Id, Name, Description, BirthDate, DeathDate) = (id, name, description, birthDate, deathDate);
+    public Author(long? id, string name, string description, DateOnly birthDate, DateOnly? deathDate, IEnumerable<Genre> genres) => 
+        (Id, Name, Description, BirthDate, DeathDate, Genres) = (id, name, description, birthDate, deathDate, genres);
 
     public Author(AuthorDTO authorDto) : this(
-        authorDto.Id, authorDto.Name, authorDto.Description, authorDto.BirthDate, authorDto.DeathDate
+        authorDto.Id, authorDto.Name, authorDto.Description, authorDto.BirthDate, authorDto.DeathDate, authorDto.Genres.Select(genre => new Genre(genre)).ToList()
         ) {}
 
     public Author(long? id)
@@ -22,7 +23,7 @@ public class Author : IEqualityComparer<Author>
         Id = id;
     }
     
-    public AuthorDTO ToDto() => new(Id, Name, Description, BirthDate, DeathDate);
+    public AuthorDTO ToDto() => new(Id, Name, Description, BirthDate, DeathDate, Genres.Select(genre => genre.ToDto()).ToList());
 
     public bool Equals(Author x, Author y)
     {
@@ -30,11 +31,11 @@ public class Author : IEqualityComparer<Author>
         if (ReferenceEquals(x, null)) return false;
         if (ReferenceEquals(y, null)) return false;
         if (x.GetType() != y.GetType()) return false;
-        return x.Id == y.Id && x.Name == y.Name && x.Description == y.Description && x.BirthDate.Equals(y.BirthDate) && Nullable.Equals(x.DeathDate, y.DeathDate);
+        return x.Id == y.Id && x.Name == y.Name && x.Description == y.Description && x.BirthDate.Equals(y.BirthDate) && Nullable.Equals(x.DeathDate, y.DeathDate) && x.Genres.Equals(y.Genres);
     }
 
     public int GetHashCode(Author obj)
     {
-        return HashCode.Combine(obj.Id, obj.Name, obj.Description, obj.BirthDate, obj.DeathDate);
+        return HashCode.Combine(obj.Id, obj.Name, obj.Description, obj.BirthDate, obj.DeathDate, obj.Genres);
     }
 }

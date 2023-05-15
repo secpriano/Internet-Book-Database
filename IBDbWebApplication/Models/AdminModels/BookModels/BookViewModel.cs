@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using IBDbWebApplication.Models.Entity;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace IBDbWebApplication.Models.AdminModels.BookModels;
 
@@ -31,7 +30,7 @@ public class BookViewModel
     [DisplayName("PublishDate")]
     [Required(ErrorMessage = "An publishDate is required")]
     // TODO: date validation
-    public DateTime PublishDate { get; set; }
+    public DateOnly PublishDate { get; set; }
     
     [DisplayName("AmountPages")]
     [Required(ErrorMessage = "An amountPages is required")]

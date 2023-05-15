@@ -1,5 +1,6 @@
 ﻿using Business.Container;
 using Data;
+using IBDbWebApplication.Models.AdminModels.AuthorModels;
 using IBDbWebApplication.Models.AdminModels.BookModels;
 using IBDbWebApplication.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,18 +25,23 @@ public class AdminController : Controller
     {
         BookViewModel bookViewModel = new(
             GetBookModels(),
-            _authorContainer.GetAll().Select(author => new AuthorModel(author.Id, author.Name, author.Description, author.BirthDate, author.DeathDate)),
-            _publisherContainer.GetAll().Select(publisher => new PublisherModel(publisher.Id, publisher.Name, publisher.Description)),
-            _genreContainer.GetAll().Select(genre => new GenreModel(genre.Id, genre.Name)),
-            _themeContainer.GetAll().Select(theme => new ThemeModel(theme.Id, theme.Description)),
-            _settingContainer.GetAll().Select(setting => new SettingModel(setting.Id, setting.Description))
+            GetAuthorModels(),
+            GetPublisherModels(),
+            GetGenreModels(),
+            GetThemeModels(),
+            GetSettingModels()
         );
         return View("Book/Index", bookViewModel);
     }
     
     public IActionResult Author()
     {
-        return View("Author/Index");
+        AuthorViewModel authorViewModel = new(
+            GetAuthorModels(),
+            GetGenreModels()
+        );
+        
+        return View("Author/Index", authorViewModel);
     }
     
     public IActionResult Publisher()
@@ -74,7 +80,13 @@ public class AdminController : Controller
                         author.Name,
                         author.Description,
                         author.BirthDate,
-                        author.DeathDate
+                        author.DeathDate,
+                        author.Genres.Select(genre =>
+                            new GenreModel(
+                                genre.Id,
+                                genre.Name
+                            )
+                        )
                     )
                 ),
                 new(book.Publisher.Id, book.Publisher.Name, book.Publisher.Description),
@@ -98,5 +110,30 @@ public class AdminController : Controller
                 )
             )
         );
+    }
+
+    private IEnumerable<AuthorModel> GetAuthorModels()
+    {
+        return _authorContainer.GetAll().Select(author => new AuthorModel(author.Id, author.Name, author.Description, author.BirthDate, author.DeathDate, author.Genres.Select(genre => new GenreModel(genre.Id, genre.Name))));
+    }
+    
+    private IEnumerable<PublisherModel> GetPublisherModels()
+    {
+        return _publisherContainer.GetAll().Select(publisher => new PublisherModel(publisher.Id, publisher.Name, publisher.Description));
+    }
+    
+    private IEnumerable<GenreModel> GetGenreModels()
+    {
+        return _genreContainer.GetAll().Select(genre => new GenreModel(genre.Id, genre.Name));
+    }
+    
+    private IEnumerable<ThemeModel> GetThemeModels()
+    {
+        return _themeContainer.GetAll().Select(theme => new ThemeModel(theme.Id, theme.Description));
+    }
+    
+    private IEnumerable<SettingModel> GetSettingModels()
+    {
+        return _settingContainer.GetAll().Select(setting => new SettingModel(setting.Id, setting.Description));
     }
 }

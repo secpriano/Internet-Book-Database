@@ -14,7 +14,7 @@ public class AuthorContainer
     
     public IEnumerable<Author> GetAll()
     {
-        return _authorData.GetAll().Select(author => new Author(author.Id, author.Name, author.Description, author.BirthDate, author.DeathDate));
+        return _authorData.GetAll().Select(author => new Author(author));
     }
 
     public bool Add(Author author)
@@ -48,7 +48,7 @@ public class AuthorContainer
         Validate.OutOfRange((ulong)authorDescription.Length, 10, 1000, "Description", Validate.Unit.Character);
     }
     
-    private void ValidateBirthDate(DateTime birthDate)
+    private void ValidateBirthDate(DateOnly birthDate)
     {
         Validate.OutOfRange((ulong)birthDate.Year, (ulong)DateTime.Now.AddYears(-150).Year, (ulong)DateTime.Now.AddYears(-6).Year, "Birth date", Validate.Unit.Year);
     }
