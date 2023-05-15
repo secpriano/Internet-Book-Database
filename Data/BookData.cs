@@ -84,7 +84,7 @@ private void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long boo
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
         
-        using SqlCommand sqlCommand = new("SELECT b.BookID, b.Isbn, b.Title, b.Synopsis, b.PublishDate, b.AmountPages, a.AuthorID AS AuthorId, a.Name AS AuthorName, p.PublisherID AS PublisherId, p.Name AS PublisherName, g.GenreID AS GenreId, g.GenreText AS GenreName, t.ThemeID AS ThemeId, t.ThemeText AS ThemeName, s.SettingID AS SettingId, s.SettingText AS SettingName FROM Book AS b LEFT JOIN BookAuthor AS ba ON b.BookID = ba.BookID LEFT JOIN Author AS a ON ba.AuthorID = a.AuthorID LEFT JOIN Publisher AS p ON b.PublisherID = p.PublisherID LEFT JOIN BookGenre AS bg ON b.BookID = bg.BookID LEFT JOIN Genre AS g ON bg.GenreID = g.GenreID LEFT JOIN BookTheme AS bt ON b.BookID = bt.BookID LEFT JOIN Theme AS t ON bt.ThemeID = t.ThemeID LEFT JOIN BookSetting AS bs ON b.BookID = bs.BookID LEFT JOIN Setting AS s ON bs.SettingID = s.SettingID", sqlConnection);
+        using SqlCommand sqlCommand = new("SELECT b.BookID, b.Isbn, b.Title, b.Synopsis, b.PublishDate, b.AmountPages, a.AuthorID AS AuthorId, a.Name AS AuthorName, a.Description AS AuthorDescription, a.BirthDate, a.DeathDate, ga.GenreID AS AuthorGenreID,ga.GenreText AS AuthorGenreName,p.PublisherID AS PublisherId, p.Name AS PublisherName, g.GenreID AS GenreId, g.GenreText AS GenreName, t.ThemeID AS ThemeId, t.ThemeText AS ThemeName, s.SettingID AS SettingId, s.SettingText AS SettingName FROM Book AS b LEFT JOIN BookAuthor AS ba ON b.BookID = ba.BookID LEFT JOIN Author AS a ON ba.AuthorID = a.AuthorID LEFT JOIN AuthorGenre AS ag ON a.AuthorID = ag.AuthorID LEFT JOIN Genre AS ga ON ag.GenreID = ga.GenreID LEFT JOIN Publisher AS p ON b.PublisherID = p.PublisherID LEFT JOIN BookGenre AS bg ON b.BookID = bg.BookID LEFT JOIN Genre AS g ON bg.GenreID = g.GenreID LEFT JOIN BookTheme AS bt ON b.BookID = bt.BookID LEFT JOIN Theme AS t ON bt.ThemeID = t.ThemeID LEFT JOIN BookSetting AS bs ON b.BookID = bs.BookID LEFT JOIN Setting AS s ON bs.SettingID = s.SettingID", sqlConnection);
         using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
         while (sqlDataReader.Read())
         {
@@ -95,8 +95,8 @@ private void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long boo
             DateTime publishDate = sqlDataReader.GetDateTime(sqlDataReader.GetOrdinal("PublishDate"));
             short amountPages = (short)sqlDataReader["AmountPages"];
         
-            List<AuthorDTO> authors = new();
-        
+            Dictionary<long, AuthorDTO> authors = new();
+
             long? publisherId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("PublisherId")) ? null : (long?)sqlDataReader["PublisherId"];
             string publisherName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("PublisherName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("PublisherName"));
             PublisherDTO publisher = new() { Id = publisherId, Name = publisherName };
@@ -109,13 +109,27 @@ private void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long boo
         
             while (bookId == (long)sqlDataReader["BookId"])
             {
-                long? authorId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorId")) ? null : (long?)sqlDataReader["AuthorId"];
-                string authorName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("AuthorName"));
-                AuthorDTO author = new() { Id = authorId, Name = authorName };
-                if (authorId != null)
+                long? authorId = (long?)sqlDataReader["AuthorId"];
+                if (!authors.ContainsKey((long)authorId))
                 {
-                    authors.Add(author);
+                    string authorName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("AuthorName"));
+                    string authorDescription = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorDescription")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("AuthorDescription"));
+                    DateTime authorBirthDate = sqlDataReader.GetDateTime(sqlDataReader.GetOrdinal("BirthDate"));
+                    DateTime? authorDeathDate = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("DeathDate")) ? null : (DateTime?)sqlDataReader["DeathDate"];
+                    authors[(long)authorId] = new()
+                    {
+                        Id = authorId, 
+                        Name = authorName, 
+                        Description = authorDescription,
+                        BirthDate = DateOnly.FromDateTime(authorBirthDate),
+                        DeathDate = authorDeathDate != null ? DateOnly.FromDateTime((DateTime)authorDeathDate) : null,
+                        Genres = new List<GenreDTO>()
+                    };
                 }
+                byte authorGenreId = (byte)sqlDataReader["AuthorGenreId"];
+                string authorGenreName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorGenreName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("AuthorGenreName"));
+                
+                authors[(long)authorId].Genres.ToList().Add(new GenreDTO(authorGenreId as byte?, authorGenreName));
                             
                 byte? genreId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreId")) ? null : sqlDataReader["GenreId"] as byte?;
                 string genreName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreName")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("GenreName"));
@@ -152,7 +166,7 @@ private void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long boo
                 Synopsis = synopsis,
                 PublishDate = DateOnly.FromDateTime(publishDate),
                 AmountPages = (ushort) amountPages,
-                Authors = authors.Distinct(),
+                Authors = authors.Values.ToList(),
                 Publisher = publisher,
                 Genres = genres.Distinct(),
                 Themes = themes.Distinct(),
