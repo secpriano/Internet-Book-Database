@@ -14,7 +14,7 @@ public class BookContainer
 
     public IEnumerable<Book> GetAll()
     {
-        return new List<Book>();
+        return _bookData.GetAll().Select(dto => new Book(dto));
     }
 
     public bool Add(Book book)

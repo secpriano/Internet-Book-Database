@@ -9,7 +9,7 @@ public class Book : IEqualityComparer<Book>
     public string Title { get; }
     public string Synopsis { get; set; }
     public DateTime PublishDate { get; set; }
-    public ulong AmountPages { get; set; }
+    public ushort AmountPages { get; set; }
     public IEnumerable<Author> Authors { get; set; }
     public Publisher Publisher { get; }
     public IEnumerable<Genre> Genres { get; }
@@ -22,7 +22,7 @@ public class Book : IEqualityComparer<Book>
         string title, 
         string synopsis, 
         DateTime publishDate, 
-        ulong amountPages, 
+        ushort amountPages, 
         IEnumerable<Author> authors, 
         Publisher publisher, 
         IEnumerable<Genre> genres, 

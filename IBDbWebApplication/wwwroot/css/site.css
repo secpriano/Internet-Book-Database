@@ -2,11 +2,12 @@
 
 *{
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  --text: hsl(80, 50%, 30%);
+  --text: hsl(80, 70%, 30%);
 }
 
 html {
   font-size: 14px;
+  overflow-x: hidden;
 }
 
 @media (min-width: 768px) {
@@ -28,6 +29,10 @@ body {
   margin: 0;
 }
 
+section {
+  padding-bottom: 75px;
+}
+
 a {
   text-decoration: none;
   color: var(--text);
@@ -41,6 +46,13 @@ ul {
 
 fieldset {
   border: none;
+  padding: 20px 10px;
+}
+
+legend {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
 dialog {
@@ -48,17 +60,40 @@ dialog {
   box-shadow: var(--shadow);
   border-radius: 25px;
   padding: 25px;
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 dialog .btn-close {
   position: absolute;
-  top: 25px;
   right: 25px;
   border: none;
   background-color: transparent;
   cursor: pointer;
-  color: red;
-  transform: translate(50%, -50%);
+  color: hsl(0, 70%, 30%);
+
+  font-weight: bold
+}
+
+dialog .btn-close:hover {
+  background-color: hsl(0, 70%, 30%);
+  color: white;
+}
+
+.form-group {
+  padding-bottom: 20px;
+  min-width: 200px;
+}
+
+textarea {
+  border-radius: 3px;
+  padding: 10px 20px;
+  border: 1px solid #777;
+  width: 400px;
+  height: 200px;
 }
 
 label {
@@ -74,14 +109,78 @@ input {
 
 .select2-container {
   width: 100% !important;
+  z-index: 10000;
 }
 
+button {
+  border-radius: 25px;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  background-color: var(--text);
+  color: white;
+  font-weight: 900;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tbody tr:hover {
+  background-color: #e2e2e2;
+}
+
+td p {
+  background-color: #e4e4e4;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: inline-block;
+  margin-left: 5px;
+  margin-top: 5px;
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  white-space: nowrap;
+  padding: 2px 4px;
+}
 /* Text */
 
 input, textarea, select, button,
 p, h1, h2, h3, h4, h5, h6 {
   margin: 0;
-  font-family: "Segoe UI";
+  font-family: "Segoe UI", serif;
+}
+
+/* Helper */
+
+.split {
+  display: flex;
+  justify-content: space-between;
+}
+
+.split > div {
+  margin: 0 20px;
 }
 
 /* Header */

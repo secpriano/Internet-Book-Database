@@ -28,10 +28,10 @@ public class PublisherData : Database, IPublisherData
 
     public IEnumerable<PublisherDTO> GetAll()
     {
-        SqlConnection sqlConnection = new(ConnectionString);
+        using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        SqlCommand sqlCommand = new("SELECT * FROM Publisher", sqlConnection);
-        SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        using SqlCommand sqlCommand = new("SELECT * FROM Publisher", sqlConnection);
+        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
         
         List<PublisherDTO> publishers = new();
         

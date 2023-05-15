@@ -30,34 +30,11 @@ public class BookController : Controller
             bookViewModel.Synopsis,
             bookViewModel.PublishDate,
             bookViewModel.AmountPages,
-            bookViewModel.Authors.Select(author => 
-                new Author(
-                    author.Id,
-                    author.Name,
-                    author.Description,
-                    author.BirthDate,
-                    author.DeathDate
-                )
-            ),
-            new(bookViewModel.Publisher.Id, bookViewModel.Publisher.Name, bookViewModel.Publisher.FoundingDate, bookViewModel.Publisher.Description), 
-            bookViewModel.Genres.Select(genre => 
-                new Genre(
-                    genre.Id,
-                    genre.Name
-                )
-            ), 
-            bookViewModel.Themes.Select(theme => 
-                new Theme(
-                    theme.Id,
-                    theme.Description
-                )
-            ),
-            bookViewModel.Settings.Select(setting => 
-                new Setting(
-                    setting.Id,
-                    setting.Description
-                )
-            )
+            bookViewModel.AuthorIds.Select(authorId => new Author(authorId)),
+            new(bookViewModel.PublisherId), 
+            bookViewModel.GenreIds.Select(genreId => new Genre(genreId)), 
+            bookViewModel.ThemeIds.Select(themeId => new Theme(themeId)),
+            bookViewModel.SettingIds.Select(settingId => new Setting(settingId))
         ));
 
         return RedirectToAction("Book", "Admin");

@@ -36,28 +36,29 @@ public class BookViewModel
     [DisplayName("AmountPages")]
     [Required(ErrorMessage = "An amountPages is required")]
     [Range(1, 50000, ErrorMessage = "A")]
-    public ulong AmountPages { get; set; }
+    public ushort AmountPages { get; set; }
     
     [DisplayName("Authors")]
     [Required(ErrorMessage = "An authors is required")]
-    public IEnumerable<AuthorModel> Authors { get; set; }
+    public IEnumerable<byte> AuthorIds { get; set; }
     
     [DisplayName("Publisher")]
     [Required(ErrorMessage = "An publisher is required")]
-    public PublisherModel Publisher { get; set; }
+    public byte PublisherId { get; set; }
     
     [DisplayName("Genres")]
     [Required(ErrorMessage = "An genres is required")]
-    public IEnumerable<GenreModel> Genres { get; set; }
+    public IEnumerable<byte> GenreIds { get; set; }
     
     [DisplayName("Themes")]
     [Required(ErrorMessage = "An themes is required")]
-    public IEnumerable<ThemeModel> Themes { get; set; }
+    public IEnumerable<byte> ThemeIds { get; set; }
     
     [DisplayName("Settings")]
     [Required(ErrorMessage = "An settings is required")]
-    public IEnumerable<SettingModel> Settings { get; set; }
-    public IEnumerable<BookModel> BookModels { get; set; }
+    public IEnumerable<byte> SettingIds { get; set; }
+
+    public IEnumerable<BookModel> BookModels { get; set; } = new List<BookModel>();
     public IEnumerable<AuthorModel> AuthorModels { get; set; }  = new List<AuthorModel>();
     public IEnumerable<PublisherModel> PublisherModels { get; set; } = new List<PublisherModel>();
     public IEnumerable<GenreModel> GenreModels { get; set; } = new List<GenreModel>();

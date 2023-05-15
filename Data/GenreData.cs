@@ -28,10 +28,10 @@ public class GenreData : Database, IGenreData
 
     public IEnumerable<GenreDTO> GetAll()
     {
-        SqlConnection sqlConnection = new(ConnectionString);
+        using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        SqlCommand sqlCommand = new("SELECT * FROM Genre", sqlConnection);
-        SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        using SqlCommand sqlCommand = new("SELECT * FROM Genre", sqlConnection);
+        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
         
         List<GenreDTO> genres = new();
         

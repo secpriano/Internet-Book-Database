@@ -1,5 +1,4 @@
 ﻿using Business.Container;
-using Business.Entity;
 using Data;
 using IBDbWebApplication.Models.AdminModels.BookModels;
 using IBDbWebApplication.Models.Entity;
@@ -9,14 +8,13 @@ namespace IBDbWebApplication.Controllers;
 
 public class AdminController : Controller
 {
-    private BookContainer _bookContainer = new(new BookData());
-    private AuthorContainer _authorContainer = new(new AuthorData());
-    private PublisherContainer _publisherContainer = new(new PublisherData());
-    private GenreContainer _genreContainer = new(new GenreData());
-    private ThemeContainer _themeContainer = new(new ThemeData());
-    private SettingContainer _settingContainer = new(new SettingData());
+    private readonly BookContainer _bookContainer = new(new BookData());
+    private readonly AuthorContainer _authorContainer = new(new AuthorData());
+    private readonly PublisherContainer _publisherContainer = new(new PublisherData());
+    private readonly GenreContainer _genreContainer = new(new GenreData());
+    private readonly ThemeContainer _themeContainer = new(new ThemeData());
+    private readonly SettingContainer _settingContainer = new(new SettingData());
     
-    // GET
     public IActionResult Index()
     {
         return View();

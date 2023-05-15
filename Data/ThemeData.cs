@@ -28,10 +28,10 @@ public class ThemeData : Database, IThemeData
 
     public IEnumerable<ThemeDTO> GetAll()
     {
-        SqlConnection sqlConnection = new(ConnectionString);
+        using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        SqlCommand sqlCommand = new("SELECT * FROM Theme", sqlConnection);
-        SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        using SqlCommand sqlCommand = new("SELECT * FROM Theme", sqlConnection);
+        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
         
         List<ThemeDTO> themes = new();
         

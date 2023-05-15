@@ -202,7 +202,7 @@ public class TestException
     [Test]
     [Category("AmountPages")]
     public void Test_Exception_AddBook_When_AmountPages_IsMore_Than50000(
-        [Values(50001UL, 100000UL, 1000000UL)] ulong amountPages
+        [Values(50001, 1000, 100)] ushort amountPages
         )
     {
         // Arrange

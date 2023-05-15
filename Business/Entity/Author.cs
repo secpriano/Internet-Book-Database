@@ -17,9 +17,9 @@ public class Author : IEqualityComparer<Author>
         authorDto.Id, authorDto.Name, authorDto.Description, authorDto.BirthDate, authorDto.DeathDate
         ) {}
 
-    public Author()
+    public Author(long? id)
     {
-        
+        Id = id;
     }
     
     public AuthorDTO ToDto() => new(Id, Name, Description, BirthDate, DeathDate);

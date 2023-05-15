@@ -86,7 +86,7 @@ public class TestOperations
     [Category("Update")]
     public void TestUpdate(
         [Values(1, 2)] long expectedId,
-        [Random(1UL, 50000UL, 5)] ulong expectedAmountPages
+        [Random(1UL, 50000UL, 5)] ushort expectedAmountPages
         )
     {
         // Arrange

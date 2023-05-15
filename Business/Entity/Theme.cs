@@ -2,13 +2,20 @@
 
 namespace Business.Entity;
 
-public record Theme(byte? Id, string Description)
+public class Theme
 {
+    public byte? Id { get; set; }
+    public string Description { get; set; }
+
+    public Theme(byte? id, string description) => 
+        (Id, Description) = (id, description);
+
     public Theme(ThemeDTO themeDto) : this(themeDto.Id, themeDto.Description) { }
-    public ThemeDTO GetDto() => new ThemeDTO(Id, Description);
+
+   public Theme(byte? id)
+   {
+       Id = id;
+   }
     
-    public bool ThisEquals(Theme otherTheme)
-    {
-        return Id == otherTheme.Id && Description == otherTheme.Description;
-    }
+    public ThemeDTO GetDto() => new ThemeDTO(Id, Description);
 }

@@ -28,10 +28,10 @@ public class SettingData : Database, ISettingData
 
     public IEnumerable<SettingDTO> GetAll()
     {
-        SqlConnection sqlConnection = new(ConnectionString);
+        using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        SqlCommand sqlCommand = new("SELECT * FROM Setting", sqlConnection);
-        SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        using SqlCommand sqlCommand = new("SELECT * FROM Setting", sqlConnection);
+        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
         
         List<SettingDTO> settings = new();
         

@@ -28,12 +28,12 @@ public class AuthorData : Database, IAuthorData
 
     public IEnumerable<AuthorDTO> GetAll()
     {
-        SqlConnection sqlConnection = new(ConnectionString);
+        using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        SqlCommand sqlCommand = new("SELECT * FROM Author", sqlConnection);
-        SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        using SqlCommand sqlCommand = new("SELECT * FROM Author", sqlConnection);
+        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
         
-        List<AuthorDTO> authors = new();    
+        List<AuthorDTO> authors = new();
         
         while (sqlDataReader.Read())
         {
@@ -42,9 +42,10 @@ public class AuthorData : Database, IAuthorData
                 sqlDataReader.GetString(1),
                 sqlDataReader.GetString(2),
                 sqlDataReader.GetDateTime(3),
-                sqlDataReader.GetDateTime(4)
+                sqlDataReader.IsDBNull(4) ? null : sqlDataReader.GetDateTime(4)
             ));
         }
+
         return authors;
     }
 }

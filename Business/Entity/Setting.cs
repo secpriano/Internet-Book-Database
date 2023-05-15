@@ -2,13 +2,20 @@
 
 namespace Business.Entity;
 
-public record Setting(byte? Id, string Description)
+public class Setting 
 {
+    public byte? Id { get; }
+    public string Description { get; }
+
+    public Setting(byte? id, string description) => 
+        (Id, Description) = (id, description);
+
     public Setting(SettingDTO settingDto) : this(settingDto.Id, settingDto.Description) { }
-    public SettingDTO GetDto() => new SettingDTO(Id, Description);
-    
-    public bool ThisEquals(Setting otherSetting)
+
+    public Setting(byte? id)
     {
-        return Id == otherSetting.Id && Description == otherSetting.Description;
+        Id = id;
     }
+    
+    public SettingDTO GetDto() => new SettingDTO(Id, Description);
 }
