@@ -2,7 +2,6 @@
 using Business.Entity;
 using Data;
 using IBDbWebApplication.Models.AdminModels.AuthorModels;
-using IBDbWebApplication.Models.AdminModels.BookModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IBDbWebApplication.Controllers;
@@ -27,8 +26,8 @@ public class AuthorController : Controller
             authorViewModel.Id,
             authorViewModel.Name,
             authorViewModel.Description,
-            authorViewModel.BirthDate,
-            authorViewModel.DeathDate,
+            DateOnly.FromDateTime(authorViewModel.BirthDate),
+            DateOnly.FromDateTime((DateTime)authorViewModel.DeathDate),
             authorViewModel.GenreIds.Select(genreId => new Genre(genreId.Id))
         ));
 

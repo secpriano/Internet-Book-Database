@@ -1,5 +1,6 @@
 @using IBDbWebApplication.Models.Entity
-
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IBDbWebApplication.Models.AdminModels.PublisherModels.PublisherViewModel
 @{
     ViewData["Title"] = "IBDb | Admin publisher";
 }
@@ -8,38 +9,62 @@
     <div class="hero">
         <h1>Manage publishers</h1>
     </div>
-    @if (Model != null && Model.Books is not null)
-    {
-        @foreach (BookModel book in Model.Books)
-        {
-            <div>
-                <div>
-                    <h3>@book.Title</h3>
-                    <p>@book.Isbn</p>
-                    <p>@book.Publisher.Name</p>
-                    <p>@book.AmountPages</p>
-
-                    @foreach (AuthorModel author in Model.Books.Authors)
-                    {
-                        <p>@author.Name</p>
-                    }
-
-                    @foreach (GenreModel genre in Model.Books.Genres)
-                    {
-                        <p>@genre.Name</p>
-                    }
-
-                    @foreach (ThemeModel theme in Model.Books.Themes)
-                    {
-                        <p>@theme.Description</p>
-                    }
-
-                    @foreach (SettingModel setting in Model.Books.Settings)
-                    {
-                        <p>@setting.Description</p>
-                    }
+    <section>
+        <ul class="operations">
+            <li>
+                <div class="operation-button" onclick="ShowDialog()">
+                    <p>➕</p>
+                    <h2>Create</h2>
                 </div>
-            </div>
+                <dialog id="AddForm">
+                    <div class="modal-content">
+                    @using (@Html.BeginForm("AddPublisher", "Publisher", FormMethod.Post))
+                    {
+                        <button type="button" class="btn-close" onclick="CloseDialog()">X</button>
+                        <fieldset>
+                            <legend>Add a Publisher</legend>
+                            <div class="form-group">
+                                @Html.LabelFor(publisherViewModel => publisherViewModel.Name, "Name")
+                                @Html.TextBoxFor(model => model.Name, new { @placeholder = "J.K. Rowling" })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(publisherViewModel => publisherViewModel.FoundingDate, "FoundingDate")
+                                <input asp-for="FoundingDate"/>
+                                @Html.ValidationMessageFor(model => model.FoundingDate, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(publisherViewModel => publisherViewModel.Description, "Description")
+                                @Html.TextBoxFor(model => model.Description, new { @placeholder = "Queen of wizardry" })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </fieldset>
+                        <button id="ButtonMelding" type="submit">Add Author</button>
+                    }
+                    </div>
+                </dialog>
+            </li>
+        </ul>
+    </section>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Founding date</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (PublisherModel publisher in Model.PublisherModels)
+        {
+            <tr>
+                <td>@publisher.Id</td>
+                <td>@publisher.Name</td>
+                <td>@publisher.FoundingDate</td>
+                <td>@publisher.Description</td>
+            </tr>
         }
-    }
+        </tbody>
+    </table>
 </div>

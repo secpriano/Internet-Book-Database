@@ -10,15 +10,15 @@
     <section>
         <ul class="operations">
             <li>
-                <div class="operation-button" onclick="ShowDialogAddBook()">
+                <div class="operation-button" onclick="ShowDialog()">
                     <p>➕</p>
                     <h2>Create</h2>
                 </div>
-                <dialog id="AddAuthorForm">
+                <dialog id="AddBookForm">
                     <div class="modal-content">
                     @using (@Html.BeginForm("AddBook", "Book", FormMethod.Post))
                     {
-                        <button type="button" class="btn-close" onclick="CloseDialogAddBook()">X</button>
+                        <button type="button" class="btn-close" onclick="CloseDialog()">X</button>
                         <fieldset>
                             <legend>Add a book</legend>
                             <div class="split">
@@ -137,12 +137,4 @@
 <script>          
     $('.js-example-basic-multiple').select2();
     $('.js-example-basic-single').select2();
-
-    function ShowDialogAddBook() {
-        document.getElementById("AddBookForm").style.display = "block";
-    }
-
-    function CloseDialogAddBook() {
-        document.getElementById("AddBookForm").style.display = "none";
-    }
 </script>

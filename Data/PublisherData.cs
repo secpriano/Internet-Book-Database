@@ -40,7 +40,7 @@ public class PublisherData : Database, IPublisherData
             publishers.Add(new(
                 sqlDataReader.GetInt64(0),
                 sqlDataReader.GetString(1),
-                sqlDataReader.GetDateTime(2),
+                DateOnly.FromDateTime(sqlDataReader.GetDateTime(2)),
                 sqlDataReader.GetString(3)
             ));
         }

@@ -9,8 +9,8 @@ public class AuthorViewModel
     public long? Id { get; set; } 
     public string Name { get; set; } 
     public string Description { get; set; } 
-    public DateOnly BirthDate { get; set; } 
-    public DateOnly? DeathDate { get; set; }
+    public DateTime BirthDate { get; set; } 
+    public DateTime? DeathDate { get; set; }
     public IEnumerable<GenreModel> GenreIds { get; set; }
     
     public IEnumerable<AuthorModel> AuthorModels { get; set; } = new List<AuthorModel>();

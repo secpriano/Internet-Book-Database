@@ -110,6 +110,7 @@ input {
 .select2-container {
   width: 100% !important;
   z-index: 10000;
+  max-width: 222px;
 }
 
 button {

@@ -1,7 +1,11 @@
 ﻿using Business.Container;
 using Data;
+using IBDbWebApplication.Models.AdminModels;
 using IBDbWebApplication.Models.AdminModels.AuthorModels;
 using IBDbWebApplication.Models.AdminModels.BookModels;
+using IBDbWebApplication.Models.AdminModels.PublisherModels;
+using IBDbWebApplication.Models.AdminModels.SettingModels;
+using IBDbWebApplication.Models.AdminModels.ThemeModels;
 using IBDbWebApplication.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,22 +50,38 @@ public class AdminController : Controller
     
     public IActionResult Publisher()
     {
-        return View("Publisher/Index");
+        PublisherViewModel publisherViewModel = new(
+            GetPublisherModels()
+        );
+        
+        return View("Publisher/Index", publisherViewModel);
     }
     
     public IActionResult Genre()
     {
-        return View("Genre/Index");
+        GenreViewModel genreViewModel = new(
+            GetGenreModels()
+        );
+        
+        return View("Genre/Index", genreViewModel);
     }
     
     public IActionResult Setting()
     {
-        return View("Setting/Index");
+        SettingViewModel settingViewModel = new(
+            GetSettingModels()
+        );
+        
+        return View("Setting/Index", settingViewModel);
     }
     
     public IActionResult Theme()
     {
-        return View("Theme/Index");
+        ThemeViewModel themeViewModel = new(
+            GetThemeModels()
+        );
+        
+        return View("Theme/Index", themeViewModel);
     }
 
     private IEnumerable<BookModel> GetBookModels()
@@ -89,7 +109,7 @@ public class AdminController : Controller
                         )
                     )
                 ),
-                new(book.Publisher.Id, book.Publisher.Name, book.Publisher.Description),
+                new(book.Publisher.Id, book.Publisher.Name, book.Publisher.FoundingDate, book.Publisher.Description),
                 book.Genres.Select(genre =>
                     new GenreModel(
                         genre.Id,
@@ -119,7 +139,7 @@ public class AdminController : Controller
     
     private IEnumerable<PublisherModel> GetPublisherModels()
     {
-        return _publisherContainer.GetAll().Select(publisher => new PublisherModel(publisher.Id, publisher.Name, publisher.Description));
+        return _publisherContainer.GetAll().Select(publisher => new PublisherModel(publisher.Id, publisher.Name, publisher.FoundingDate, publisher.Description));
     }
     
     private IEnumerable<GenreModel> GetGenreModels()

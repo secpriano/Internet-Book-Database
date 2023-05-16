@@ -1,5 +1,5 @@
 @using IBDbWebApplication.Models.Entity
-
+@model IBDbWebApplication.Models.AdminModels.GenreViewModel
 @{
     ViewData["Title"] = "IBDb | Admin genre";
 }
@@ -8,38 +8,48 @@
     <div class="hero">
         <h1>Manage genres</h1>
     </div>
-    @if (Model != null && Model.Books is not null)
-    {
-        @foreach (BookModel book in Model.Books)
-        {
-            <div>
-                <div>
-                    <h3>@book.Title</h3>
-                    <p>@book.Isbn</p>
-                    <p>@book.Publisher.Name</p>
-                    <p>@book.AmountPages</p>
-
-                    @foreach (AuthorModel author in Model.Books.Authors)
-                    {
-                        <p>@author.Name</p>
-                    }
-
-                    @foreach (GenreModel genre in Model.Books.Genres)
-                    {
-                        <p>@genre.Name</p>
-                    }
-
-                    @foreach (ThemeModel theme in Model.Books.Themes)
-                    {
-                        <p>@theme.Description</p>
-                    }
-
-                    @foreach (SettingModel setting in Model.Books.Settings)
-                    {
-                        <p>@setting.Description</p>
-                    }
+    <section>
+        <ul class="operations">
+            <li>
+                <div class="operation-button" onclick="ShowDialog()">
+                    <p>➕</p>
+                    <h2>Create</h2>
                 </div>
-            </div>
+                <dialog id="AddForm">
+                    <div class="modal-content">
+                    @using (@Html.BeginForm("AddGenre", "Genre", FormMethod.Post))
+                    {
+                        <button type="button" class="btn-close" onclick="CloseDialog()">X</button>
+                        <fieldset>
+                            <legend>Add a Genre</legend>
+                            <div class="form-group">
+                                @Html.LabelFor(genreViewModel => genreViewModel.Name, "Name")
+                                @Html.TextBoxFor(model => model.Name, new { @placeholder = "Horror" })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </fieldset>
+                        <button id="ButtonMelding" type="submit">Add Genre</button>
+                    }
+                    </div>
+                </dialog>
+            </li>
+        </ul>
+    </section>
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (GenreModel genre in Model.GenreModels)
+        {
+            <tr>
+                <td>@genre.Id</td>
+                <td>@genre.Name</td>
+            </tr>
         }
-    }
+        </tbody>
+    </table>
 </div>
