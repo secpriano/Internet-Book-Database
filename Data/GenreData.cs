@@ -8,7 +8,20 @@ public class GenreData : Database, IGenreData
 {
     public bool Add(GenreDTO entity)
     {
-        throw new NotImplementedException();
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new(
+            "INSERT INTO Genre (GenreText) " +
+            "VALUES (@GenreText);",
+            sqlConnection)
+        {
+            Parameters =
+            {
+                new("@GenreText", entity.Name)
+            }
+        };
+            
+        return sqlCommand.ExecuteNonQuery() > 0;
     }
 
     public GenreDTO GetById(long id)

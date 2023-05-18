@@ -8,7 +8,20 @@ public class SettingData : Database, ISettingData
 {
     public bool Add(SettingDTO entity)
     {
-        throw new NotImplementedException();
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new(
+            "INSERT INTO Setting (SettingText) " +
+            "VALUES (@SettingText);",
+            sqlConnection)
+        {
+            Parameters =
+            {
+                new("@SettingText", entity.Description)
+            }
+        };
+            
+        return sqlCommand.ExecuteNonQuery() > 0;
     }
 
     public SettingDTO GetById(long id)

@@ -49,7 +49,7 @@ public bool Add(BookDTO entity)
     }
 }
 
-private void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long bookId, string columnName, SqlCommand command)
+private static void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long bookId, string columnName, SqlCommand command)
 {
     command.CommandText = $"INSERT INTO {tableName} (BookID, {columnName}) VALUES (@BookID, @ID)";
     command.Parameters.Clear();

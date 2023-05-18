@@ -8,7 +8,22 @@ public class PublisherData : Database, IPublisherData
 {
     public bool Add(PublisherDTO entity)
     {
-        throw new NotImplementedException();
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new(
+            "INSERT INTO Publisher (Name, FoundingDate, Description) " +
+            "VALUES (@Name, @FoundingDate, @Description);",
+            sqlConnection)
+        {
+            Parameters =
+            {
+                new("@Name", entity.Name),
+                new("@FoundingDate", entity.FoundingDate),
+                new("@Description", entity.Description)
+            }
+        };
+            
+        return sqlCommand.ExecuteNonQuery() > 0;
     }
 
     public PublisherDTO GetById(long id)
