@@ -108,9 +108,8 @@ input {
 }
 
 .select2-container {
-  width: 100% !important;
   z-index: 10000;
-  max-width: 222px;
+  width: 300px !important;
 }
 
 button {
@@ -192,9 +191,16 @@ header {
   box-shadow: var(--shadow);
 }
 
-.container {
+.MainContainer,
+.NavContainer {
   max-width: 960px;
   width: 100%;
+}
+
+.MainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 nav {
@@ -258,7 +264,7 @@ Main {
 }
 
 .operations a:hover,
-.operations-button:hover {
+.operation-button:hover {
     box-shadow: 0 0 0 0.25rem var(--text);
 }
 
