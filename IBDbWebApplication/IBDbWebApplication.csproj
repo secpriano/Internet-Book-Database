@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Views\Admin\Book\" />
       <Folder Include="wwwroot\lib\" />
     </ItemGroup>
 

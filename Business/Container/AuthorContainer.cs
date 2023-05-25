@@ -29,6 +29,7 @@ public class AuthorContainer
         ValidateName(author.Name);
         ValidateDescription(author.Description);
         ValidateBirthDate(author.BirthDate);
+        ValidateDeathDate(author.DeathDate, author.BirthDate);
         // TODO: Validate duplicate
         
         if (Validate.Exceptions.InnerExceptions.Count > 0)
@@ -36,11 +37,21 @@ public class AuthorContainer
             throw Validate.Exceptions;
         }
     }
-    
+
+    private void ValidateDeathDate(DateOnly? authorDeathDate, DateOnly authorBirthDate)
+    {
+        if (authorDeathDate == null)
+        {
+            return;
+        }
+        
+        Validate.OutOfRange((ulong)authorDeathDate.Value.Year, (ulong)authorBirthDate.Year, (ulong)DateTime.Now.Year, "Death date", Validate.Unit.Year);
+    }
+
     private void ValidateName(string name)
     {
         Validate.OutOfRange((ulong)name.Length, 1, 1000, "Name", Validate.Unit.Character);
-        Validate.Regex(name, "^[a-zA-Z .]+$", "Name must only contain letters.");
+        Validate.Regex(name, "^[a-zA-Z .]+$", "Description can only contain letters, spaces, and periods.");
     }
     
     private void ValidateDescription(string authorDescription)

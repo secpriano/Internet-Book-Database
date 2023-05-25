@@ -26,9 +26,18 @@ public class SettingContainer
     
     private void ValidateSetting(Setting setting)
     {
+        ValidateDescription(setting.Description);
+        
         if (Validate.Exceptions.InnerExceptions.Count > 0)
         {
             throw Validate.Exceptions;
         }
+    }
+    
+    private void ValidateDescription(string description)
+    {
+        Validate.OutOfRange((ulong)description.Length, 2, 25, "Description", Validate.Unit.Character);
+        
+        Validate.Regex(description, @"^[a-zA-Z ,&]+$", "Description can only contain letters, spaces, commas, and ampersands.");
     }
 }

@@ -21,14 +21,14 @@
                             {
                                 <button type="button" class="btn-close" onclick="CloseDialog()">X</button>
                                 <fieldset>
-                                    <legend>Add a Setting</legend>
+                                    <legend>Add a Theme</legend>
                                     <div class="form-group">
                                         @Html.LabelFor(themeViewModel => themeViewModel.Description, "Description")
                                         @Html.TextBoxFor(model => model.Description, new { @placeholder = "LGBTQIA+" })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </fieldset>
-                                <button id="ButtonMelding" type="submit">Add Setting</button>
+                                <button id="ButtonMelding" type="submit">Add Theme</button>
                             }
                         </div>
                     </dialog>

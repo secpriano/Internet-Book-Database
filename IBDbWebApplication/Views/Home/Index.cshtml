@@ -1,8 +1,64 @@
-﻿@{
+﻿@using IBDbWebApplication.Models.Entity
+@model IBDbWebApplication.Models.HomeModels.HomeViewModel
+@{
     ViewData["Title"] = "IBDb | Home";
 }
-
-<div class="NavContainer">
-    <h1>Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="MainContainer">
+    <div class="hero">
+        <h1>IBDb</h1>
+    </div>
+    <section>
+        <h2>Most liked</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Isbn</th>
+                <th>Synopsis</th>
+                <th>Publisher</th>
+                <th>Pages</th>
+                <th>Authors</th>
+                <th>Genres</th>
+                <th>Themes</th>
+                <th>Settings</th>
+            </tr>
+        </thead>
+            <tbody>
+            @foreach (BookModel book in Model.BookModels)
+            {
+                <tr onclick="location.href='@Url.Action("Detail", "Book", new{book.Id})'">
+                    <td>@book.Title</td>
+                    <td>@book.Isbn</td>
+                    <td>@book.Synopsis</td>
+                    <td>@book.Publisher.Name</td>
+                    <td>@book.AmountPages</td>
+                    <td>
+                        @foreach (AuthorModel author in book.Authors)
+                        {
+                            <p>@author.Name</p>
+                        }
+                    </td>
+                    <td>
+                        @foreach (GenreModel genre in book.Genres)
+                        {
+                            <p>@genre.Name</p>
+                        }
+                    </td>
+                    <td>
+                        @foreach (ThemeModel theme in book.Themes)
+                        {
+                            <p>@theme.Description</p>
+                        }
+                    </td>
+                    <td>
+                        @foreach (SettingModel setting in book.Settings)
+                        {
+                            <p>@setting.Description</p>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </section>
 </div>

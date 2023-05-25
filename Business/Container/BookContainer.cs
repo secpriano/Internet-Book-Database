@@ -33,6 +33,11 @@ public class BookContainer
 
     public bool Delete(long id) => _bookData.Delete(id);
     
+    public Book GetById(long id)
+    {
+        return new(_bookData.GetById(id));
+    }
+    
     private void ValidateBook(Book book)
     {
         ValidateIsbn(book.Isbn);

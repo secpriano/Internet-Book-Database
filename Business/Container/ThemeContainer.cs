@@ -26,9 +26,18 @@ public class ThemeContainer
     
     private void ValidateTheme(Theme theme)
     {
+        ValidateDescription(theme.Description);
+        
         if (Validate.Exceptions.InnerExceptions.Count > 0)
         {
             throw Validate.Exceptions;
         }
+    }
+    
+    private void ValidateDescription(string description)
+    {
+        Validate.OutOfRange((ulong)description.Length, 2, 25, "Description", Validate.Unit.Character);
+        
+        Validate.Regex(description, @"^[a-zA-Z ,&]+$", "Description can only contain letters, spaces, commas, and ampersands.");
     }
 }

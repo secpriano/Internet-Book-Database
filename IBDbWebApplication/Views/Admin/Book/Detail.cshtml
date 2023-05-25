@@ -1,0 +1,63 @@
+﻿@using IBDbWebApplication.Models.Entity
+@model IBDbWebApplication.Models.AdminModels.BookModels.BookDetailModel
+
+@{
+    ViewData["Title"] = "IBDb | Book";
+}
+
+<div class="MainContainer">
+    <div class="hero">
+        <h1>IBDb</h1>
+    </div>
+    <section>
+        <h2>Book</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Isbn</th>
+                <th>Synopsis</th>
+                <th>Publisher</th>
+                <th>Pages</th>
+                <th>Authors</th>
+                <th>Genres</th>
+                <th>Themes</th>
+                <th>Settings</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>@Model.BookModel.Title</td>
+                <td>@Model.BookModel.Isbn</td>
+                <td>@Model.BookModel.Synopsis</td>
+                <td>@Model.BookModel.Publisher.Name</td>
+                <td>@Model.BookModel.AmountPages</td>
+                <td>
+                    @foreach (AuthorModel author in Model.BookModel.Authors)
+                    {
+                        <p>@author.Name</p>
+                    }
+                </td>
+                <td>
+                    @foreach (GenreModel genre in Model.BookModel.Genres)
+                    {
+                        <p>@genre.Name</p>
+                    }
+                </td>
+                <td>
+                    @foreach (ThemeModel theme in Model.BookModel.Themes)
+                    {
+                        <p>@theme.Description</p>
+                    }
+                </td>
+                <td>
+                    @foreach (SettingModel setting in Model.BookModel.Settings)
+                    {
+                        <p>@setting.Description</p>
+                    }
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>

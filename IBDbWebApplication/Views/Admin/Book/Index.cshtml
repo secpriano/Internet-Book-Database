@@ -24,24 +24,29 @@
                             <div class="split">
                                 <div>
                                     <div class="form-group">
-                                        <label>Isbn</label>
-                                        <input placeholder="0123456789123" asp-for="Isbn"/>
+                                        @Html.LabelFor(model => model.Isbn, "Isbn")
+                                        @Html.TextBoxFor(Model => Model.Isbn, new { @class = "form-control", @placeholder = "0123456789123" })
+                                        @Html.ValidationMessageFor(model => model.Isbn, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group">
-                                        <label>Title</label>
-                                        <input placeholder="The Hobbit" asp-for="Title"/>
+                                        @Html.LabelFor(model => model.Title, "Title")
+                                        @Html.TextBoxFor(Model => Model.Title, new { @class = "form-control", @placeholder = "The Hobbit" })
+                                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group">
-                                        <label>Synopsis</label>
-                                        <textarea placeholder="The Hobbit is a children's fantasy novel by J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature." asp-for="Synopsis"></textarea>
+                                        @Html.LabelFor(Model => Model.Synopsis, "Synopsis")
+                                        @Html.TextAreaFor(model => model.Synopsis, new { @class = "form-control", @placeholder = "The Hobbit is a children's fantasy novel by J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature." })
+                                        @Html.ValidationMessageFor(model => model.Synopsis, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group">
-                                        <label>Publish date</label>
+                                        @Html.LabelFor(model => model.PublishDate, "Publish date")
                                         <input id="PublishDate" asp-for="PublishDate"/>
+                                        @Html.ValidationMessageFor(model => model.PublishDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group">
-                                        <label>Amount pages</label>
-                                        <input placeholder="295" asp-for="AmountPages"/>
+                                        @Html.LabelFor(model => model.AmountPages, "Amount pages")
+                                        @Html.TextBoxFor(model => model.AmountPages, new { @class = "form-control", @placeholder = "123" })
+                                        @Html.ValidationMessageFor(model => model.AmountPages, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div>
