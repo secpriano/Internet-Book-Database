@@ -83,7 +83,8 @@ public class HomeController : Controller
                         setting.Id,
                         setting.Description
                     )
-                )
+                ),
+                book.Favorites
             )
         );
     }

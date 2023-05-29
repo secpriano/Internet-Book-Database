@@ -127,7 +127,8 @@ public class AdminController : Controller
                         setting.Id,
                         setting.Description
                     )
-                )
+                ),
+                book.Favorites
             )
         );
     }

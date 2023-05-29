@@ -38,6 +38,11 @@ public class BookContainer
         return new(_bookData.GetById(id));
     }
     
+    public bool Favorite(long bookId, long userId)
+    {
+        return _bookData.Favorite(bookId, userId);
+    }
+    
     private void ValidateBook(Book book)
     {
         ValidateIsbn(book.Isbn);

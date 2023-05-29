@@ -68,6 +68,8 @@ public class BookModel
     [RegularExpression(@"", ErrorMessage = "22")]*/
     public IEnumerable<SettingModel> Settings { get; set; }
 
+    public ulong Favorites { get; set; }
+
 
     public BookModel(
         long? id, 
@@ -80,7 +82,8 @@ public class BookModel
         PublisherModel publisher, 
         IEnumerable<GenreModel> genres, 
         IEnumerable<ThemeModel> themes, 
-        IEnumerable<SettingModel> settings) =>
-        (Id, Isbn, Title, Synopsis, PublishDate, AmountPages, Authors, Publisher, Genres, Themes, Settings) =
-        (id, isbn, title, synopsis, publishDate, amountPages, authors, publisher, genres, themes, settings);
+        IEnumerable<SettingModel> settings,
+        ulong favorites) =>
+        (Id, Isbn, Title, Synopsis, PublishDate, AmountPages, Authors, Publisher, Genres, Themes, Settings, Favorites) =
+        (id, isbn, title, synopsis, publishDate, amountPages, authors, publisher, genres, themes, settings, favorites);
 }

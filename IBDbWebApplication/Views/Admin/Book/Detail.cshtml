@@ -2,62 +2,62 @@
 @model IBDbWebApplication.Models.AdminModels.BookModels.BookDetailModel
 
 @{
-    ViewData["Title"] = "IBDb | Book";
+    ViewData["Title"] = $"{Model.BookModel.Title} | Book";
 }
 
 <div class="MainContainer">
     <div class="hero">
-        <h1>IBDb</h1>
     </div>
-    <section>
-        <h2>Book</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>Title</th>
-                <th>Isbn</th>
-                <th>Synopsis</th>
-                <th>Publisher</th>
-                <th>Pages</th>
-                <th>Authors</th>
-                <th>Genres</th>
-                <th>Themes</th>
-                <th>Settings</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>@Model.BookModel.Title</td>
-                <td>@Model.BookModel.Isbn</td>
-                <td>@Model.BookModel.Synopsis</td>
-                <td>@Model.BookModel.Publisher.Name</td>
-                <td>@Model.BookModel.AmountPages</td>
-                <td>
-                    @foreach (AuthorModel author in Model.BookModel.Authors)
-                    {
-                        <p>@author.Name</p>
-                    }
-                </td>
-                <td>
-                    @foreach (GenreModel genre in Model.BookModel.Genres)
-                    {
-                        <p>@genre.Name</p>
-                    }
-                </td>
-                <td>
-                    @foreach (ThemeModel theme in Model.BookModel.Themes)
-                    {
-                        <p>@theme.Description</p>
-                    }
-                </td>
-                <td>
-                    @foreach (SettingModel setting in Model.BookModel.Settings)
-                    {
-                        <p>@setting.Description</p>
-                    }
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <section class="detail">
+        <img src="https://picsum.photos/seed/@Model.BookModel.Isbn/275/400" alt="Book image">
+        <div>
+            <h1>@Model.BookModel.Title</h1>
+            <div class="items">
+                <span>By</span>
+                @foreach (AuthorModel author in Model.BookModel.Authors)
+                {
+                    <h3>@author.Name</h3>
+                }
+            </div>
+            <h5>@Model.BookModel.Isbn</h5>
+            <p>
+                @Model.BookModel.Synopsis
+            </p>
+            <div class="items">
+                <span>Genre</span>
+                @foreach (GenreModel genre in Model.BookModel.Genres)
+                {
+                    <p>@genre.Name</p>
+                }
+            </div>
+            <div class="items">
+                <span>Themes</span>
+                @foreach (ThemeModel theme in Model.BookModel.Themes)
+                {
+                    <p>@theme.Description</p>
+                }
+            </div>
+            <div class="items">
+                <span>Settings</span>
+                @foreach (SettingModel setting in Model.BookModel.Settings)
+                {
+                    <p>@setting.Description</p>
+                }
+            </div> 
+            <div class="items">
+                <span>Pages</span>
+                <p>@Model.BookModel.AmountPages</p>
+            </div>
+            <div class="items">
+                <span>Publisher</span>
+                <p>@Model.BookModel.Publisher.Name</p>
+            </div>
+            @using(@Html.BeginForm("Favorite", "Book", new { id = Model.BookModel.Id }, FormMethod.Post))
+            {
+                <button type="submit">
+                    Favorites: @Model.BookModel.Favorites
+                </button>
+            }
+        </div>
     </section>
 </div>

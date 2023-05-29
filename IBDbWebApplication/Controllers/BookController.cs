@@ -9,7 +9,7 @@ namespace IBDbWebApplication.Controllers;
 
 public class BookController : Controller
 {
-    private BookContainer _bookContainer = new(new BookData());
+    private readonly BookContainer _bookContainer = new(new BookData());
     
     [HttpGet]
     public IActionResult Index()
@@ -35,24 +35,33 @@ public class BookController : Controller
             new(bookViewModel.PublisherId), 
             bookViewModel.GenreIds.Select(genreId => new Genre(genreId)), 
             bookViewModel.ThemeIds.Select(themeId => new Theme(themeId)),
-            bookViewModel.SettingIds.Select(settingId => new Setting(settingId))
+            bookViewModel.SettingIds.Select(settingId => new Setting(settingId)),
+            0
         ));
 
         return RedirectToAction("Book", "Admin");
     }
 
     [HttpGet]
-    public IActionResult Detail(long Id)
+    public IActionResult Detail(long id)
     {
-        BookDetailModel bookDetailModel = new(GetBookModelById(Id));
+        BookDetailModel bookDetailModel = new(GetBookModelById(id));
         
         return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
     }
     
-    private BookModel GetBookModelById(long Id)
+    [HttpPost]
+    public IActionResult Favorite(long id)
     {
-        Book book = _bookContainer.GetById(Id);
-        return new (
+        _bookContainer.Favorite(id, 1);
+        
+        return RedirectToAction(nameof(Detail), new {id});
+    }
+    
+    private BookModel GetBookModelById(long id)
+    {
+        Book book = _bookContainer.GetById(id);
+        return new(
            book.Id,
            book.Isbn,
            book.Title,
@@ -92,7 +101,8 @@ public class BookController : Controller
                    setting.Id,
                    setting.Description
                )
-           )
+           ),
+            book.Favorites
        );
     }
 }

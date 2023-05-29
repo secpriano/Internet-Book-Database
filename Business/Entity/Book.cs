@@ -15,6 +15,7 @@ public class Book : IEqualityComparer<Book>
     public IEnumerable<Genre> Genres { get; }
     public IEnumerable<Theme> Themes { get; }
     public IEnumerable<Setting> Settings { get; }
+    public ulong Favorites { get; set; }
 
     public Book(
         long? id, 
@@ -27,9 +28,10 @@ public class Book : IEqualityComparer<Book>
         Publisher publisher, 
         IEnumerable<Genre> genres, 
         IEnumerable<Theme> themes, 
-        IEnumerable<Setting> settings) =>
-        (Id, Isbn, Title, Synopsis, PublishDate, AmountPages, Authors, Publisher, Genres, Themes, Settings) =
-        (id, isbn, title, synopsis, publishDate, amountPages, authors, publisher, genres, themes, settings);
+        IEnumerable<Setting> settings,
+        ulong favorites) =>
+        (Id, Isbn, Title, Synopsis, PublishDate, AmountPages, Authors, Publisher, Genres, Themes, Settings, Favorites) =
+        (id, isbn, title, synopsis, publishDate, amountPages, authors, publisher, genres, themes, settings, favorites);
     
     public Book(BookDTO bookDto) : this(
         bookDto.Id, 
@@ -42,7 +44,8 @@ public class Book : IEqualityComparer<Book>
         new(bookDto.Publisher), 
         bookDto.Genres.Select(genre => new Genre(genre)), 
         bookDto.Themes.Select(theme => new Theme(theme)), 
-        bookDto.Settings.Select(setting => new Setting(setting))
+        bookDto.Settings.Select(setting => new Setting(setting)),
+        bookDto.Favorites
     ) { }
 
     public BookDTO GetDto() => new(
@@ -56,7 +59,8 @@ public class Book : IEqualityComparer<Book>
         Publisher.GetDto(), 
         Genres.Select(genre => genre.ToDto()), 
         Themes.Select(theme => theme.GetDto()), 
-        Settings.Select(setting => setting.GetDto())
+        Settings.Select(setting => setting.GetDto()),
+        Favorites
     );
 
     public bool Equals(Book x, Book y)
@@ -65,12 +69,12 @@ public class Book : IEqualityComparer<Book>
         if (ReferenceEquals(x, null)) return false;
         if (ReferenceEquals(y, null)) return false;
         if (x.GetType() != y.GetType()) return false;
-        return x.Id == y.Id && x.Isbn == y.Isbn && x.Title == y.Title && x.Synopsis == y.Synopsis && x.PublishDate.Equals(y.PublishDate) && x.AmountPages == y.AmountPages && x.Authors.Equals(y.Authors) && x.Publisher.Equals(y.Publisher) && x.Genres.Equals(y.Genres) && x.Themes.Equals(y.Themes) && x.Settings.Equals(y.Settings);
+        return x.Id == y.Id && x.Isbn == y.Isbn && x.Title == y.Title && x.Synopsis == y.Synopsis && x.PublishDate.Equals(y.PublishDate) && x.AmountPages == y.AmountPages && x.Authors.Equals(y.Authors) && x.Publisher.Equals(y.Publisher) && x.Genres.Equals(y.Genres) && x.Themes.Equals(y.Themes) && x.Settings.Equals(y.Settings) && x.Favorites == y.Favorites;
     }
 
     public int GetHashCode(Book obj)
     {
-        HashCode hashCode = new HashCode();
+        HashCode hashCode = new();
         hashCode.Add(obj.Id);
         hashCode.Add(obj.Isbn);
         hashCode.Add(obj.Title);
@@ -82,6 +86,7 @@ public class Book : IEqualityComparer<Book>
         hashCode.Add(obj.Genres);
         hashCode.Add(obj.Themes);
         hashCode.Add(obj.Settings);
+        hashCode.Add(obj.Favorites);
         return hashCode.ToHashCode();
     }
 }

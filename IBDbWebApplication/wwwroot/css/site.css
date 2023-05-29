@@ -152,6 +152,11 @@ table tbody tr:hover {
   background-color: #e2e2e2;
 }
 
+img {
+  border-radius: 0 25px 25px 0;
+}
+
+section.detail .items p,
 td p {
   background-color: #e4e4e4;
   border: 1px solid #aaa;
@@ -270,6 +275,38 @@ Main {
 .operations a:hover,
 .operation-button:hover {
     box-shadow: 0 0 0 0.25rem var(--text);
+}
+
+section.detail {
+  display: flex;
+}
+
+section.detail img {
+  margin-right: 25px;
+}
+
+section.detail div {
+  width: 735px;
+}
+
+section.detail div > p {
+  margin-bottom: 3rem;
+}
+
+section.detail h3 {
+  display: inline;
+}
+
+section.detail h5 {
+  margin-bottom: 1rem;
+}
+
+section.detail .items p {
+  display: inline;
+}
+
+section.detail .items {
+  margin-bottom: 1rem;
 }
 
 /* Footer */
