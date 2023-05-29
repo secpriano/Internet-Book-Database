@@ -51,7 +51,8 @@ public class TestOperations
             themeStub.Themes.FindAll(theme => theme is { Id: 1 } or { Id: 2 })
                 .Select(theme => new Theme(theme.Id, theme.Description)),
             settingStub.Settings.FindAll(setting => setting is { Id: 1 } or { Id: 2 })
-                .Select(setting => new Setting(setting.Id, setting.Description))
+                .Select(setting => new Setting(setting.Id, setting.Description)),
+                0
         );
 
         // Act

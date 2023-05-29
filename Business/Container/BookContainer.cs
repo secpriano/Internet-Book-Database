@@ -43,6 +43,16 @@ public class BookContainer
         return _bookData.Favorite(bookId, userId);
     }
     
+    public bool Unfavorite(long bookId, long userId)
+    {
+        return _bookData.Unfavorite(bookId, userId);
+    }
+    
+    public bool IsFavorite(long bookId, long userId)
+    {
+        return _bookData.IsFavorite(bookId, userId);
+    }
+    
     private void ValidateBook(Book book)
     {
         ValidateIsbn(book.Isbn);

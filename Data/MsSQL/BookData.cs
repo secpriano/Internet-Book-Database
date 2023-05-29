@@ -290,4 +290,26 @@ private static void AddItemsToTable<T>(IEnumerable<T> items, string tableName, l
         
         return sqlCommand.ExecuteNonQuery() > 0;
     }
+
+    public bool Unfavorite(long bookId, long userId)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new("DELETE FROM UserBookFavorite WHERE UserID = @UserID AND BookID = @BookID", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@UserID", userId);
+        sqlCommand.Parameters.AddWithValue("@BookID", bookId);
+        
+        return sqlCommand.ExecuteNonQuery() > 0;
+    }
+
+    public bool IsFavorite(long bookId, long userId)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new("SELECT COUNT(*) FROM UserBookFavorite WHERE UserID = @UserID AND BookID = @BookID", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@UserID", userId);
+        sqlCommand.Parameters.AddWithValue("@BookID", bookId);
+        
+        return (int)sqlCommand.ExecuteScalar() > 0;
+    }
 }

@@ -18,13 +18,13 @@ public class BookSTUB : IBookData
             _publisherStub.Publishers.Find(publisher => publisher is {Id: 2}), 
             _genreStub.Genres.FindAll(genre => genre is {Id: 1} or {Id: 3}), 
             _themeStub.Themes.FindAll(theme => theme is {Id: 1} or {Id: 2}), 
-            _settingStub.Settings.FindAll(setting => setting is {Id: 1} or {Id: 2})),
+            _settingStub.Settings.FindAll(setting => setting is {Id: 1} or {Id: 2}), 0),
         new(2, "9780312866272", "The Wheel of Time", "The Wheel of Time is a series of high fantasy novels written by American author James Oliver Rigney Jr., under his pen name Robert Jordan. The series, set in the fictional world of the Two Rivers, revolves around a group of people who travel the world in order to combat the forces of the Dark One, who is trying to destroy the world and everything in it.", 
             new(1990, 1, 1), 800, _authorStub.Authors.FindAll(author => author is {Id: 1}),
             _publisherStub.Publishers.Find(publisher => publisher is {Id: 1}), 
             _genreStub.Genres.FindAll(genre => genre is {Id: 1} or {Id: 3}), 
             _themeStub.Themes.FindAll(theme => theme is {Id: 1} or {Id: 2}), 
-            _settingStub.Settings.FindAll(setting => setting is {Id: 1} or {Id: 2}))
+            _settingStub.Settings.FindAll(setting => setting is {Id: 1} or {Id: 2}), 0)
     };
     
     public bool Add(BookDTO entity)
@@ -47,6 +47,21 @@ public class BookSTUB : IBookData
     public bool Delete(long id)=> Books.Remove(Books.Find(book => book.Id == id));
 
     public IEnumerable<BookDTO> GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Favorite(long bookId, long userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Unfavorite(long bookId, long userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsFavorite(long bookId, long userId)
     {
         throw new NotImplementedException();
     }

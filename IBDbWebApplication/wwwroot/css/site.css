@@ -173,6 +173,12 @@ td p {
   white-space: nowrap;
   padding: 2px 4px;
 }
+
+td img {
+  width: 130px;
+  height: 200px;
+}
+
 /* Text */
 
 input, textarea, select, button,

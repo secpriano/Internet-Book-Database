@@ -53,7 +53,14 @@ public class BookController : Controller
     [HttpPost]
     public IActionResult Favorite(long id)
     {
-        _bookContainer.Favorite(id, 1);
+        if (_bookContainer.IsFavorite(id, 1))
+        {
+            _bookContainer.Unfavorite(id, 1);
+        }
+        else
+        {
+            _bookContainer.Favorite(id, 1);
+        }
         
         return RedirectToAction(nameof(Detail), new {id});
     }
