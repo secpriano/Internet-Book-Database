@@ -86,4 +86,9 @@ public class BookModel
         ulong favorites) =>
         (Id, Isbn, Title, Synopsis, PublishDate, AmountPages, Authors, Publisher, Genres, Themes, Settings, Favorites) =
         (id, isbn, title, synopsis, publishDate, amountPages, authors, publisher, genres, themes, settings, favorites);
+
+    public BookModel()
+    {
+            
+    }
 }

@@ -226,7 +226,7 @@ private static void AddItemsToTable<T>(IEnumerable<T> items, string tableName, l
                         Description = authorDescription,
                         BirthDate = DateOnly.FromDateTime(authorBirthDate),
                         DeathDate = authorDeathDate != null ? DateOnly.FromDateTime((DateTime)authorDeathDate) : null,
-                        Genres = new List<GenreDTO>()
+                        Genres = new()
                     };
                 }
                 byte authorGenreId = (byte)sqlDataReader["AuthorGenreId"];

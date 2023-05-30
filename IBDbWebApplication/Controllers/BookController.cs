@@ -53,22 +53,7 @@ public class BookController : Controller
 
     private IEnumerable<ReviewModel> GetBookReviewModelsByBookId(long id)
     {
-        return _reviewContainer.GetAllByBookId(id).Select(review => 
-            new ReviewModel(
-                review.Id, 
-                review.Title, 
-                review.Content, 
-                review.BookId, 
-                review.UserId, 
-                review.Comments.Select(comment => 
-                    new CommentModel(
-                        comment.Id, 
-                        comment.Content, 
-                        comment.UserId
-                    )
-                )
-            )
-        );
+        return _reviewContainer.GetAllByBookId(id).Select(review => new ReviewModel(review.Id, review.Title, review.Content, review.BookId, review.UserId, review.Comments.Select(comment => new CommentModel(comment.Id, comment.Content, comment.UserId))));
     }
 
     [HttpPost]
@@ -132,5 +117,29 @@ public class BookController : Controller
            ),
             book.Favorites
        );
+    }
+
+    public IActionResult CreateReview(BookDetailModel bookDetailModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            bookDetailModel = new(GetBookModelById(bookDetailModel.BookId), GetBookReviewModelsByBookId(bookDetailModel.BookId));
+
+            return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
+
+        }
+        
+        _reviewContainer.Add(new(
+            null,
+            bookDetailModel.Title,
+            bookDetailModel.Content,
+            1,
+            bookDetailModel.BookId,
+            null
+        ));
+
+        bookDetailModel = new(GetBookModelById(bookDetailModel.BookId), GetBookReviewModelsByBookId(bookDetailModel.BookId));
+
+        return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
     }
 }
