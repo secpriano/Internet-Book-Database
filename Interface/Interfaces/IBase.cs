@@ -1,6 +1,6 @@
 ﻿namespace Interface.Interfaces;
 
-public interface IBase<Entity> where Entity : struct
+public interface IBase<Entity>
 {
     public bool Add(Entity entity);
     public Entity GetById(long id);

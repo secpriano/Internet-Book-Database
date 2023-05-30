@@ -20,9 +20,7 @@
                 }
             </div>
             <h5>@Model.BookModel.Isbn</h5>
-            <p>
-                @Model.BookModel.Synopsis
-            </p>
+            <p>@Model.BookModel.Synopsis</p>
             <div class="items">
                 <span>Genre</span>
                 @foreach (GenreModel genre in Model.BookModel.Genres)
@@ -59,5 +57,22 @@
                 </button>
             }
         </div>
+    </section>
+    <section>
+        <h2>Reviews</h2>
+        <ul>
+            @foreach (ReviewModel review in Model.ReviewModels)
+            {
+                <li>
+                    <div>
+                        <h3>@review.Title</h3>
+                        <p>@review.Content</p>
+                        <div class="items">
+                            <span>By</span>
+                            <p>@review.User.UserName</p>
+                        </div>
+                    </div>
+                </li>
+            }
     </section>
 </div>

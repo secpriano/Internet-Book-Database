@@ -10,6 +10,7 @@ namespace IBDbWebApplication.Controllers;
 public class BookController : Controller
 {
     private readonly BookContainer _bookContainer = new(new BookData());
+    private readonly ReviewContainer _reviewContainer = new(new ReviewData());
     
     [HttpGet]
     public IActionResult Index()
@@ -45,11 +46,31 @@ public class BookController : Controller
     [HttpGet]
     public IActionResult Detail(long id)
     {
-        BookDetailModel bookDetailModel = new(GetBookModelById(id));
+        BookDetailModel bookDetailModel = new(GetBookModelById(id), GetBookReviewModelsByBookId(id));
         
         return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
     }
-    
+
+    private IEnumerable<ReviewModel> GetBookReviewModelsByBookId(long id)
+    {
+        return _reviewContainer.GetAllByBookId(id).Select(review => 
+            new ReviewModel(
+                review.Id, 
+                review.Title, 
+                review.Content, 
+                review.BookId, 
+                review.UserId, 
+                review.Comments.Select(comment => 
+                    new CommentModel(
+                        comment.Id, 
+                        comment.Content, 
+                        comment.UserId
+                    )
+                )
+            )
+        );
+    }
+
     [HttpPost]
     public IActionResult Favorite(long id)
     {
