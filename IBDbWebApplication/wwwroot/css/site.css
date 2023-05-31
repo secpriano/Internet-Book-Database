@@ -93,7 +93,6 @@ textarea {
   padding: 10px 20px;
   border: 1px solid #777;
   width: 400px;
-  height: 200px;
 }
 
 label {
@@ -181,6 +180,42 @@ td img {
 
 .review {
   width: 100%;
+}
+
+.userReview {
+  margin-bottom: 25px;
+}
+
+.review fieldset {
+  box-shadow: var(--shadow);
+}
+
+#CommentModel_Content {
+  min-height: 100px;
+}
+
+.review li {
+  padding: 25px;
+  border: 1px solid #777;
+  border-radius: 25px;
+  margin-bottom: 50px;
+}
+
+.review li li {
+  margin-bottom: 25px;
+  box-shadow: var(--shadow);
+  border: none;
+}
+
+.review img {
+  border-radius: 16px;
+  margin-right: 10px;
+}
+
+.review .user {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .review form {

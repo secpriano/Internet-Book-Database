@@ -64,16 +64,16 @@
         {
             <fieldset>
                 <legend>Post a review</legend>
-                @Html.HiddenFor(model => model.BookId)
+                @Html.HiddenFor(model => model.ReviewModel.BookId)
                 <div class="form-group">
-                    @Html.ValidationMessageFor(model => model.Title, "")
-                    @Html.LabelFor(model => model.Title)
-                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @placeholder = "disappointing as a soggy spring roll" })
+                    @Html.ValidationMessageFor(model => model.ReviewModel.Title, "")
+                    @Html.LabelFor(model => model.ReviewModel.Title)
+                    @Html.TextBoxFor(model => model.ReviewModel.Title, new { @class = "form-control", @placeholder = "disappointing as a soggy spring roll" })
                 </div>
                 <div class="form-group">
-                    @Html.ValidationMessageFor(model => model.Content, "")
-                    @Html.LabelFor(model => model.Content)
-                    @Html.TextAreaFor(model => model.Content, new { @class = "form-control", @placeholder = "Aiya, this book review, it's so disappointing! Uncle Roger cannot believe what he just read, lah! This book, it claims to be a gripping thriller, but Uncle Roger is not feeling the thrill, only the agony, haiya! Firstly, the characters in this book, they are as bland as unseasoned rice. Uncle Roger couldn't connect with any of them, not even the so-called \"hero.\" Where's the flavor, lah? They were just going through the motions, like boiled cabbage, no excitement, no depth, just plain boring! And the plot, oh my gosh! It's like a confused stir-fry. Uncle Roger couldn't follow what was happening half the time. The twists and turns were more like a wok tossing noodles than a well-constructed storyline. Uncle Roger was left scratching his head, wondering why he wasted his time on this mess. But the worst part, the grammar and editing, it's worse than burnt toast! Uncle Roger couldn't believe the number of typos, grammatical errors, and awkward sentences in this book. It was like reading a primary school essay. Where's the proofreader, huh? Uncle Roger is sorry to say this, but this book is a total disaster, a flavorless rice dish. It lacked the excitement, the finesse, and the attention to detail that Uncle Roger expects from a good book. Uncle Roger cannot recommend this to anyone, unless you want to torture yourself, haiya! Remember, when it comes to books, Uncle Roger wants them to be like a perfect plate of nasi lemak—full of flavor, well-balanced, and satisfying. This book, unfortunately, it's as disappointing as a soggy spring roll. Uncle Roger will definitely not be picking up anything from this author again. Better luck next time, lah!" })
+                    @Html.ValidationMessageFor(model => model.ReviewModel.Content, "")
+                    @Html.LabelFor(model => model.ReviewModel.Content)
+                    @Html.TextAreaFor(model => model.ReviewModel.Content, new { @class = "form-control", @placeholder = "Aiya, this book review, it's so disappointing! Uncle Roger cannot believe what he just read, lah! This book, it claims to be a gripping thriller, but Uncle Roger is not feeling the thrill, only the agony, haiya! Firstly, the characters in this book, they are as bland as unseasoned rice. Uncle Roger couldn't connect with any of them, not even the so-called \"hero.\" Where's the flavor, lah? They were just going through the motions, like boiled cabbage, no excitement, no depth, just plain boring! And the plot, oh my gosh! It's like a confused stir-fry. Uncle Roger couldn't follow what was happening half the time. The twists and turns were more like a wok tossing noodles than a well-constructed storyline. Uncle Roger was left scratching his head, wondering why he wasted his time on this mess. But the worst part, the grammar and editing, it's worse than burnt toast! Uncle Roger couldn't believe the number of typos, grammatical errors, and awkward sentences in this book. It was like reading a primary school essay. Where's the proofreader, huh? Uncle Roger is sorry to say this, but this book is a total disaster, a flavorless rice dish. It lacked the excitement, the finesse, and the attention to detail that Uncle Roger expects from a good book. Uncle Roger cannot recommend this to anyone, unless you want to torture yourself, haiya! Remember, when it comes to books, Uncle Roger wants them to be like a perfect plate of nasi lemak—full of flavor, well-balanced, and satisfying. This book, unfortunately, it's as disappointing as a soggy spring roll. Uncle Roger will definitely not be picking up anything from this author again. Better luck next time, lah!" })
                 </div>
             </fieldset>  
             <button type="submit">Post review</button>
@@ -87,19 +87,36 @@
                 @foreach (ReviewModel review in Model.ReviewModels)
                 {
                     <li>
-                        <div>
+                        <div class="userReview">
+                            <div class="user">
+                                <img src="https://picsum.photos/seed/@review.UserId QZJVKW/50/50" alt="Book image">
+                                <p>ID: @review.UserId</p>
+                            </div>
                             <h3>@review.Title</h3>
                             <p>@review.Content</p>
-                            <div class="items">
-                                <span>By</span>
-                                <p>@review.UserId</p>
-                            </div>
                         </div>
                         <ul>
-                            @foreach(CommentModel comment in review.CommentModels)
+                            @using(@Html.BeginForm("CreateComment", "Book", FormMethod.Post))
+                            {
+                                <fieldset>
+                                    <legend>Post a comment</legend>
+                                    @Html.HiddenFor(model => model.CommentModel.BookId)
+                                    @Html.Hidden("CommentModel.ReviewId", review.Id)
+                                    <div class="form-group">
+                                        @Html.ValidationMessageFor(model => model.CommentModel.Content, "")
+                                        @Html.LabelFor(model => model.CommentModel.Content)
+                                        @Html.TextAreaFor(model => model.CommentModel.Content, new { @class = "form-control", @placeholder = "Yea, what he said." })
+                                    </div>
+                                </fieldset>  
+                                <button type="submit">Post comment</button>
+                            }
+                            @foreach (CommentModel comment in review.CommentModels)
                             {
                                 <li>
-                                    <p>By user: @comment.UserId</p>
+                                    <div class="user">
+                                        <img src="https://picsum.photos/seed/@comment.UserId QZJVKW/50/50" alt="Book image">
+                                        <p>ID: @comment.UserId</p>
+                                    </div>
                                     <p>@comment.Content</p>
                                 </li>
                             }

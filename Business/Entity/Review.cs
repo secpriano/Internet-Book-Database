@@ -1,4 +1,5 @@
 ﻿using Interface.DTO;
+using Interface.Interfaces;
 
 namespace Business.Entity;
 
@@ -28,5 +29,21 @@ public class Review
             BookId,
             (Comments != null ? Comments.Select(comment => comment.ToDTO()) : null) as List<CommentDTO>
             );
+    }
+    
+    private readonly ICommentData _commentData;
+
+    public Review(ICommentData commentData)
+    {
+        _commentData = commentData;
+    }
+
+    protected Review()
+    {
+    }
+
+    public bool AddComment(Comment comment)
+    {
+        return _commentData.Add(comment.ToDTO());
     }
 }

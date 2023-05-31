@@ -119,11 +119,13 @@ public class BookController : Controller
        );
     }
 
-    public IActionResult CreateReview(BookDetailModel bookDetailModel)
+    public IActionResult CreateReview(ReviewModel reviewModel)
     {
+        BookDetailModel bookDetailModel;
+
         if (!ModelState.IsValid)
         {
-            bookDetailModel = new(GetBookModelById(bookDetailModel.BookId), GetBookReviewModelsByBookId(bookDetailModel.BookId));
+            bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewModelsByBookId(reviewModel.BookId));
 
             return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
 
@@ -131,14 +133,38 @@ public class BookController : Controller
         
         _reviewContainer.Add(new(
             null,
-            bookDetailModel.Title,
-            bookDetailModel.Content,
+            reviewModel.Title,
+            reviewModel.Content,
             1,
-            bookDetailModel.BookId,
+            reviewModel.BookId,
             null
         ));
 
-        bookDetailModel = new(GetBookModelById(bookDetailModel.BookId), GetBookReviewModelsByBookId(bookDetailModel.BookId));
+        bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewModelsByBookId(reviewModel.BookId));
+
+        return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
+    }
+
+    public IActionResult CreateComment(CommentModel commentModel)
+    {
+        BookDetailModel bookDetailModel;
+        
+        if (!ModelState.IsValid)
+        {
+            bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewModelsByBookId(commentModel.BookId));
+
+            return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
+        }
+
+        Review review = new(new CommentData());
+        review.AddComment(new(
+            commentModel.Id,
+            commentModel.ReviewId,
+            commentModel.Content,
+            1
+        ));
+        
+        bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewModelsByBookId(commentModel.BookId));
 
         return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
     }
