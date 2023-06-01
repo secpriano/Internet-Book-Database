@@ -4,10 +4,10 @@ namespace Business.Entity;
 
 public class Publisher
 {
-    public long? Id { get; set; }
-    public string Name { get; set; }
-    public DateOnly FoundingDate { get; set; }
-    public string Description { get; set; }
+    public long? Id { get; }
+    public string Name { get; }
+    public DateOnly FoundingDate { get; }
+    public string Description { get; }
 
     public Publisher(long? id, string name, DateOnly foundingDate, string description) => 
         (Id, Name, FoundingDate, Description) = (id, name, foundingDate, description);
@@ -19,5 +19,5 @@ public class Publisher
         Id = id;
     }
     
-    public PublisherDTO GetDto() => new(Id, Name, FoundingDate, Description);
+    public PublisherDTO ToDto() => new(Id, Name, FoundingDate, Description);
 }

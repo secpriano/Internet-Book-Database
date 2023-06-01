@@ -21,7 +21,7 @@ public class SettingContainer
     {
         ValidateSetting(setting);
         
-        return _settingData.Add(setting.GetDto());
+        return _settingData.Add(setting.ToDto());
     }
     
     private void ValidateSetting(Setting setting)

@@ -51,7 +51,7 @@ public class AuthorContainer
     private void ValidateName(string name)
     {
         Validate.OutOfRange((ulong)name.Length, 1, 1000, "Name", Validate.Unit.Character);
-        Validate.Regex(name, "^[a-zA-Z .]+$", "Description can only contain letters, spaces, and periods.");
+        Validate.Regex(name, "^[a-zA-Z .]+$", "Name can only contain letters, spaces, and periods.");
     }
     
     private void ValidateDescription(string authorDescription)

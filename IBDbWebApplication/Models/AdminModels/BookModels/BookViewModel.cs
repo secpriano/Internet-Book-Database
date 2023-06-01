@@ -7,11 +7,11 @@ namespace IBDbWebApplication.Models.AdminModels.BookModels;
 public class BookViewModel
 {
     [Key]
-    public long? Id { get; }
+    public long? Id { get; set; }
     
     [DisplayName("Isbn")]
-    [Required(ErrorMessage = "An isbn is required")]
-    [StringLength(13, ErrorMessage = "A", MinimumLength = 13 )]
+    [Required(ErrorMessage = "isbn is required")]
+    [StringLength(13, ErrorMessage = "isbn must be 13 characters long", MinimumLength = 13 )]
     [RegularExpression(@"^[0-9]+$", ErrorMessage = "A")]
     public string Isbn { get; set; }
     
@@ -30,7 +30,7 @@ public class BookViewModel
     [DisplayName("PublishDate")]
     [Required(ErrorMessage = "An publishDate is required")]
     // TODO: date validation
-    public DateOnly PublishDate { get; set; }
+    public DateTime PublishDate { get; set; }
     
     [DisplayName("AmountPages")]
     [Required(ErrorMessage = "An amountPages is required")]

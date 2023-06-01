@@ -21,14 +21,14 @@ public class BookContainer
     {
         ValidateBook(book);
         
-        return _bookData.Add(book.GetDto());
+        return _bookData.Add(book.ToDto());
     }
 
-    public BookDTO Update(Book book)
+    public Book Update(Book book)
     {
         ValidateBook(book);
         
-        return _bookData.Update(book.GetDto());
+        return new(_bookData.Update(book.ToDto()));
     }
 
     public bool Delete(long id) => _bookData.Delete(id);

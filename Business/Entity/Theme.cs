@@ -17,5 +17,5 @@ public class Theme
        Id = id;
    }
     
-    public ThemeDTO GetDto() => new ThemeDTO(Id, Description);
+    public ThemeDTO ToDto() => new ThemeDTO(Id, Description);
 }

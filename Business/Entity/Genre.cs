@@ -4,8 +4,8 @@ namespace Business.Entity;
 
 public class Genre
 {
-    public byte? Id { get; set; } 
-    public string Name { get; set; }
+    public byte? Id { get; } 
+    public string Name { get; }
 
     public Genre(byte? id, string name) => 
         (Id, Name) = (id, name);

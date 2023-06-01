@@ -17,5 +17,5 @@ public class Setting
         Id = id;
     }
     
-    public SettingDTO GetDto() => new SettingDTO(Id, Description);
+    public SettingDTO ToDto() => new SettingDTO(Id, Description);
 }

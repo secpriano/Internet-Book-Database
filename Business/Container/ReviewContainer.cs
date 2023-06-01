@@ -14,11 +14,35 @@ public class ReviewContainer
     
     public bool Add(Review review)
     {
+        ValidateReview(review);
+        
         return _reviewData.Add(review.ToDTO());
     }
-    
+
     public IEnumerable<Review> GetAllByBookId(long bookId)
     {
         return _reviewData.GetAllByBookId(bookId).Select(reviewDTO => new Review(reviewDTO));
+    }
+    
+    private void ValidateReview(Review review)
+    {
+        ValidateTitle(review.Title);
+        ValidateContent(review.Content);
+        
+        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        {
+            throw Validate.Exceptions;
+        }
+    }
+    
+    private void ValidateTitle(string reviewTitle)
+    {
+        Validate.OutOfRange((ulong)reviewTitle.Length, 1, 100, "Title", Validate.Unit.Character);
+        Validate.Regex(reviewTitle, "^[a-zA-Z0-9 &]+$", "Title must only contain letters, numbers, spaces, and ampersand.");
+    }
+
+    private void ValidateContent(string reviewContent)
+    {
+        Validate.OutOfRange((ulong)reviewContent.Length, 2, 2000, "Content", Validate.Unit.Character);
     }
 }

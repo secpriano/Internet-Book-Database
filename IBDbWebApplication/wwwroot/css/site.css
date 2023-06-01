@@ -404,6 +404,10 @@ section.detail .items {
   margin-bottom: 1rem;
 }
 
+#deleteModal form {
+  margin-top: 25px;
+}
+
 /* Footer */
 
 footer {

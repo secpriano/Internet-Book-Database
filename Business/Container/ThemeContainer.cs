@@ -21,7 +21,7 @@ public class ThemeContainer
     {
         ValidateTheme(theme);
         
-        return _themeData.Add(theme.GetDto());
+        return _themeData.Add(theme.ToDto());
     }
     
     private void ValidateTheme(Theme theme)

@@ -30,7 +30,7 @@ public class BookController : Controller
             bookViewModel.Isbn,
             bookViewModel.Title,
             bookViewModel.Synopsis,
-            bookViewModel.PublishDate,
+            DateOnly.FromDateTime(bookViewModel.PublishDate),
             bookViewModel.AmountPages,
             bookViewModel.AuthorIds.Select(authorId => new Author(authorId)),
             new(bookViewModel.PublisherId), 
@@ -167,5 +167,42 @@ public class BookController : Controller
         bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewModelsByBookId(commentModel.BookId));
 
         return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
+    }
+
+    public IActionResult Delete(long? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        _bookContainer.Delete(id.Value);
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    public IActionResult EditBook(BookViewModel bookViewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+        
+        _bookContainer.Update(new(
+            bookViewModel.Id,
+            bookViewModel.Isbn,
+            bookViewModel.Title,
+            bookViewModel.Synopsis,
+            DateOnly.FromDateTime(bookViewModel.PublishDate),
+            bookViewModel.AmountPages,
+            bookViewModel.AuthorIds.Select(authorId => new Author(authorId)),
+            new(bookViewModel.PublisherId), 
+            bookViewModel.GenreIds.Select(genreId => new Genre(genreId)), 
+            bookViewModel.ThemeIds.Select(themeId => new Theme(themeId)),
+            bookViewModel.SettingIds.Select(settingId => new Setting(settingId)),
+            0
+        ));
+
+        return RedirectToAction("Book", "Admin");
     }
 }

@@ -27,14 +27,13 @@ public bool Add(BookDTO entity)
                 new("@ISBN", entity.Isbn),
                 new("@AmountPages", (long)entity.AmountPages),
                 new("@Synopsis", entity.Synopsis),
-                new("@PublishDate", entity.PublishDate),
+                new("@PublishDate", entity.PublishDate.ToDateTime(TimeOnly.FromDateTime(DateTime.Now))),
                 new("@PublisherID", entity.Publisher.Id)
             }
         };
         
         decimal bookId = (decimal) sqlCommand.ExecuteScalar();
 
-        AddItemsToTable(entity.Genres, "BookGenre", (long)bookId, "GenreID", sqlCommand);
         AddItemsToTable(entity.Themes, "BookTheme", (long)bookId, "ThemeID", sqlCommand);
         AddItemsToTable(entity.Settings, "BookSetting", (long)bookId, "SettingID", sqlCommand);
         AddItemsToTable(entity.Authors, "BookAuthor", (long)bookId, "AuthorID", sqlCommand);
@@ -52,6 +51,20 @@ public bool Add(BookDTO entity)
 private static void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long bookId, string columnName, SqlCommand command)
 {
     command.CommandText = $"INSERT INTO {tableName} (BookID, {columnName}) VALUES (@BookID, @ID)";
+    command.Parameters.Clear();
+    command.Parameters.AddWithValue("@BookID", bookId);
+    command.Parameters.Add("@ID", SqlDbType.Int);
+    foreach (T item in items)
+    {
+        command.Parameters["@ID"].Value = typeof(T).GetProperty("Id").GetValue(item);
+        command.ExecuteNonQuery();
+    }
+}
+
+private static void EditItemsInTable<T>(IEnumerable<T> items, string tableName, long bookId, string columnName,
+    SqlCommand command)
+{
+    command.CommandText = $"UPDATE {tableName} SET {columnName} = @ID WHERE BookID = @BookID";
     command.Parameters.Clear();
     command.Parameters.AddWithValue("@BookID", bookId);
     command.Parameters.Add("@ID", SqlDbType.Int);
@@ -172,12 +185,51 @@ private static void AddItemsToTable<T>(IEnumerable<T> items, string tableName, l
 
     public BookDTO Update(BookDTO entity)
     {
-        throw new NotImplementedException();
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
+        try
+        {
+            using SqlCommand sqlCommand = new("UPDATE Book SET Title = @Title, Isbn = @Isbn, AmountPages = @AmountPages, Synopsis = @Synopsis, PublishDate = @PublishDate, PublisherID = @PublisherID WHERE BookID = @BookID", sqlConnection, sqlTransaction)
+            {
+                Parameters =
+                {
+                    new("@Title", entity.Title),
+                    new("@ISBN", entity.Isbn),
+                    new("@AmountPages", (long)entity.AmountPages),
+                    new("@Synopsis", entity.Synopsis),
+                    new("@PublishDate", entity.PublishDate.ToDateTime(TimeOnly.FromDateTime(DateTime.Now))),
+                    new("@PublisherID", entity.Publisher.Id),
+                    new("@BookID", entity.Id)
+                }
+            };
+            
+            sqlCommand.ExecuteNonQuery();
+            
+            EditItemsInTable(entity.Genres, "BookGenre", entity.Id.Value, "GenreID", sqlCommand);
+            EditItemsInTable(entity.Themes, "BookTheme", entity.Id.Value, "ThemeID", sqlCommand);
+            EditItemsInTable(entity.Settings, "BookSetting", entity.Id.Value, "SettingID", sqlCommand);
+            EditItemsInTable(entity.Authors, "BookAuthor", entity.Id.Value, "AuthorID", sqlCommand);
+
+            sqlTransaction.Commit();
+            return entity;
+        }
+        catch (Exception ex)
+        {
+            sqlTransaction.Rollback();
+            throw ex;
+        }
     }
 
     public bool Delete(long id)
     {
-        throw new NotImplementedException();
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        
+        using SqlCommand sqlCommand = new("DELETE FROM Book WHERE BookID = @BookID", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@BookID", id);
+        
+        return sqlCommand.ExecuteNonQuery() > 0;
     }
 
     public IEnumerable<BookDTO> GetAll()

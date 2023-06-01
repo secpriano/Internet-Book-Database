@@ -15,7 +15,7 @@ public class Book : IEqualityComparer<Book>
     public IEnumerable<Genre> Genres { get; }
     public IEnumerable<Theme> Themes { get; }
     public IEnumerable<Setting> Settings { get; }
-    public ulong Favorites { get; set; }
+    public ulong Favorites { get; }
 
     public Book(
         long? id, 
@@ -48,7 +48,7 @@ public class Book : IEqualityComparer<Book>
         bookDto.Favorites
     ) { }
 
-    public BookDTO GetDto() => new(
+    public BookDTO ToDto() => new(
         Id, 
         Isbn, 
         Title, 
@@ -56,10 +56,10 @@ public class Book : IEqualityComparer<Book>
         PublishDate, 
         AmountPages, 
         Authors.Select(author => author.ToDto()), 
-        Publisher.GetDto(), 
+        Publisher.ToDto(), 
         Genres.Select(genre => genre.ToDto()), 
-        Themes.Select(theme => theme.GetDto()), 
-        Settings.Select(setting => setting.GetDto()),
+        Themes.Select(theme => theme.ToDto()), 
+        Settings.Select(setting => setting.ToDto()),
         Favorites
     );
 

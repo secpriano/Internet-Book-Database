@@ -59,7 +59,7 @@ public class TestOperations
         bool actual = _bookContainer.Add(expectedBook); 
         
         // Assert
-        BookDTO expectedBookDto = expectedBook.GetDto();
+        BookDTO expectedBookDto = expectedBook.ToDto();
         
         Assert.Multiple(() =>
         {
@@ -100,10 +100,10 @@ public class TestOperations
         };
 
         // Act
-        BookDTO actual = _bookContainer.Update(expectedBook);
+        BookDTO actual = _bookContainer.Update(expectedBook).ToDto();
         
         // Assert
-        BookDTO expectedBookDto = expectedBook.GetDto();
+        BookDTO expectedBookDto = expectedBook.ToDto();
         
         Assert.Multiple(() =>
         {

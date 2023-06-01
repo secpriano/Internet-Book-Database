@@ -4,12 +4,12 @@ namespace Business.Entity;
 
 public class Author : IEqualityComparer<Author>
 {
-    public long? Id { get; set; } 
-    public string Name { get; set; } 
-    public string Description { get; set; } 
+    public long? Id { get; } 
+    public string Name { get; } 
+    public string Description { get; } 
     public DateOnly BirthDate { get; set; } 
-    public DateOnly? DeathDate { get; set; }
-    public IEnumerable<Genre> Genres { get; set; }
+    public DateOnly? DeathDate { get; }
+    public IEnumerable<Genre> Genres { get; }
 
     public Author(long? id, string name, string description, DateOnly birthDate, DateOnly? deathDate, IEnumerable<Genre> genres) => 
         (Id, Name, Description, BirthDate, DeathDate, Genres) = (id, name, description, birthDate, deathDate, genres);
@@ -23,7 +23,7 @@ public class Author : IEqualityComparer<Author>
         Id = id;
     }
     
-    public AuthorDTO ToDto() => new(Id, Name, Description, BirthDate, DeathDate, Genres.Select(genre => genre.ToDto()).ToList());
+    public AuthorDTO ToDto() => new(Id, Name, Description, BirthDate, DeathDate, Genres?.Select(genre => genre.ToDto()).ToList());
 
     public bool Equals(Author x, Author y)
     {

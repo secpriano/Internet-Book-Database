@@ -14,9 +14,6 @@
             <tr>
                 <th>Cover</th>
                 <th>Title</th>
-                <th>Isbn</th>
-                <th>Synopsis</th>
-                <th>Publisher</th>
                 <th>Pages</th>
                 <th>Authors</th>
                 <th>Genres</th>
@@ -30,9 +27,6 @@
                 <tr onclick="location.href='@Url.Action("Detail", "Book", new{book.Id})'">
                     <td><img src="https://picsum.photos/seed/@book.Isbn/275/400" alt="Book image"></td>
                     <td>@book.Title</td>
-                    <td>@book.Isbn</td>
-                    <td>@book.Synopsis</td>
-                    <td>@book.Publisher.Name</td>
                     <td>@book.AmountPages</td>
                     <td>
                         @foreach (AuthorModel author in book.Authors)

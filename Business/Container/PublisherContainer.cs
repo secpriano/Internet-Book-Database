@@ -21,7 +21,7 @@ public class PublisherContainer
     {
         ValidatePublisher(publisher);
         
-        return _publisherData.Add(publisher.GetDto());
+        return _publisherData.Add(publisher.ToDto());
     }
     
     private void ValidatePublisher(Publisher publisher)

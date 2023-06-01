@@ -12,7 +12,7 @@ public class CommentModel
     
     [DisplayName("Content")]
     [Required(ErrorMessage = "Content is required")]
-    [StringLength(4000, ErrorMessage = "Content must be more than 1 characters long and less than 4000 characters", MinimumLength = 1 )]
+    [StringLength(4000, ErrorMessage = "Content must be more than 2 characters long and less than 4000 characters", MinimumLength = 2 )]
     public string Content { get; set; }
     public long UserId { get; }
     public long BookId { get; set; }
