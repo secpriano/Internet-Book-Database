@@ -18,7 +18,7 @@ public class PublisherData : Database, IPublisherData
             Parameters =
             {
                 new("@Name", entity.Name),
-                new("@FoundingDate", entity.FoundingDate),
+                new("@FoundingDate", entity.FoundingDate.ToDateTime(TimeOnly.FromDateTime(DateTime.Now))),
                 new("@Description", entity.Description)
             }
         };

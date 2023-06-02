@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Data;
 using System.Data.SqlClient;
 using Interface.DTO;
 using Interface.Interfaces;
@@ -9,7 +10,51 @@ public class AuthorData : Database, IAuthorData
 {
     public bool Add(AuthorDTO entity)
     {
-        throw new NotImplementedException();
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
+        try
+        {
+            using SqlCommand sqlCommand = new(
+                "INSERT INTO Author (Name, Description, BirthDate, DeathDate) " +
+                "VALUES (@Name, @Description, @BirthDate, @DeathDate)" +
+                "SELECT SCOPE_IDENTITY()",
+                sqlConnection, sqlTransaction)
+            {
+                Parameters =
+                {
+                    new("@Name", entity.Name),
+                    new("@Description", entity.Description),
+                    new("@BirthDate", entity.BirthDate.ToDateTime(TimeOnly.FromDateTime(DateTime.Now))),
+                    new("@DeathDate", entity.DeathDate != null ? entity.DeathDate?.ToDateTime(TimeOnly.FromDateTime(DateTime.Now)) : DBNull.Value)
+                }
+            };
+
+            decimal authorId = (decimal)sqlCommand.ExecuteScalar();
+            
+            AddItemsToTable(entity.Genres, "AuthorGenre", (long)authorId, "GenreID", sqlCommand);
+            
+            sqlTransaction.Commit();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            sqlTransaction.Rollback();
+            throw ex;
+        }
+    }
+    
+    private static void AddItemsToTable<T>(IEnumerable<T> items, string tableName, long authorId, string columnName, SqlCommand command)
+    {
+        command.CommandText = $"INSERT INTO {tableName} (AuthorID, {columnName}) VALUES (@AuthorID, @ID)";
+        command.Parameters.Clear();
+        command.Parameters.AddWithValue("@AuthorID", authorId);
+        command.Parameters.Add("@ID", SqlDbType.Int);
+        foreach (T item in items)
+        {
+            command.Parameters["@ID"].Value = typeof(T).GetProperty("Id").GetValue(item);
+            command.ExecuteNonQuery();
+        }
     }
 
     public AuthorDTO GetById(long id)

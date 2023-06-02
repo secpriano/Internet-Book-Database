@@ -7,34 +7,34 @@
 <div class="MainContainer">
     <div class="hero">
         <h1>Manage themes</h1>
-        </div>
-        <section>
-            <ul class="operations">
-                <li>
-                    <div class="operation-button" onclick="ShowDialog()">
-                        <p>➕</p>
-                        <h2>Create</h2>
+    </div>
+    <section>
+        <ul class="operations">
+            <li>
+                <div class="operation-button" onclick="ShowDialog()">
+                    <p>➕</p>
+                    <h2>Create</h2>
+                </div>
+                <dialog id="AddForm">   
+                    <div class="modal-content">
+                        @using (@Html.BeginForm("AddTheme", "Theme", FormMethod.Post))
+                        {
+                            <button type="button" class="btn-close" onclick="CloseDialog()">X</button>
+                            <fieldset>
+                                <legend>Add a Theme</legend>
+                                <div class="form-group">
+                                    @Html.LabelFor(themeViewModel => themeViewModel.Description, "Description")
+                                    @Html.TextBoxFor(model => model.Description, new { @placeholder = "LGBTQIA+" })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
+                            </fieldset>
+                            <button id="ButtonMelding" type="submit">Add Theme</button>
+                        }
                     </div>
-                    <dialog id="AddForm">
-                        <div class="modal-content">
-                            @using (@Html.BeginForm("AddTheme", "Theme", FormMethod.Post))
-                            {
-                                <button type="button" class="btn-close" onclick="CloseDialog()">X</button>
-                                <fieldset>
-                                    <legend>Add a Theme</legend>
-                                    <div class="form-group">
-                                        @Html.LabelFor(themeViewModel => themeViewModel.Description, "Description")
-                                        @Html.TextBoxFor(model => model.Description, new { @placeholder = "LGBTQIA+" })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                </fieldset>
-                                <button id="ButtonMelding" type="submit">Add Theme</button>
-                            }
-                        </div>
-                    </dialog>
-                </li>
-            </ul>
-        </section>
+                </dialog>
+            </li>
+        </ul>
+    </section>
     <table>
         <thead>
         <tr>

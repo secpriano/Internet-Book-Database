@@ -8,7 +8,21 @@ public class ThemeData : Database, IThemeData
 {
     public bool Add(ThemeDTO entity)
     {
-        throw new NotImplementedException();
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        
+        using SqlCommand sqlCommand = new(
+            "INSERT INTO Theme (ThemeText) " +
+            "VALUES (@ThemeText);",
+            sqlConnection)
+        {
+            Parameters =
+            {
+                new("@ThemeText", entity.Description)
+            }
+        };
+        
+        return sqlCommand.ExecuteNonQuery() > 0;
     }
 
     public ThemeDTO GetById(long id)

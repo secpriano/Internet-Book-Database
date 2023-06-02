@@ -27,8 +27,8 @@ public class AuthorController : Controller
             authorViewModel.Name,
             authorViewModel.Description,
             DateOnly.FromDateTime(authorViewModel.BirthDate),
-            DateOnly.FromDateTime((DateTime)authorViewModel.DeathDate),
-            authorViewModel.GenreIds.Select(genreId => new Genre(genreId.Id))
+            authorViewModel.DeathDate != null ? DateOnly.FromDateTime((DateTime)authorViewModel.DeathDate) : null,
+            authorViewModel.GenreIds.Select(genreId => new Genre(genreId))
         ));
 
         return RedirectToAction(nameof(Author), "Admin");

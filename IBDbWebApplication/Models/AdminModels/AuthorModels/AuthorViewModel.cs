@@ -28,7 +28,7 @@ public class AuthorViewModel
     [DisplayName("Death date")]
     [DataType(DataType.Date)]
     public DateTime? DeathDate { get; set; }
-    public IEnumerable<GenreModel> GenreIds { get; set; }
+    public IEnumerable<byte> GenreIds { get; set; }
     
     public IEnumerable<AuthorModel> AuthorModels { get; set; } = new List<AuthorModel>();
     public IEnumerable<GenreModel> GenreModels { get; set; } = new List<GenreModel>();

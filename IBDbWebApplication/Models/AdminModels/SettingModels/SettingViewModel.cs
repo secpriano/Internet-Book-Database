@@ -12,7 +12,7 @@ public class SettingViewModel
     [Required(ErrorMessage = "Description is required")]
     [StringLength(25, ErrorMessage = "Description must be between 2 and 25 characters", MinimumLength = 2 )]
     [RegularExpression(@"^[a-zA-Z ,&]+$", ErrorMessage = "Description can only contain letters, spaces, commas, and ampersands.")]
-    public string Description { get; }
+    public string Description { get; set; }
     
     public IEnumerable<SettingModel> SettingModels { get; set; }
     

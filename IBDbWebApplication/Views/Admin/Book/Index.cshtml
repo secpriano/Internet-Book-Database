@@ -143,6 +143,19 @@
                         @Html.AntiForgeryToken()
                         <button type="button" onclick="confirmDelete('@book.Title')">Delete</button>
                     }
+                    <dialog id="deleteModal">
+                        <div class="modal-content">
+                            <button type="button" class="btn-close" onclick="closeModal()">X</button>
+                            <span id="bookTitle"></span>
+                            <form>
+                            </form>
+                            @using (Html.BeginForm("Delete", "Book", new {id = book.Id}, FormMethod.Post))
+                            {
+                                <input type="text" id="promptInput" required>
+                                <button type="submit">Confirm</button>
+                            }
+                        </div>
+                    </dialog>
                 </td>
                 <td>
                     <button type="button" onclick="ShowEditDialog(@book.Id, '@book.Title')">Edit</button>
@@ -223,16 +236,6 @@
         </tbody>
     </table>
 </div>
-<dialog id="deleteModal">
-    <div class="modal-content">
-        <button type="button" class="btn-close" onclick="closeModal()">X</button>
-        <span id="bookTitle"></span>
-        <form>
-            <input type="text" id="promptInput" required>
-            <button type="submit">Confirm</button>
-        </form>
-    </div>
-</dialog>
 
 <script>          
     $('.js-example-basic-multiple').select2();
