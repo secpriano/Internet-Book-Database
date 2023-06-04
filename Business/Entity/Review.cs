@@ -48,11 +48,17 @@ public class Review
 
     private void ValidateComment(Comment comment)
     {
-        ValidateContent(comment.Content);
-        
-        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        try
         {
-            throw Validate.Exceptions;
+            Task[] tasks = {
+                Task.Run(() => ValidateContent(comment.Content))
+            };
+
+            Task.WaitAll(tasks);
+        }
+        catch (AggregateException ex)
+        {
+            throw new AggregateException(ex.InnerExceptions);
         }
     }
 

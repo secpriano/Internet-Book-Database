@@ -23,11 +23,13 @@ public class AuthorViewModel
     [DisplayName("Birth date")]
     [Required(ErrorMessage = "Birth date is required")]
     [DataType(DataType.Date)]
-    public DateTime BirthDate { get; set; } 
+    public DateTime? BirthDate { get; set; } 
     
     [DisplayName("Death date")]
     [DataType(DataType.Date)]
     public DateTime? DeathDate { get; set; }
+    
+    [Required(ErrorMessage = "Genre(s) is required")]
     public IEnumerable<byte> GenreIds { get; set; }
     
     public IEnumerable<AuthorModel> AuthorModels { get; set; } = new List<AuthorModel>();

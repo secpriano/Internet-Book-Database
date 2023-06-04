@@ -1,8 +1,9 @@
 ﻿using Interface.DTO;
+using Interface.Interfaces;
 
 namespace Test.STUB;
 
-public class AuthorSTUB
+public class AuthorSTUB : IAuthorData
 {
     private static GenreSTUB _genreStub = new();
     
@@ -32,4 +33,30 @@ public class AuthorSTUB
                 _genreStub.Genres[2]
             }),
     };
+
+    public bool Add(AuthorDTO entity)
+    {
+        Authors.Add(entity);
+        return Authors.Exists(entity.Equals);
+    }
+
+    public AuthorDTO GetById(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public AuthorDTO Update(AuthorDTO entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Delete(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<AuthorDTO> GetAll()
+    {
+        throw new NotImplementedException();
+    }
 }

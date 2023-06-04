@@ -26,13 +26,19 @@ public class PublisherContainer
     
     private void ValidatePublisher(Publisher publisher)
     {
-        ValidateName(publisher.Name);
-        ValidateDescription(publisher.Description);
-        ValidateFoundingDate(publisher.FoundingDate);
-        
-        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        try
         {
-            throw Validate.Exceptions;
+            Task[] tasks = {
+                Task.Run(() => ValidateName(publisher.Name)),
+                Task.Run(() => ValidateDescription(publisher.Description)),
+                Task.Run(() => ValidateFoundingDate(publisher.FoundingDate))
+            };
+
+            Task.WaitAll(tasks);
+        }
+        catch (AggregateException ex)
+        {
+            throw new AggregateException(ex.InnerExceptions);
         }
     }
     
@@ -49,6 +55,6 @@ public class PublisherContainer
     
     private void ValidateFoundingDate(DateOnly foundingDate)
     {
-        Validate.OutOfRange((ulong)foundingDate.Year, (ulong)DateTime.MinValue.Year, (ulong)DateTime.Now.Year, "Founding date", Validate.Unit.Year);
+        Validate.OutOfRange((ulong)foundingDate.Year, (ulong)DateOnly.MinValue.Year, (ulong)DateTime.Now.Year, "Founding date", Validate.Unit.Year);
     }
 }

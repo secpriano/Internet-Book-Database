@@ -1,8 +1,9 @@
 ﻿using Interface.DTO;
+using Interface.Interfaces;
 
 namespace Test.STUB;
 
-public class PublisherSTUB
+public class PublisherSTUB : IPublisherData
 {
     public List<PublisherDTO> Publishers = new()
     {
@@ -13,4 +14,30 @@ public class PublisherSTUB
             new(1484, 7, 1),
             "Penguin Random House is an American multinational publishing company. It is the world's largest trade book publisher, and the largest English-language general trade book publisher in the world."),
     };
+
+    public bool Add(PublisherDTO entity)
+    {
+        Publishers.Add(entity);
+        return Publishers.Exists(entity.Equals);
+    }
+
+    public PublisherDTO GetById(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public PublisherDTO Update(PublisherDTO entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Delete(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<PublisherDTO> GetAll()
+    {
+        throw new NotImplementedException();
+    }
 }

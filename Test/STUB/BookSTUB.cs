@@ -13,7 +13,7 @@ public class BookSTUB : IBookData
     
     public List<BookDTO> Books = new()
     {
-        new(1, "2037162530194", "The Hobbit", "A hobbit is a small, furry creature that lives in a hole in the ground.", 
+        new(1, "2037162530194", "The Hobbit", "A hobbit is a small, furry creature that lives in a hole in the ground. They are intelligent and quick and live in a quiet, peaceful way. They love to eat, and they are often considered selfish and lazy. They do not like to travel or have adventures. But one day, Bilbo Baggins, a quiet hobbit, receives a visit from Gandalf, the wizard. Gandalf wants Bilbo to help a group of dwarves take back the mountain from Smaug, a dragon. Bilbo is not sure he wants to go, but he does. He has an exciting adventure and makes many friends.",
             new(1937, 9, 21), 310, _authorStub.Authors.FindAll(author => author is {Id: 1}),
             _publisherStub.Publishers.Find(publisher => publisher is {Id: 2}), 
             _genreStub.Genres.FindAll(genre => genre is {Id: 1} or {Id: 3}), 

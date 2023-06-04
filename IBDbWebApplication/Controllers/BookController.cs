@@ -11,18 +11,35 @@ public class BookController : Controller
 {
     private readonly BookContainer _bookContainer = new(new BookData());
     private readonly ReviewContainer _reviewContainer = new(new ReviewData());
+    private readonly AuthorContainer _authorContainer = new(new AuthorData());
+    private readonly PublisherContainer _publisherContainer = new(new PublisherData());
+    private readonly GenreContainer _genreContainer = new(new GenreData());
+    private readonly ThemeContainer _themeContainer = new(new ThemeData());
+    private readonly SettingContainer _settingContainer = new(new SettingData());
     
     [HttpGet]
     public IActionResult Index()
     {
-        return RedirectToAction(nameof(Book), "Admin");
+       return View(GetBookViewModel());
+    }
+    
+    private BookViewModel GetBookViewModel()
+    {
+        return new(
+            GetBookModels(),
+            GetAuthorModels(),
+            GetPublisherModels(),
+            GetGenreModels(),
+            GetThemeModels(),
+            GetSettingModels()
+        );
     }
 
     public IActionResult AddBook(BookViewModel bookViewModel)
     {
         if (!ModelState.IsValid)
         {
-            return RedirectToAction(nameof(Index));
+            return View(nameof(Index), GetBookViewModel());
         }
         
         _bookContainer.Add(new(
@@ -30,7 +47,7 @@ public class BookController : Controller
             bookViewModel.Isbn,
             bookViewModel.Title,
             bookViewModel.Synopsis,
-            DateOnly.FromDateTime(bookViewModel.PublishDate),
+            DateOnly.FromDateTime(bookViewModel.PublishDate.Value),
             bookViewModel.AmountPages,
             bookViewModel.AuthorIds.Select(authorId => new Author(authorId)),
             new(bookViewModel.PublisherId), 
@@ -40,7 +57,7 @@ public class BookController : Controller
             0
         ));
 
-        return RedirectToAction("Book", "Admin");
+        return RedirectToAction(nameof(Index), bookViewModel);
     }
 
     [HttpGet]
@@ -48,12 +65,7 @@ public class BookController : Controller
     {
         BookDetailModel bookDetailModel = new(GetBookModelById(id), GetBookReviewModelsByBookId(id));
         
-        return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
-    }
-
-    private IEnumerable<ReviewModel> GetBookReviewModelsByBookId(long id)
-    {
-        return _reviewContainer.GetAllByBookId(id).Select(review => new ReviewModel(review.Id, review.Title, review.Content, review.BookId, review.UserId, review.Comments.Select(comment => new CommentModel(comment.Id, comment.Content, comment.UserId))));
+        return View(bookDetailModel);
     }
 
     [HttpPost]
@@ -71,54 +83,6 @@ public class BookController : Controller
         return RedirectToAction(nameof(Detail), new {id});
     }
     
-    private BookModel GetBookModelById(long id)
-    {
-        Book book = _bookContainer.GetById(id);
-        return new(
-           book.Id,
-           book.Isbn,
-           book.Title,
-           book.Synopsis,
-           book.PublishDate,
-           book.AmountPages,
-           book.Authors.Select(author =>
-               new AuthorModel(
-                   author.Id,
-                   author.Name,
-                   author.Description,
-                   author.BirthDate,
-                   author.DeathDate,
-                   author.Genres.Select(genre =>
-                       new GenreModel(
-                           genre.Id,
-                           genre.Name
-                       )
-                   )
-               )
-           ),
-           new(book.Publisher.Id, book.Publisher.Name, book.Publisher.FoundingDate, book.Publisher.Description),
-           book.Genres.Select(genre =>
-               new GenreModel(
-                   genre.Id,
-                   genre.Name
-               )
-           ),
-           book.Themes.Select(theme =>
-               new ThemeModel(
-                   theme.Id,
-                   theme.Description
-               )
-           ),
-           book.Settings.Select(setting =>
-               new SettingModel(
-                   setting.Id,
-                   setting.Description
-               )
-           ),
-            book.Favorites
-       );
-    }
-
     public IActionResult CreateReview(ReviewModel reviewModel)
     {
         BookDetailModel bookDetailModel;
@@ -127,7 +91,7 @@ public class BookController : Controller
         {
             bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewModelsByBookId(reviewModel.BookId));
 
-            return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
+            return View(nameof(Detail), bookDetailModel);
 
         }
         
@@ -142,7 +106,7 @@ public class BookController : Controller
 
         bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewModelsByBookId(reviewModel.BookId));
 
-        return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
+        return View(nameof(Detail), bookDetailModel);
     }
 
     public IActionResult CreateComment(CommentModel commentModel)
@@ -153,7 +117,7 @@ public class BookController : Controller
         {
             bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewModelsByBookId(commentModel.BookId));
 
-            return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
+            return View(nameof(Detail), bookDetailModel);
         }
 
         Review review = new(new CommentData());
@@ -166,7 +130,7 @@ public class BookController : Controller
         
         bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewModelsByBookId(commentModel.BookId));
 
-        return View("~/Views/Admin/Book/Detail.cshtml", bookDetailModel);
+        return View(nameof(Detail), bookDetailModel);
     }
 
     public IActionResult Delete(long? id)
@@ -193,7 +157,7 @@ public class BookController : Controller
             bookViewModel.Isbn,
             bookViewModel.Title,
             bookViewModel.Synopsis,
-            DateOnly.FromDateTime(bookViewModel.PublishDate),
+            DateOnly.FromDateTime(bookViewModel.PublishDate.Value),
             bookViewModel.AmountPages,
             bookViewModel.AuthorIds.Select(authorId => new Author(authorId)),
             new(bookViewModel.PublisherId), 
@@ -203,6 +167,133 @@ public class BookController : Controller
             0
         ));
 
-        return RedirectToAction("Book", "Admin");
+        return RedirectToAction(nameof(Index));
+    }
+    
+    private IEnumerable<BookModel> GetBookModels()
+    {
+        return _bookContainer.GetAll().Select(book =>
+            new BookModel(
+                book.Id,
+                book.Isbn,
+                book.Title,
+                book.Synopsis,
+                book.PublishDate,
+                book.AmountPages,
+                book.Authors.Select(author =>
+                    new AuthorModel(
+                        author.Id,
+                        author.Name,
+                        author.Description,
+                        author.BirthDate,
+                        author.DeathDate,
+                        author.Genres.Select(genre =>
+                            new GenreModel(
+                                genre.Id,
+                                genre.Name
+                            )
+                        )
+                    )
+                ),
+                new(book.Publisher.Id, book.Publisher.Name, book.Publisher.FoundingDate, book.Publisher.Description),
+                book.Genres.Select(genre =>
+                    new GenreModel(
+                        genre.Id,
+                        genre.Name
+                    )
+                ),
+                book.Themes.Select(theme =>
+                    new ThemeModel(
+                        theme.Id,
+                        theme.Description
+                    )
+                ),
+                book.Settings.Select(setting =>
+                    new SettingModel(
+                        setting.Id,
+                        setting.Description
+                    )
+                ),
+                book.Favorites
+            )
+        );
+    }
+    
+    private BookModel GetBookModelById(long id)
+    {
+        Book book = _bookContainer.GetById(id);
+        return new(
+            book.Id,
+            book.Isbn,
+            book.Title,
+            book.Synopsis,
+            book.PublishDate,
+            book.AmountPages,
+            book.Authors.Select(author =>
+                new AuthorModel(
+                    author.Id,
+                    author.Name,
+                    author.Description,
+                    author.BirthDate,
+                    author.DeathDate,
+                    author.Genres.Select(genre =>
+                        new GenreModel(
+                            genre.Id,
+                            genre.Name
+                        )
+                    )
+                )
+            ),
+            new(book.Publisher.Id, book.Publisher.Name, book.Publisher.FoundingDate, book.Publisher.Description),
+            book.Genres.Select(genre =>
+                new GenreModel(
+                    genre.Id,
+                    genre.Name
+                )
+            ),
+            book.Themes.Select(theme =>
+                new ThemeModel(
+                    theme.Id,
+                    theme.Description
+                )
+            ),
+            book.Settings.Select(setting =>
+                new SettingModel(
+                    setting.Id,
+                    setting.Description
+                )
+            ),
+            book.Favorites
+        );
+    }
+    
+    private IEnumerable<ReviewModel> GetBookReviewModelsByBookId(long id)
+    {
+        return _reviewContainer.GetAllByBookId(id).Select(review => new ReviewModel(review.Id, review.Title, review.Content, review.BookId, review.UserId, review.Comments.Select(comment => new CommentModel(comment.Id, comment.Content, comment.UserId))));
+    }
+
+    private IEnumerable<AuthorModel> GetAuthorModels()
+    {
+        return _authorContainer.GetAll().Select(author => new AuthorModel(author.Id, author.Name, author.Description, author.BirthDate, author.DeathDate, author.Genres.Select(genre => new GenreModel(genre.Id, genre.Name))));
+    }
+    
+    private IEnumerable<PublisherModel> GetPublisherModels()
+    {
+        return _publisherContainer.GetAll().Select(publisher => new PublisherModel(publisher.Id, publisher.Name, publisher.FoundingDate, publisher.Description));
+    }
+    
+    private IEnumerable<GenreModel> GetGenreModels()
+    {
+        return _genreContainer.GetAll().Select(genre => new GenreModel(genre.Id, genre.Name));
+    }
+    
+    private IEnumerable<ThemeModel> GetThemeModels()
+    {
+        return _themeContainer.GetAll().Select(theme => new ThemeModel(theme.Id, theme.Description));
+    }
+    
+    private IEnumerable<SettingModel> GetSettingModels()
+    {
+        return _settingContainer.GetAll().Select(setting => new SettingModel(setting.Id, setting.Description));
     }
 }

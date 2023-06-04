@@ -26,12 +26,18 @@ public class ReviewContainer
     
     private void ValidateReview(Review review)
     {
-        ValidateTitle(review.Title);
-        ValidateContent(review.Content);
-        
-        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        try
         {
-            throw Validate.Exceptions;
+            Task[] tasks = {
+                Task.Run(() => ValidateTitle(review.Title)),
+                Task.Run(() => ValidateContent(review.Content))
+            };
+
+            Task.WaitAll(tasks);
+        }
+        catch (AggregateException ex)
+        {
+            throw new AggregateException(ex.InnerExceptions);
         }
     }
     

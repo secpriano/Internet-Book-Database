@@ -26,31 +26,31 @@
                             <div class="split">
                                 <div>
                                     <div class="form-group">
+                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                                         @Html.LabelFor(authorViewModel => authorViewModel.Name, "Name")
                                         @Html.TextBoxFor(model => model.Name, new { @placeholder = "J.K. Rowling" })
-                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group">
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                         @Html.LabelFor(authorViewModel => authorViewModel.Description, "Description")
                                         @Html.TextBoxFor(model => model.Description, new { @placeholder = "Queen of wizardry" })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group">
+                                        @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
                                         @Html.LabelFor(authorViewModel => authorViewModel.BirthDate, "BirthDate")
                                         <input asp-for="BirthDate"/>
-                                        @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div>
                                     <div class="form-group">
+                                        @Html.ValidationMessageFor(model => model.DeathDate, "", new { @class = "text-danger" })
                                         @Html.LabelFor(authorViewModel => authorViewModel.DeathDate, "DeathDate")
                                         <input asp-for="DeathDate"/>
-                                        @Html.ValidationMessageFor(model => model.DeathDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group">
+                                        @Html.ValidationMessageFor(authorViewModel => authorViewModel.GenreIds, "", new { @class = "text-danger" })
                                         @Html.LabelFor(authorViewModel => authorViewModel.GenreIds, "Genres")
                                         @Html.DropDownListFor(authorViewModel => authorViewModel.GenreIds, new MultiSelectList(Model.GenreModels, "Id", "Name"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
-                                        @Html.ValidationMessageFor(authorViewModel => authorViewModel.GenreIds, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>

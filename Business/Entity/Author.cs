@@ -2,7 +2,7 @@
 
 namespace Business.Entity;
 
-public class Author : IEqualityComparer<Author>
+public class Author : IEqualityComparer<Author>, IEquatable<Author>
 {
     public long? Id { get; } 
     public string Name { get; } 
@@ -37,5 +37,29 @@ public class Author : IEqualityComparer<Author>
     public int GetHashCode(Author obj)
     {
         return HashCode.Combine(obj.Id, obj.Name, obj.Description, obj.BirthDate, obj.DeathDate, obj.Genres);
+    }
+
+    public bool Equals(Author? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+
+        for (int i = 0; i < Genres.Count(); i++)
+        {
+            return Genres.ToArray()[i].Equals(other.Genres.ToArray()[i]);
+        }
+        return Id == other.Id && Name == other.Name && Description == other.Description && BirthDate.Equals(other.BirthDate) && Nullable.Equals(DeathDate, other.DeathDate);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == GetType() && Equals((Author) obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, Name, Description, BirthDate, DeathDate, Genres);
     }
 }

@@ -26,11 +26,17 @@ public class ThemeContainer
     
     private void ValidateTheme(Theme theme)
     {
-        ValidateDescription(theme.Description);
-        
-        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        try
         {
-            throw Validate.Exceptions;
+            Task[] tasks = {
+                Task.Run(() => ValidateDescription(theme.Description))
+            };
+
+            Task.WaitAll(tasks);
+        }
+        catch (AggregateException ex)
+        {
+            throw new AggregateException(ex.InnerExceptions);
         }
     }
     

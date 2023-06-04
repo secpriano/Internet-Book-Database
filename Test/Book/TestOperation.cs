@@ -65,7 +65,7 @@ public class TestOperations
         {
             Assert.That(_bookStub.Books, Is.Not.Null);
             Assert.That(_bookStub.Books, Is.Not.Empty);
-            Assert.That(actual, Is.True);   
+            Assert.That(actual);   
             Assert.That(_bookStub.Books.Exists(book => 
                 book.Id == expectedBookDto.Id &&
                 book.Isbn == expectedBookDto.Isbn &&
@@ -78,7 +78,7 @@ public class TestOperations
                 book.Genres.SequenceEqual(expectedBookDto.Genres, new GenreComparer()) &&
                 book.Themes.SequenceEqual(expectedBookDto.Themes, new ThemeComparer()) &&
                 book.Settings.SequenceEqual(expectedBookDto.Settings, new SettingComparer())
-                ), Is.True
+                )
             );
         });
     }

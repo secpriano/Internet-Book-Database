@@ -24,19 +24,19 @@
                         <fieldset>
                             <legend>Add a Publisher</legend>
                             <div class="form-group">
-                                @Html.LabelFor(publisherViewModel => publisherViewModel.Name, "Name")
-                                @Html.TextBoxFor(model => model.Name, new { @placeholder = "J.K. Rowling" })
                                 @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                @Html.LabelFor(publisherViewModel => publisherViewModel.Name, "Name")
+                                @Html.TextBoxFor(model => model.Name, new { @placeholder = "Faber & Faber" })
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(publisherViewModel => publisherViewModel.FoundingDate, "FoundingDate")
-                                <input asp-for="FoundingDate"/>
                                 @Html.ValidationMessageFor(model => model.FoundingDate, "", new { @class = "text-danger" })
+                                @Html.LabelFor(publisherViewModel => publisherViewModel.FoundingDate, "Founding date")
+                                <input asp-for="FoundingDate"/>
                             </div>
                             <div class="form-group">
-                                @Html.LabelFor(publisherViewModel => publisherViewModel.Description, "Description")
-                                @Html.TextBoxFor(model => model.Description, new { @placeholder = "Queen of wizardry" })
                                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                @Html.LabelFor(publisherViewModel => publisherViewModel.Description, "Description")
+                                @Html.TextAreaFor(model => model.Description, new { @placeholder = "Faber and Faber began as a firm in 1929, but originated in the Scientific Press, owned by Sir Maurice and Lady Gwyer. The Scientific Press derived much of its income from the weekly magazine The Nursing Mirror. The Gwyers' desire to expand into trade publishing led them to Geoffrey Faber, a fellow of All Souls College, Oxford; they founded Faber and Gwyer in 1925. After four years, The Nursing Mirror was sold and Geoffrey Faber and the Gwyers agreed to go their separate ways. Faber selected the company name of Faber and Faber, although there was no other Faber involved." })
                             </div>
                         </fieldset>
                         <button id="ButtonMelding" type="submit">Add Publisher</button>

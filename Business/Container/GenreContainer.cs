@@ -27,11 +27,17 @@ public class GenreContainer
     
     private void ValidateGenre(Genre genre)
     {
-        ValidateName(genre.Name);
-        
-        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        try
         {
-            throw Validate.Exceptions;
+            Task[] tasks = {
+                Task.Run(() => ValidateName(genre.Name))
+            };
+
+            Task.WaitAll(tasks);
+        }
+        catch (AggregateException ex)
+        {
+            throw new AggregateException(ex.InnerExceptions);
         }
     }
     

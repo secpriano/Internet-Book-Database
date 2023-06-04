@@ -26,15 +26,20 @@ public class AuthorContainer
     
     private void ValidateAuthor(Author author)
     {
-        ValidateName(author.Name);
-        ValidateDescription(author.Description);
-        ValidateBirthDate(author.BirthDate);
-        ValidateDeathDate(author.DeathDate, author.BirthDate);
-        // TODO: Validate duplicate
-        
-        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        try
         {
-            throw Validate.Exceptions;
+            Task[] tasks = {
+                Task.Run(() => ValidateName(author.Name)),
+                Task.Run(() => ValidateDescription(author.Description)),
+                Task.Run(() => ValidateBirthDate(author.BirthDate)),
+                Task.Run(() => ValidateDeathDate(author.DeathDate, author.BirthDate))
+            };
+
+            Task.WaitAll(tasks);
+        }
+        catch (AggregateException ex)
+        {
+            throw new AggregateException(ex.InnerExceptions);
         }
     }
 

@@ -2,7 +2,7 @@
 @model IBDbWebApplication.Models.AdminModels.GenreViewModel
 @{
     ViewData["Title"] = "IBDb | Admin genre";
-}
+    string[] validationErrors = TempData["ValidationErrors"] as string[];}
 
 <div class="MainContainer">
     <div class="hero">
@@ -23,9 +23,9 @@
                         <fieldset>
                             <legend>Add a Genre</legend>
                             <div class="form-group">
+                                @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
                                 @Html.LabelFor(genreViewModel => genreViewModel.Name, "Name")
-                                @Html.TextBoxFor(model => model.Name, new { @placeholder = "Horror" })
-                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(model => model.Name, new {@placeholder = "Horror"})
                             </div>
                         </fieldset>
                         <button id="ButtonMelding" type="submit">Add Genre</button>

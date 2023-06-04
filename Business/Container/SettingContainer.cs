@@ -26,11 +26,17 @@ public class SettingContainer
     
     private void ValidateSetting(Setting setting)
     {
-        ValidateDescription(setting.Description);
-        
-        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        try
         {
-            throw Validate.Exceptions;
+            Task[] tasks = {
+                Task.Run(() => ValidateDescription(setting.Description))
+            };  
+
+            Task.WaitAll(tasks);
+        }
+        catch (AggregateException ex)
+        {
+            throw new AggregateException(ex.InnerExceptions);
         }
     }
     

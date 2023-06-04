@@ -55,19 +55,25 @@ public class BookContainer
     
     private void ValidateBook(Book book)
     {
-        ValidateIsbn(book.Isbn);
-        ValidateTitle(book.Title);
-        ValidateSynopsis(book.Synopsis, book.Title);
-        ValidatePublishDate(book.PublishDate, book.Authors.Select(author => author.BirthDate).Min());
-        ValidateAmountPages(book.AmountPages);
-        ValidateAuthors(book.Authors);
-        ValidateGenres(book.Genres);
-        ValidateSettings(book.Settings);
-        ValidateThemes(book.Themes);
-        
-        if (Validate.Exceptions.InnerExceptions.Count > 0)
+        try
         {
-            throw Validate.Exceptions;
+            Task[] tasks = {
+                Task.Run(() => ValidateIsbn(book.Isbn)),
+                Task.Run(() => ValidateTitle(book.Title)),
+                Task.Run(() => ValidateSynopsis(book.Synopsis, book.Title)),
+                Task.Run(() => ValidatePublishDate(book.PublishDate, book.Authors.Select(author => author.BirthDate).Min())),
+                Task.Run(() => ValidateAmountPages(book.AmountPages)),
+                Task.Run(() => ValidateAuthors(book.Authors)),
+                Task.Run(() => ValidateGenres(book.Genres)),
+                Task.Run(() => ValidateSettings(book.Settings)),
+                Task.Run(() => ValidateThemes(book.Themes))
+            };
+            
+            Task.WaitAll(tasks);
+        }
+        catch (AggregateException ex)
+        {
+            throw new AggregateException(ex.InnerExceptions);
         }
     }
     
@@ -75,27 +81,26 @@ public class BookContainer
     {
         Validate.ExactValue((ulong)isbn.Length, 13, "ISBN", Validate.Unit.Character);
 
-        Validate.Regex(isbn, "^[0-9]+$", "ISBN must only contain numbers.");
+        Validate.Regex(isbn, "^[0-9]+$", "ISBN must contain only numeric characters.");
     }
     
     private void ValidateTitle(string title)
     {
         Validate.OutOfRange((ulong)title.Length, 1, 100, "Title", Validate.Unit.Character);
         
-        Validate.Regex(title, "^[a-zA-Z ]+$", "Title must only contain letters, and spaces.");
+        Validate.Regex(title, "^[a-zA-Z ]+$", "Title must contain only letters, and spaces.");
     }
     
     private void ValidateSynopsis(string synopsis, string title)
     {
         Validate.OutOfRange((ulong)synopsis.Length, (ulong)title.Length, 1000, "Synopsis", Validate.Unit.Character);
 
-    Validate.Regex(synopsis, "^[a-zA-Z ,.?!]+$", "Synopsis must only contain letters, spaces, and punctuation.");
+        Validate.Regex(synopsis, "^[a-zA-Z ,.?!]+$", "Synopsis must contain only letters, spaces, and punctuation.");
     }
     
     private void ValidatePublishDate(DateOnly publishDate, DateOnly authorBirthdate)
     {
-        if (publishDate < authorBirthdate)
-            Validate.Exceptions.InnerExceptions.Append(new("Publish date cannot be earlier than author's birthdate unless you travel back in time."));
+        if (publishDate < authorBirthdate) throw new($"Publish date {publishDate} cannot be earlier than author's birthdate {authorBirthdate} unless you travel back in time.");
     }
     
     private void ValidateAmountPages(ulong amountPages)

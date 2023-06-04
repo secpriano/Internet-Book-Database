@@ -24,57 +24,57 @@
                                 <div class="split">
                                     <div>
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(model => model.Isbn, "", new { @class = "text-danger" })
                                             @Html.LabelFor(model => model.Isbn, "Isbn")
                                             @Html.TextBoxFor(Model => Model.Isbn, new { @class = "form-control", @placeholder = "0123456789123" })
-                                            @Html.ValidationMessageFor(model => model.Isbn, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
                                             @Html.LabelFor(model => model.Title, "Title")
                                             @Html.TextBoxFor(Model => Model.Title, new { @class = "form-control", @placeholder = "The Hobbit" })
-                                            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(model => model.Synopsis, "", new { @class = "text-danger" })
                                             @Html.LabelFor(Model => Model.Synopsis, "Synopsis")
                                             @Html.TextAreaFor(model => model.Synopsis, new { @class = "form-control", @placeholder = "The Hobbit is a children's fantasy novel by J. R. R. Tolkien. It was published on 21 September 1937 to wide critical acclaim, being nominated for the Carnegie Medal and awarded a prize from the New York Herald Tribune for best juvenile fiction. The book remains popular and is recognized as a classic in children's literature." })
-                                            @Html.ValidationMessageFor(model => model.Synopsis, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(model => model.PublishDate, "", new { @class = "text-danger" })
                                             @Html.LabelFor(model => model.PublishDate, "Publish date")
                                             <input id="PublishDate" asp-for="PublishDate"/>
-                                            @Html.ValidationMessageFor(model => model.PublishDate, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.AmountPages, "Amount pages")
-                                            @Html.TextBoxFor(model => model.AmountPages, new { @class = "form-control", @placeholder = "123" })
                                             @Html.ValidationMessageFor(model => model.AmountPages, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.AmountPages, "Amount pages")
+                                            @Html.TextBoxFor(model => model.AmountPages, new { @class = "form-control", type = "number", @placeholder = "123" })
                                         </div>
                                     </div>
                                     <div>
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(bookViewModel => bookViewModel.AuthorIds, "", new { @class = "text-danger" })
                                             @Html.LabelFor(bookViewModel => bookViewModel.AuthorIds, "Authors")
                                             @Html.DropDownListFor(bookViewModel => bookViewModel.AuthorIds, new MultiSelectList(Model.AuthorModels, "Id", "Name"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
-                                            @Html.ValidationMessageFor(bookViewModel => bookViewModel.AuthorIds, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(bookViewModel => bookViewModel.PublisherId, "", new { @class = "text-danger" })
                                             @Html.LabelFor(bookViewModel => bookViewModel.PublisherId, "Publisher")
                                             @Html.DropDownListFor(bookViewModel => bookViewModel.PublisherId, new MultiSelectList(Model.PublisherModels, "Id", "Name"), new { @class = "js-example-basic-single", @name = "state" })
-                                            @Html.ValidationMessageFor(bookViewModel => bookViewModel.PublisherId, "", new { @class = "text-danger" })
                                         </div>
 
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(bookViewModel => bookViewModel.GenreIds, "", new { @class = "text-danger" })
                                             @Html.LabelFor(bookViewModel => bookViewModel.GenreIds, "Genres")
                                             @Html.DropDownListFor(bookViewModel => bookViewModel.GenreIds, new MultiSelectList(Model.GenreModels, "Id", "Name"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
-                                            @Html.ValidationMessageFor(bookViewModel => bookViewModel.GenreIds, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(bookViewModel => Model.ThemeIds, "", new { @class = "text-danger" })
                                             @Html.LabelFor(bookViewModel => bookViewModel.ThemeIds, "Themes")
                                             @Html.DropDownListFor(bookViewModel => Model.ThemeIds, new MultiSelectList(Model.ThemeModels, "Id", "Description"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
-                                            @Html.ValidationMessageFor(bookViewModel => Model.ThemeIds, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group">
+                                            @Html.ValidationMessageFor(bookViewModel => bookViewModel.SettingIds, "", new { @class = "text-danger" })
                                             @Html.LabelFor(bookViewModel => bookViewModel.SettingIds, "Settings")
                                             @Html.DropDownListFor(bookViewModel => bookViewModel.SettingIds, new MultiSelectList(Model.SettingModels, "Id", "Description"), new { @class = "js-example-basic-multiple", @name = "states[]", @multiple = "multiple" })
-                                            @Html.ValidationMessageFor(bookViewModel => bookViewModel.SettingIds, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
@@ -138,24 +138,11 @@
                     }
                 </td>
                 <td>
-                    @using (Html.BeginForm("Delete", "Book", new {id = book.Id}, FormMethod.Post, true, new {id = "deleteForm"}))
+                    @using (Html.BeginForm("Delete", "Book", new {id = book.Id}, FormMethod.Post, true, new {id = $"deleteForm{book.Id}"}))
                     {
                         @Html.AntiForgeryToken()
-                        <button type="button" onclick="confirmDelete('@book.Title')">Delete</button>
+                        <button type="button" onclick="confirmDelete(@book.Id, '@book.Title')">Delete</button>
                     }
-                    <dialog id="deleteModal">
-                        <div class="modal-content">
-                            <button type="button" class="btn-close" onclick="closeModal()">X</button>
-                            <span id="bookTitle"></span>
-                            <form>
-                            </form>
-                            @using (Html.BeginForm("Delete", "Book", new {id = book.Id}, FormMethod.Post))
-                            {
-                                <input type="text" id="promptInput" required>
-                                <button type="submit">Confirm</button>
-                            }
-                        </div>
-                    </dialog>
                 </td>
                 <td>
                     <button type="button" onclick="ShowEditDialog(@book.Id, '@book.Title')">Edit</button>
@@ -236,13 +223,22 @@
         </tbody>
     </table>
 </div>
-
+<dialog id="deleteModal">
+    <div class="modal-content">
+        <button type="button" class="btn-close" onclick="closeModal()">X</button>
+        <span id="bookTitle"></span>
+        <form>
+            <input type="text" id="promptInput" required>
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+</dialog>
 <script>          
     $('.js-example-basic-multiple').select2();
     $('.js-example-basic-single').select2();
     
-    function confirmDelete(title) {
-        showModal(title);
+    function confirmDelete(id, title) {
+        showModal(id, title);
     }
     
     function closeModal() {
@@ -262,7 +258,7 @@
         document.getElementById('EditBookForm').style.display = 'none';
     }
 
-    function showModal(title) {
+    function showModal(id, title) {
         const modal = document.getElementById('deleteModal');
         const modalContent = modal.querySelector('.modal-content');
         let promptInput = modalContent.querySelector('input');
@@ -287,7 +283,7 @@
 
             if (userInput === title) {
                 // User input matches the model ID, proceed with deletion
-                document.getElementById('deleteForm').submit();
+                document.getElementById('deleteForm'+id).submit();
             } else {
                 // User input does not match the model ID, show an error message
                 alert('Incorrect book title entered. Deletion canceled.');

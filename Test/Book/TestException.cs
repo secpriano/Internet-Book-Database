@@ -31,11 +31,14 @@ public class TestException
         book.Isbn = isbn;
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("ISBN must be exactly 13 characters."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo("ISBN must be exactly 13 Character."));
+        }
     }
     
     [Test, Combinatorial]
@@ -51,17 +54,21 @@ public class TestException
         book.Isbn = isbn;
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("ISBN must only contain numbers."));
+        foreach (Exception exception in aggregateException.InnerExceptions)
+        {
+            Assert.That(exception, Is.TypeOf<Exception>());
+            Assert.That(exception.Message, Is.EqualTo("ISBN must contain only numeric characters."));
+        }
+        
     }
     
     [Test]
     [Category("Title")]
     public void Test_Exception_AddBook_When_Title_IsLonger_Than100Characters(
-        [Values(101, 150, 1000)] int length
+        [Values(101, 150, 500)] int length
         )
     {
         // Arrange
@@ -70,11 +77,14 @@ public class TestException
         book.Title = new('a', length);
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Title must be less or equal to 100 characters."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo($"Title must be less or equal to 100 Character. Not {book.Title.Length} Character."));
+        }
     }
     
     [Test]
@@ -87,11 +97,14 @@ public class TestException
         book.Title = string.Empty;
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Title must be more than 1 character."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo($"Title must be more than or equal to 1 Character. Not {book.Title.Length} Character."));
+        }
     }
     
     [Test]
@@ -106,11 +119,14 @@ public class TestException
         book.Title = title;
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Title must only contain letters, and spaces."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo("Title must contain only letters, and spaces."));
+        }
     }
     
     [Test]
@@ -125,11 +141,14 @@ public class TestException
         book.Synopsis = new('a', length);
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Synopsis must be less or equal to 1000 characters."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo($"Synopsis must be less or equal to 1000 Character. Not {book.Synopsis.Length} Character."));
+        }
     }
 
     [Test]
@@ -146,11 +165,14 @@ public class TestException
         book.Synopsis = new('a', synopsisLength);
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Synopsis must have more characters than the title."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo($"Synopsis must be more than or equal to {book.Title.Length} Character. Not {book.Synopsis.Length} Character."));
+        }
     }
     
     [Test]
@@ -165,11 +187,14 @@ public class TestException
         book.Synopsis = synopsis;
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Synopsis must only contain letters, and punctuation."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo("Synopsis must contain only letters, spaces, and punctuation."));
+        }
     }
     
     [Test]
@@ -192,30 +217,34 @@ public class TestException
         book.Authors = authors;
 
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(book))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Publish date cannot be earlier than author's birthdate unless you travel back in time."));
+        foreach (Exception innerException in aggregateException.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo($"Publish date {book.PublishDate} cannot be earlier than author's birthdate {authors.First().BirthDate} unless you travel back in time."));
+        } 
     }
     
     [Test]
     [Category("AmountPages")]
-    public void Test_Exception_AddBook_When_AmountPages_IsMore_Than50000(
-        [Values(50001, 1000, 100)] ushort amountPages
-        )
+    public void Test_Exception_AddBook_When_AmountPages_IsMore_Than50000()
     {
         // Arrange
         BookDTO book = _bookStub.Books[0];
         
-        book.AmountPages = amountPages;
+        book.AmountPages = 50001;
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)));
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Amount of pages must be less or equal to 50000."));
+        foreach (Exception innerException in aggregateException.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo($"Amount of pages must be less or equal to 50000 Page. Not {book.AmountPages} Page."));
+        }
     }
     
     [Test]
@@ -228,11 +257,14 @@ public class TestException
         book.AmountPages = 0;
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Amount of pages must be more than 0."));
+        foreach (Exception innerException in aggregateException.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo($"Amount of pages must be more than or equal to 1 Page. Not {book.AmountPages} Page."));
+        }
     }
     
     [Test]
@@ -249,11 +281,14 @@ public class TestException
         };
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Author is already added."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo("Author is already added."));
+        }
     }
     
     [Test]
@@ -270,11 +305,14 @@ public class TestException
         };
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Genre is already added."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo("Genre is already added."));
+        }
     }
     
     [Test]
@@ -291,11 +329,14 @@ public class TestException
         };
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Setting is already added."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo("Setting is already added."));
+        }
     }
     
     [Test]
@@ -312,11 +353,14 @@ public class TestException
         };
         
         // Act
-        Exception exception = Assert.Throws<ArgumentException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException exception = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
         
         // Assert
-        Assert.That(exception, Is.TypeOf<ArgumentException>());
-        Assert.That(exception.Message, Is.EqualTo("Theme is already added."));
+        foreach (Exception innerException in exception.InnerExceptions)
+        {
+            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException.Message, Is.EqualTo("Theme is already added."));
+        }
     }
     
     [TearDown]

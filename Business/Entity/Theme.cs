@@ -2,7 +2,7 @@
 
 namespace Business.Entity;
 
-public class Theme
+public class Theme : IEquatable<Theme>
 {
     public byte? Id { get; set; }
     public string Description { get; set; }
@@ -18,4 +18,23 @@ public class Theme
    }
     
     public ThemeDTO ToDto() => new ThemeDTO(Id, Description);
+
+    public bool Equals(Theme? other)
+    {
+        if (ReferenceEquals(null, other)) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Id == other.Id && Description == other.Description;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        return obj.GetType() == GetType() && Equals((Theme) obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Id, Description);
+    }
 }

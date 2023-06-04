@@ -10,51 +10,52 @@ public class BookViewModel
     public long? Id { get; set; }
     
     [DisplayName("Isbn")]
-    [Required(ErrorMessage = "isbn is required")]
+    [Required(ErrorMessage = "Isbn is required")]
     [StringLength(13, ErrorMessage = "isbn must be 13 characters long", MinimumLength = 13 )]
-    [RegularExpression(@"^[0-9]+$", ErrorMessage = "A")]
+    [RegularExpression(@"^[0-9]+$", ErrorMessage = "isbn must only contain numbers.")]
     public string Isbn { get; set; }
     
     [DisplayName("Title")]
-    [Required(ErrorMessage = "An title is required")]
-    [StringLength(100, ErrorMessage = "A", MinimumLength = 1 )]
-    [RegularExpression(@"^[a-zA-Z ]+$", ErrorMessage = "A")]
+    [Required(ErrorMessage = "Title is required")]
+    [StringLength(100, ErrorMessage = "Title must be between 1 and 100 characters long", MinimumLength = 1 )]
+    [RegularExpression(@"^[a-zA-Z ]+$", ErrorMessage = "title must only contain letters, and spaces.")]
     public string Title { get; set; }
     
     [DisplayName("Synopsis")]
-    [Required(ErrorMessage = "An synopsis is required")]
-    [StringLength(1000, ErrorMessage = "A", MinimumLength = 0 )]
-    [RegularExpression(@"^[a-zA-Z ,.?!]+$", ErrorMessage = "A")]
+    [Required(ErrorMessage = "Synopsis is required")]
+    [StringLength(1000, ErrorMessage = "Title must be between 1 and 1000 characters long", MinimumLength = 1 )]
+    [RegularExpression(@"^[a-zA-Z ,.?!]+$", ErrorMessage = "synopsis must only contain letters, spaces, and punctuation.")]
     public string Synopsis { get; set; }
     
-    [DisplayName("PublishDate")]
-    [Required(ErrorMessage = "An publishDate is required")]
-    // TODO: date validation
-    public DateTime PublishDate { get; set; }
+    [DisplayName("Publish date")]
+    [Required(ErrorMessage = "Publish date is required")]
+    [DataType(DataType.Date)]
+    public DateTime? PublishDate { get; set; }
     
     [DisplayName("AmountPages")]
-    [Required(ErrorMessage = "An amountPages is required")]
-    [Range(1, 50000, ErrorMessage = "A")]
+    [Required(ErrorMessage = "AmountPages is required")]
+    [Range(1, 50000, ErrorMessage = "amountPages must be between 1 and 50.000")]
+    [RegularExpression(@"^[0-9]+$", ErrorMessage = "amountPages must only contain numbers.")]
     public ushort AmountPages { get; set; }
     
     [DisplayName("Authors")]
-    [Required(ErrorMessage = "An authors is required")]
+    [Required(ErrorMessage = "Author(s) is required")]
     public IEnumerable<byte> AuthorIds { get; set; }
     
     [DisplayName("Publisher")]
-    [Required(ErrorMessage = "An publisher is required")]
+    [Required(ErrorMessage = "Publisher is required")]
     public byte PublisherId { get; set; }
     
     [DisplayName("Genres")]
-    [Required(ErrorMessage = "An genres is required")]
+    [Required(ErrorMessage = "Genre(s) is required")]
     public IEnumerable<byte> GenreIds { get; set; }
     
     [DisplayName("Themes")]
-    [Required(ErrorMessage = "An themes is required")]
+    [Required(ErrorMessage = "Theme(s) is required")]
     public IEnumerable<byte> ThemeIds { get; set; }
     
     [DisplayName("Settings")]
-    [Required(ErrorMessage = "An settings is required")]
+    [Required(ErrorMessage = "Setting(s) is required")]
     public IEnumerable<byte> SettingIds { get; set; }
 
     public IEnumerable<BookModel> BookModels { get; set; } = new List<BookModel>();

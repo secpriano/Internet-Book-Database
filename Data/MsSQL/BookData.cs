@@ -36,6 +36,7 @@ public bool Add(BookDTO entity)
 
         AddItemsToTable(entity.Themes, "BookTheme", (long)bookId, "ThemeID", sqlCommand);
         AddItemsToTable(entity.Settings, "BookSetting", (long)bookId, "SettingID", sqlCommand);
+        AddItemsToTable(entity.Genres, "BookGenre", (long)bookId, "GenreID", sqlCommand);
         AddItemsToTable(entity.Authors, "BookAuthor", (long)bookId, "AuthorID", sqlCommand);
 
         sqlTransaction.Commit();

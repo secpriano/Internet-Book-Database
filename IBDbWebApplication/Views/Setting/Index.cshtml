@@ -23,9 +23,9 @@
                             <fieldset>
                                 <legend>Add a Setting</legend>
                                 <div class="form-group">
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     @Html.LabelFor(settingViewModel => settingViewModel.Description, "Description")
                                     @Html.TextBoxFor(model => model.Description, new { @placeholder = "Atlantis" })
-                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
                             </fieldset>
                             <button id="ButtonMelding" type="submit">Add Setting</button>

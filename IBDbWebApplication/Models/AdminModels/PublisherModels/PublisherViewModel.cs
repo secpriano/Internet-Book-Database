@@ -18,7 +18,7 @@ public class PublisherViewModel
     [DisplayName("Founding date")]
     [Required(ErrorMessage = "Founding date is required")]
     [DataType(DataType.Date)]
-    public DateTime FoundingDate { get; set; }
+    public DateTime? FoundingDate { get; set; }
     
     [DisplayName("Description")]
     [Required(ErrorMessage = "Description is required")]
