@@ -1,8 +1,9 @@
 ﻿using Interface.DTO;
+using Interface.Interfaces;
 
 namespace Test.STUB;
 
-public class SettingSTUB
+public class SettingSTUB : ISettingData
 {
     public List<SettingDTO> Settings = new()
     {
@@ -11,4 +12,29 @@ public class SettingSTUB
         new(3, "Future")
     };
 
+    public bool Add(SettingDTO entity)
+    {
+        Settings.Add(entity);
+        return Settings.Exists(entity.Equals);
+    }
+
+    public SettingDTO GetById(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public SettingDTO Update(SettingDTO entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Delete(long id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IEnumerable<SettingDTO> GetAll()
+    {
+        throw new NotImplementedException();
+    }
 }

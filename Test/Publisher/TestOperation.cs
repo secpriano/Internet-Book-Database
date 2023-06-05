@@ -18,7 +18,6 @@ public class TestOperation
         _publisherContainer = new(_publisherStub);
     }
 
-    //add publisher
     [Test, Combinatorial]
     [Category("Create")]
     public void TestAdd(

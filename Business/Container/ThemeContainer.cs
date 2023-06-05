@@ -44,6 +44,6 @@ public class ThemeContainer
     {
         Validate.OutOfRange((ulong)description.Length, 2, 25, "Description", Validate.Unit.Character);
         
-        Validate.Regex(description, @"^[a-zA-Z ,&]+$", "Description can only contain letters, spaces, commas, and ampersands.");
+        Validate.Regex(description, @"^[a-zA-Z ,&+-]+$", "Description can only contain letters, spaces, commas, and ampersands.");
     }
 }
