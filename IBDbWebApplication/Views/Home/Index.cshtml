@@ -14,11 +14,10 @@
             <tr>
                 <th>Cover</th>
                 <th>Title</th>
+                <th>ISBN</th>
+                <th>Synopsis</th>
+                <th>Publisher</th>
                 <th>Pages</th>
-                <th>Authors</th>
-                <th>Genres</th>
-                <th>Themes</th>
-                <th>Settings</th>
             </tr>
         </thead>
             <tbody>
@@ -27,31 +26,10 @@
                 <tr onclick="location.href='@Url.Action("Detail", "Book", new{book.Id})'">
                     <td><img src="https://picsum.photos/seed/@book.Isbn/275/400" alt="Book image"></td>
                     <td>@book.Title</td>
+                    <td>@book.Isbn</td>
+                    <td>@book.Synopsis</td>
+                    <td>@book.Publisher.Name</td>
                     <td>@book.AmountPages</td>
-                    <td>
-                        @foreach (AuthorModel author in book.Authors)
-                        {
-                            <p>@author.Name</p>
-                        }
-                    </td>
-                    <td>
-                        @foreach (GenreModel genre in book.Genres)
-                        {
-                            <p>@genre.Name</p>
-                        }
-                    </td>
-                    <td>
-                        @foreach (ThemeModel theme in book.Themes)
-                        {
-                            <p>@theme.Description</p>
-                        }
-                    </td>
-                    <td>
-                        @foreach (SettingModel setting in book.Settings)
-                        {
-                            <p>@setting.Description</p>
-                        }
-                    </td>
                 </tr>
             }
             </tbody>

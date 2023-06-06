@@ -149,7 +149,7 @@ public class BookController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return RedirectToAction(nameof(Index));
+            return View(nameof(Index), GetBookViewModel());
         }
         
         _bookContainer.Update(new(

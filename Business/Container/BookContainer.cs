@@ -95,7 +95,7 @@ public class BookContainer
     {
         Validate.OutOfRange((ulong)synopsis.Length, (ulong)title.Length, 1000, "Synopsis", Validate.Unit.Character);
 
-        Validate.Regex(synopsis, "^[a-zA-Z ,.?!]+$", "Synopsis must contain only letters, spaces, and punctuation.");
+        Validate.Regex(synopsis, "^[a-zA-Z ,'’.?!]+$", "Synopsis must contain only letters, spaces, and punctuation.");
     }
     
     private void ValidatePublishDate(DateOnly publishDate, DateOnly authorBirthdate)

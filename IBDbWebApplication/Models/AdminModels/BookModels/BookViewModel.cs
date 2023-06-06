@@ -24,7 +24,7 @@ public class BookViewModel
     [DisplayName("Synopsis")]
     [Required(ErrorMessage = "Synopsis is required")]
     [StringLength(1000, ErrorMessage = "Title must be between 1 and 1000 characters long", MinimumLength = 1 )]
-    [RegularExpression(@"^[a-zA-Z ,.?!]+$", ErrorMessage = "synopsis must only contain letters, spaces, and punctuation.")]
+    [RegularExpression(@"^[a-zA-Z ,'’.?!]+$", ErrorMessage = "synopsis must only contain letters, spaces, and punctuation.")]
     public string Synopsis { get; set; }
     
     [DisplayName("Publish date")]
@@ -32,10 +32,10 @@ public class BookViewModel
     [DataType(DataType.Date)]
     public DateTime? PublishDate { get; set; }
     
-    [DisplayName("AmountPages")]
-    [Required(ErrorMessage = "AmountPages is required")]
-    [Range(1, 50000, ErrorMessage = "amountPages must be between 1 and 50.000")]
-    [RegularExpression(@"^[0-9]+$", ErrorMessage = "amountPages must only contain numbers.")]
+    [DisplayName("Amount pages")]
+    [Required(ErrorMessage = "Amount pages is required")]
+    [Range(1, 50000, ErrorMessage = "Amount pages must be between 1 and 50.000")]
+    [RegularExpression(@"^[0-9]+$", ErrorMessage = "Amount pages must only contain numbers.")]
     public ushort AmountPages { get; set; }
     
     [DisplayName("Authors")]
