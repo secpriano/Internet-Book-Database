@@ -207,6 +207,7 @@ td img {
   border: none;
 }
 
+.profile-image img,
 .review img {
   border-radius: 16px;
   margin-right: 10px;

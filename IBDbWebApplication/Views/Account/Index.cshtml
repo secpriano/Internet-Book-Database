@@ -1,0 +1,23 @@
+﻿@model IBDbWebApplication.Models.Entity.AccountModel
+
+@{
+    ViewData["Title"] = "IBDb | Profile";
+}
+
+<div class="MainContainer">
+    <div class="hero">
+        <h1>Profile</h1>
+    </div>
+    <section>
+        <div class="profile-container">
+            <div class="profile-image">
+                <img src="https://picsum.photos/seed/@Model.Id QZJVKW/50/50" alt="Profile image">
+            </div>
+            <div class="profile-info">
+                <p>@Model.Id</p>
+                <h2>@Model.Username</h2>
+                <p>@Model.IsAdmin</p>
+            </div>
+        </div>
+    </section>
+</div>
