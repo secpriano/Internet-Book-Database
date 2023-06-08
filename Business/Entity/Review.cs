@@ -9,14 +9,14 @@ public class Review
     public long? Id { get; }
     public string Title { get; }
     public string Content { get; }
-    public long UserId { get; }
+    public Account Account { get; }
     public long BookId { get; }
     public IEnumerable<Comment>? Comments { get; }
     
-    public Review(long? id, string title, string content, long userId, long bookId, IEnumerable<Comment>? comments) => 
-        (Id, Title, Content, UserId, BookId, Comments) = (id, title, content, userId, bookId, comments);
+    public Review(long? id, string title, string content, Account account, long bookId, IEnumerable<Comment>? comments) => 
+        (Id, Title, Content, Account, BookId, Comments) = (id, title, content, account, bookId, comments);
 
-    public Review(ReviewDTO reviewDTO) : this(reviewDTO.Id, reviewDTO.Title, reviewDTO.Content, reviewDTO.UserId, reviewDTO.BookId, reviewDTO.Comments.Select(comment => new Comment(comment)))
+    public Review(ReviewDTO reviewDTO) : this(reviewDTO.Id, reviewDTO.Title, reviewDTO.Content, new(reviewDTO.Account), reviewDTO.BookId, reviewDTO.Comments.Select(comment => new Comment(comment)))
     {
     }
     
@@ -26,7 +26,7 @@ public class Review
             Id,
             Title,
             Content,
-            UserId,
+            Account.ToDTO(),
             BookId,
             (Comments != null ? Comments.Select(comment => comment.ToDTO()) : null) as List<CommentDTO>
             );

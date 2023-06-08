@@ -2,7 +2,7 @@
 using Interface.DTO;
 using Interface.Interfaces;
 
-namespace Data;
+namespace Data.MsSQL;
 
 public class GenreData : Database, IGenreData
 {

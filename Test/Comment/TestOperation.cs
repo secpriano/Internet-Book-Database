@@ -41,7 +41,7 @@ public class TestOperation
                 comment.Id == expectedComment.Id &&
                 comment.ReviewId == expectedComment.ReviewId &&
                 comment.Content == expectedComment.Content &&
-                comment.UserId == expectedComment.UserId
+                comment.UserId == expectedComment.Account
                 )
             );
         });

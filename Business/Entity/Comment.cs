@@ -4,20 +4,20 @@ namespace Business.Entity;
 
 public class Comment
 {
-    public long Id { get; }
-    public long ReviewId { get; }
+    public long? Id { get; }
     public string Content { get; }
-    public long UserId { get; }
+    public Account Account { get; }
+    public long ReviewId { get; set; }
 
-    public Comment(long id, long reviewId, string content, long userId) =>
-        (Id, ReviewId, Content, UserId) = (id, reviewId, content, userId);
+    public Comment(long? id, string content, Account account, long reviewId) =>
+        (Id, Content, Account, ReviewId) = (id, content, account, reviewId);
 
-    public Comment(CommentDTO commentDTO) : this(commentDTO.Id, commentDTO.ReviewId, commentDTO.Content, commentDTO.UserId)
+    public Comment(CommentDTO commentDTO) : this(commentDTO.Id, commentDTO.Content, new(commentDTO.Account), commentDTO.ReviewId)
     {
     }
     
     public CommentDTO ToDTO()
     {
-        return new(Id, ReviewId, Content, UserId);
+        return new(Id, Content, Account.ToDTO(), ReviewId);
     }
 }

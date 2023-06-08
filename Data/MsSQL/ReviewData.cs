@@ -2,7 +2,7 @@
 using Interface.DTO;
 using Interface.Interfaces;
 
-namespace Data;
+namespace Data.MsSQL;
 
 public class ReviewData : Database, IReviewData
 {
@@ -10,13 +10,13 @@ public class ReviewData : Database, IReviewData
     {
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        using SqlCommand sqlCommand = new("INSERT INTO UserBookReview (Title, Review, UserID, BookID) VALUES (@Title, @Review, @UserID, @BookID);", sqlConnection)
+        using SqlCommand sqlCommand = new("INSERT INTO UserBookReview (Title, Review, AccountID, BookID) VALUES (@Title, @Review, @AccountID, @BookID);", sqlConnection)
         {
             Parameters =
             {
                 new("@Title", entity.Title),
                 new("@Review", entity.Content),
-                new("@UserID", entity.UserId),
+                new("@AccountID", entity.Account.Id),
                 new("@BookID", entity.BookId)
             }
         };
@@ -48,7 +48,13 @@ public class ReviewData : Database, IReviewData
     {
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        using SqlCommand sqlCommand = new("SELECT UserBookReview.UserBookReviewID, BookID, UserBookReview.UserID AS ReviewUserID, Title, Review, UserBookReviewCommentID, UserBookReviewComment.UserID AS CommentUserID, Comment  FROM UserBookReview LEFT JOIN UserBookReviewComment ON UserBookReview.UserBookReviewID = UserBookReviewComment.UserBookReviewID WHERE BookId = @BookId", sqlConnection)
+        using SqlCommand sqlCommand = new("SELECT " +
+                                          "UserBookReview.UserBookReviewID, Title, Review, Comment, AccountReview.AccountID AS ReviewAccountId, AccountReview.Username AS ReviewUsername, AccountComment.AccountID AS CommentAccountId, AccountComment.Username AS CommentUsername " +
+                                          "FROM UserBookReview " +
+                                          "LEFT JOIN UserBookReviewComment ON UserBookReview.UserBookReviewID = UserBookReviewComment.UserBookReviewID " +
+                                          "LEFT JOIN Account AS AccountReview ON UserBookReview.AccountID = AccountReview.AccountID " +
+                                          "LEFT JOIN Account AS AccountComment ON UserBookReviewComment.AccountID = AccountComment.AccountID " +
+                                          "WHERE BookId = @BookId", sqlConnection)
         {
             Parameters =
             {
@@ -63,23 +69,24 @@ public class ReviewData : Database, IReviewData
         while (sqlDataReader.Read())
         {
             long reviewId = sqlDataReader.GetInt64(sqlDataReader.GetOrdinal("UserBookReviewID"));
-            long reviewUserId = sqlDataReader.GetInt64(sqlDataReader.GetOrdinal("ReviewUserID"));
+            long reviewAccountId = sqlDataReader.GetInt64(sqlDataReader.GetOrdinal("ReviewAccountId"));
+            string reviewUsername = sqlDataReader.GetString(sqlDataReader.GetOrdinal("ReviewUsername"));
             string title = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Title"));
             string reviewContent = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Review"));
-            long? commentId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("UserBookReviewCommentID")) ? null : sqlDataReader.GetInt64(sqlDataReader.GetOrdinal("UserBookReviewCommentID"));
-            long? commentUserId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("CommentUserID")) ? null : sqlDataReader.GetInt64(sqlDataReader.GetOrdinal("CommentUserID"));
+            long? commentAccountId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("CommentAccountId")) ? null : sqlDataReader.GetInt64(sqlDataReader.GetOrdinal("CommentAccountId"));
+            string commentUsername = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("CommentUsername")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("CommentUsername"));
             string commentContent = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("Comment")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("Comment"));
 
-            ReviewDTO reviewDTO = reviews.FirstOrDefault(dto => dto.Id == reviewId && dto.BookId == bookId && dto.UserId == reviewUserId);
+            ReviewDTO reviewDTO = reviews.FirstOrDefault(dto => dto.Id == reviewId && dto.BookId == bookId && dto.Account.Username == reviewUsername);
 
             if (reviewDTO == null)
             {
-                reviewDTO = new(reviewId, title, reviewContent, reviewUserId, bookId, new());
+                reviewDTO = new(reviewId, title, reviewContent, new(reviewAccountId, reviewUsername), bookId, new());
                 reviews.Add(reviewDTO);
             }
 
-            if (commentId == null || commentUserId == null || commentContent == null) continue;
-            CommentDTO commentDTO = new(commentId.Value, commentContent, commentUserId.Value);
+            if (commentUsername == null || commentContent == null) continue;
+            CommentDTO commentDTO = new(commentContent, new(commentAccountId, commentUsername), reviewId);
             reviewDTO.Comments.Add(commentDTO);
         }
         return reviews;

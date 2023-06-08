@@ -56,12 +56,12 @@ public class BookSTUB : IBookData
         throw new NotImplementedException();
     }
 
-    public bool Unfavorite(long bookId, long userId)
+    public bool Unfavorite(long bookId, long accountId)
     {
         throw new NotImplementedException();
     }
 
-    public bool IsFavorite(long bookId, long userId)
+    public bool IsFavorite(long bookId, long accountId)
     {
         throw new NotImplementedException();
     }

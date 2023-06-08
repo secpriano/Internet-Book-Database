@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using Interface.DTO;
 using Interface.Interfaces;
 
-namespace Data;
+namespace Data.MsSQL;
 
 public sealed class BookData : Database, IBookData
 {
@@ -381,34 +381,34 @@ private static void EditItemsInTable<T>(IEnumerable<T> items, string tableName, 
         return books;
     }
 
-    public bool Favorite(long bookId, long userId)
+    public bool Favorite(long bookId, long accountId)
     {
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        using SqlCommand sqlCommand = new("INSERT INTO UserBookFavorite (UserID ,BookID) VALUES (@UserID, @BookID)", sqlConnection);
-        sqlCommand.Parameters.AddWithValue("@UserID", userId);
+        using SqlCommand sqlCommand = new("INSERT INTO UserBookFavorite (AccountID ,BookID) VALUES (@AccountID, @BookID)", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@AccountID", accountId);
         sqlCommand.Parameters.AddWithValue("@BookID", bookId);
         
         return sqlCommand.ExecuteNonQuery() > 0;
     }
 
-    public bool Unfavorite(long bookId, long userId)
+    public bool Unfavorite(long bookId, long accountId)
     {
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        using SqlCommand sqlCommand = new("DELETE FROM UserBookFavorite WHERE UserID = @UserID AND BookID = @BookID", sqlConnection);
-        sqlCommand.Parameters.AddWithValue("@UserID", userId);
+        using SqlCommand sqlCommand = new("DELETE FROM UserBookFavorite WHERE AccountID = @AccountID AND BookID = @BookID", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@AccountID", accountId);
         sqlCommand.Parameters.AddWithValue("@BookID", bookId);
         
         return sqlCommand.ExecuteNonQuery() > 0;
     }
 
-    public bool IsFavorite(long bookId, long userId)
+    public bool IsFavorite(long bookId, long accountId)
     {
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        using SqlCommand sqlCommand = new("SELECT COUNT(*) FROM UserBookFavorite WHERE UserID = @UserID AND BookID = @BookID", sqlConnection);
-        sqlCommand.Parameters.AddWithValue("@UserID", userId);
+        using SqlCommand sqlCommand = new("SELECT COUNT(*) FROM UserBookFavorite WHERE AccountID = @AccountID AND BookID = @BookID", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@AccountID", accountId);
         sqlCommand.Parameters.AddWithValue("@BookID", bookId);
         
         return (int)sqlCommand.ExecuteScalar() > 0;

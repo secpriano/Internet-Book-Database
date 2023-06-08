@@ -15,6 +15,9 @@ public class AdminController : Controller
 {
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+
         return View();
     }
 }

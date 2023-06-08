@@ -1,3 +1,3 @@
 ﻿namespace Interface.DTO;
 
-public record ReviewDTO(long? Id, string Title, string Content, long UserId, long BookId, List<CommentDTO> Comments);
+public record ReviewDTO(long? Id, string Title, string Content, AccountDTO Account, long BookId, List<CommentDTO> Comments);

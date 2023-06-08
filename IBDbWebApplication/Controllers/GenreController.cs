@@ -1,6 +1,6 @@
 ﻿using Business.Container;
 using Business.Entity;
-using Data;
+using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels;
 using IBDbWebApplication.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +14,9 @@ public class GenreController : Controller
     [HttpGet]
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         GenreViewModel genreViewModel = new(
             GetGenreModels()
         );
@@ -24,6 +27,9 @@ public class GenreController : Controller
     [HttpPost]
     public IActionResult AddGenre(GenreViewModel genreViewModel)
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         if (!ModelState.IsValid)
         {
             return View(nameof(Index), new GenreViewModel(GetGenreModels()));

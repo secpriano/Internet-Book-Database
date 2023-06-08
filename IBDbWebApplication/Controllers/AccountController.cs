@@ -1,6 +1,6 @@
 ﻿using Business.Container;
 using Business.Entity;
-using Data;
+using Data.MsSQL;
 using IBDbWebApplication.Models.Entity;
 using Interface.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +14,9 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetInt32("Account") == null)
+            return RedirectToAction("Login", "Account");
+        
         AccountModel accountModel = new(
             HttpContext.Session.GetInt32("Account"),
             HttpContext.Session.GetString("Username"),
@@ -26,12 +29,18 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login()
     {
+        if (HttpContext.Session.GetInt32("Account") != null)
+            return RedirectToAction("Login", "Account");
+        
         return View();
     }
     
     [HttpPost]
     public IActionResult Login(AccountModel accountModel)
     {
+        if (HttpContext.Session.GetInt32("Account") != null)
+            return RedirectToAction("Login", "Account");
+        
         if (!ModelState.IsValid)
         {
             return View(accountModel);
@@ -55,6 +64,9 @@ public class AccountController : Controller
     
     public IActionResult Logout()
     {
+        if (HttpContext.Session.GetString("Account") == null)
+            return RedirectToAction("Login", "Account");
+        
         HttpContext.Session.Clear();
         return RedirectToAction("Login", "Account");
     }

@@ -409,6 +409,19 @@ section.detail .items {
   margin-top: 25px;
 }
 
+.login {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login form {
+  box-shadow: var(--shadow);
+  padding: 25px;
+  border-radius: 25px;
+}
+
 /* Footer */
 
 footer {

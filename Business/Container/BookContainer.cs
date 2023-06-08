@@ -43,14 +43,14 @@ public class BookContainer
         return _bookData.Favorite(bookId, userId);
     }
     
-    public bool Unfavorite(long bookId, long userId)
+    public bool Unfavorite(long bookId, long accountId)
     {
-        return _bookData.Unfavorite(bookId, userId);
+        return _bookData.Unfavorite(bookId, accountId);
     }
     
-    public bool IsFavorite(long bookId, long userId)
+    public bool IsFavorite(long bookId, long accountId)
     {
-        return _bookData.IsFavorite(bookId, userId);
+        return _bookData.IsFavorite(bookId, accountId);
     }
     
     private void ValidateBook(Book book)

@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using Interface.DTO;
 using Interface.Interfaces;
 
-namespace Data;
+namespace Data.MsSQL;
 
 public class AuthorData : Database, IAuthorData
 {

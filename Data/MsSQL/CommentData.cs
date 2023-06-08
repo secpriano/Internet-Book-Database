@@ -2,7 +2,7 @@
 using Interface.DTO;
 using Interface.Interfaces;
 
-namespace Data;
+namespace Data.MsSQL;
 
 public class CommentData : Database, ICommentData
 {
@@ -11,12 +11,12 @@ public class CommentData : Database, ICommentData
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
         
-        using SqlCommand sqlCommand = new("INSERT INTO UserBookReviewComment (Comment, UserID, UserBookReviewID) VALUES (@Comment, @UserID, @UserBookReviewID);", sqlConnection)
+        using SqlCommand sqlCommand = new("INSERT INTO UserBookReviewComment (Comment, AccountID, UserBookReviewID) VALUES (@Comment, @AccountID, @UserBookReviewID);", sqlConnection)
         {
             Parameters =
             {
                 new("@Comment", entity.Content),
-                new("@UserID", entity.UserId),
+                new("@AccountID", entity.Account.Id),
                 new("@UserBookReviewID", entity.ReviewId)
             }
         };

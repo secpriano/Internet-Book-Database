@@ -14,10 +14,10 @@ public class BookDetailModel
     public CommentModel CommentModel { get; set; }
     
     public BookModel BookModel { get; set; }
-    public IEnumerable<ReviewModel> ReviewModels { get; set; } = new List<ReviewModel>();
+    public IEnumerable<ReviewViewModel> ReviewViewModels { get; set; } = new List<ReviewViewModel>();
 
-    public BookDetailModel(BookModel bookModel, IEnumerable<ReviewModel> reviewModels) => 
-        (BookModel, ReviewModels, ReviewModel, CommentModel) = (bookModel, reviewModels, new() { BookId = (long) bookModel.Id }, new() { BookId = (long) bookModel.Id });
+    public BookDetailModel(BookModel bookModel, IEnumerable<ReviewViewModel> reviewViewModels) => 
+        (BookModel, ReviewViewModels, ReviewModel, CommentModel) = (bookModel, reviewViewModels, new() { BookId = (long) bookModel.Id }, new() { BookId = (long) bookModel.Id });
 
     public BookDetailModel() { }
 }

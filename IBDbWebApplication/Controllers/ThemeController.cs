@@ -1,6 +1,5 @@
 ﻿using Business.Container;
-using Business.Entity;
-using Data;
+using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels.ThemeModels;
 using IBDbWebApplication.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +13,9 @@ public class ThemeController : Controller
     [HttpGet]
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         return View(GetThemeViewModel());
     }
     
@@ -27,6 +29,9 @@ public class ThemeController : Controller
     [HttpPost]
     public IActionResult AddTheme(ThemeViewModel themeViewModel)
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         if (!ModelState.IsValid)
         {
             return View(nameof(Index), GetThemeViewModel());

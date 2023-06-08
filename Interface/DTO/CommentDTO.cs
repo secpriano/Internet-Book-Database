@@ -1,8 +1,6 @@
 ﻿namespace Interface.DTO;
 
-public record CommentDTO(long Id, long ReviewId, string Content, long UserId)
+public record CommentDTO(long? Id, string Content, AccountDTO Account, long ReviewId)
 {
-    public CommentDTO(long commentId, string commentContent, long commentUserId) : this(commentId, 0, commentContent, commentUserId)
-    {
-    }
+    public CommentDTO(string commentContent, AccountDTO account, long reviewId) : this(null, commentContent, account, reviewId) { }
 }

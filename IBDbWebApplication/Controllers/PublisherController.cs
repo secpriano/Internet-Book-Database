@@ -1,6 +1,5 @@
 ﻿using Business.Container;
-using Business.Entity;
-using Data;
+using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels.PublisherModels;
 using IBDbWebApplication.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,9 @@ public class PublisherController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-       
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         return View(GetPublisherViewModel());
     }
     
@@ -28,6 +29,9 @@ public class PublisherController : Controller
     [HttpPost]
     public IActionResult AddPublisher(PublisherViewModel publisherViewModel)
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         if (!ModelState.IsValid)
         {
             return View(nameof(Index), GetPublisherViewModel());

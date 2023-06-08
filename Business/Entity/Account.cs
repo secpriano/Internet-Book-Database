@@ -13,6 +13,7 @@ public class Account
         (Id, Username, Email, IsAdmin) = (id, username, email, isAdmin);
 
     public Account(string email) => Email = email;
+    public Account(long? id) => Id = id;
     
     public Account(AccountDTO accountDTO) : this(accountDTO.Id, accountDTO.Username, accountDTO.Email, accountDTO.IsAdmin) { }
     

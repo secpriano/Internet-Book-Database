@@ -1,6 +1,6 @@
 ﻿using Business.Container;
 using Business.Entity;
-using Data;
+using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels.BookModels;
 using IBDbWebApplication.Models.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +20,9 @@ public class BookController : Controller
     [HttpGet]
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
        return View(GetBookViewModel());
     }
     
@@ -37,6 +40,9 @@ public class BookController : Controller
 
     public IActionResult AddBook(BookViewModel bookViewModel)
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         if (!ModelState.IsValid)
         {
             return View(nameof(Index), GetBookViewModel());
@@ -63,7 +69,7 @@ public class BookController : Controller
     [HttpGet]
     public IActionResult Detail(long id)
     {
-        BookDetailModel bookDetailModel = new(GetBookModelById(id), GetBookReviewModelsByBookId(id));
+        BookDetailModel bookDetailModel = new(GetBookModelById(id), GetBookReviewViewModelsByBookId(id));
         
         return View(bookDetailModel);
     }
@@ -71,25 +77,33 @@ public class BookController : Controller
     [HttpPost]
     public IActionResult Favorite(long id)
     {
-        if (_bookContainer.IsFavorite(id, 1))
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
+        long accountId = HttpContext.Session.GetInt32("Account").Value;
+        if (_bookContainer.IsFavorite(id, accountId))
         {
-            _bookContainer.Unfavorite(id, 1);
+            _bookContainer.Unfavorite(id, accountId);
         }
         else
         {
-            _bookContainer.Favorite(id, 1);
+            _bookContainer.Favorite(id, accountId);
         }
         
         return RedirectToAction(nameof(Detail), new {id});
     }
     
+    [HttpPost]
     public IActionResult CreateReview(ReviewModel reviewModel)
     {
+        if (HttpContext.Session.GetInt32("Account") == null)
+            return RedirectToAction("Login", "Account");
+        
         BookDetailModel bookDetailModel;
 
         if (!ModelState.IsValid)
         {
-            bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewModelsByBookId(reviewModel.BookId));
+            bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewViewModelsByBookId(reviewModel.BookId));
 
             return View(nameof(Detail), bookDetailModel);
 
@@ -99,42 +113,49 @@ public class BookController : Controller
             null,
             reviewModel.Title,
             reviewModel.Content,
-            1,
+            new((long)HttpContext.Session.GetInt32("Account")),
             reviewModel.BookId,
             null
         ));
 
-        bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewModelsByBookId(reviewModel.BookId));
+        bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewViewModelsByBookId(reviewModel.BookId));
 
         return View(nameof(Detail), bookDetailModel);
     }
 
+    [HttpPost]
     public IActionResult CreateComment(CommentModel commentModel)
     {
+        if (HttpContext.Session.GetInt32("Account") == null)
+            return RedirectToAction("Login", "Account");
+        
         BookDetailModel bookDetailModel;
         
         if (!ModelState.IsValid)
         {
-            bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewModelsByBookId(commentModel.BookId));
+            bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewViewModelsByBookId(commentModel.BookId));
 
             return View(nameof(Detail), bookDetailModel);
         }
 
         Review review = new(new CommentData());
         review.AddComment(new(
-            commentModel.Id,
-            commentModel.ReviewId,
+            null,
             commentModel.Content,
-            1
+            new((long)HttpContext.Session.GetInt32("Account")),
+            commentModel.ReviewId
         ));
         
-        bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewModelsByBookId(commentModel.BookId));
+        bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewViewModelsByBookId(commentModel.BookId));
 
         return View(nameof(Detail), bookDetailModel);
     }
 
     public IActionResult Delete(long? id)
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         if (id == null)
         {
             return NotFound();
@@ -145,8 +166,12 @@ public class BookController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpPost]
     public IActionResult EditBook(BookViewModel bookViewModel)
     {
+        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+            return RedirectToAction("Login", "Account");
+        
         if (!ModelState.IsValid)
         {
             return View(nameof(Index), GetBookViewModel());
@@ -267,9 +292,27 @@ public class BookController : Controller
         );
     }
     
-    private IEnumerable<ReviewModel> GetBookReviewModelsByBookId(long id)
+    private IEnumerable<ReviewViewModel> GetBookReviewViewModelsByBookId(long id)
     {
-        return _reviewContainer.GetAllByBookId(id).Select(review => new ReviewModel(review.Id, review.Title, review.Content, review.BookId, review.UserId, review.Comments.Select(comment => new CommentModel(comment.Id, comment.Content, comment.UserId))));
+        return _reviewContainer.GetAllByBookId(id).Select(review => 
+            new ReviewViewModel(
+                review.Id, 
+                review.Title, 
+                review.Content, 
+                ToAccountModel(review.Account), 
+                review.Comments.Select(comment => 
+                    new CommentViewModel(
+                        comment.Content, 
+                        ToAccountModel(comment.Account)
+                    )
+                )
+            )
+        );
+    }
+
+    private AccountModel ToAccountModel(Account account)
+    {
+        return new(account.Id, account.Username, account.Email, account.IsAdmin);
     }
 
     private IEnumerable<AuthorModel> GetAuthorModels()
