@@ -1,4 +1,5 @@
-﻿using Test.STUB;
+﻿using Interface.DTO;
+using Test.STUB;
 
 namespace Test.Comment;
 using Business.Entity;
@@ -6,6 +7,8 @@ using Business.Entity;
 [TestFixture]
 public class TestException
 {
+    static AccountSTUB _AccountSTUB = new();
+    
     private CommentSTUB _commentStub = null!;
     private Review _commentContainer;
 
@@ -23,8 +26,8 @@ public class TestException
         // Arrange
         Comment expectedComment = new(
             _commentStub.Comments.Count + 1,
-            1,
             new('a', 4001),
+            new(_AccountSTUB.Accounts[0]),
             1
         );
         
@@ -46,8 +49,8 @@ public class TestException
         // Arrange
         Comment expectedComment = new(
             _commentStub.Comments.Count + 1,
-            1,
             String.Empty,
+            new(_AccountSTUB.Accounts[0]),
             1
         );
         
@@ -69,8 +72,8 @@ public class TestException
         // Arrange
         Comment expectedComment = new(
             _commentStub.Comments.Count + 1,
-            1,
             "a",
+            new(_AccountSTUB.Accounts[0]),
             1
         );
         

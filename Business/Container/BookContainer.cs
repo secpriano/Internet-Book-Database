@@ -1,5 +1,4 @@
 ﻿using Business.Entity;
-using Interface.DTO;
 using Interface.Interfaces;
 
 namespace Business.Container;
@@ -80,32 +79,30 @@ public class BookContainer
     private void ValidateIsbn(string isbn)
     {
         Validate.ExactValue((ulong)isbn.Length, 13, "ISBN", Validate.Unit.Character);
-
-        Validate.Regex(isbn, "^[0-9]+$", "ISBN must contain only numeric characters.");
+        Validate.Regex(isbn, "^[0-9]+$", "ISBN", "ISBN must contain only numeric characters.");
+        if(_bookData.Exist(isbn)) throw new KeyValueException($"ISBN {isbn} is already in use.", "ISBN");
     }
     
     private void ValidateTitle(string title)
     {
         Validate.OutOfRange((ulong)title.Length, 1, 100, "Title", Validate.Unit.Character);
-        
-        Validate.Regex(title, "^[a-zA-Z ]+$", "Title must contain only letters, and spaces.");
+        Validate.Regex(title, "^[a-zA-Z ]+$", "Title", "Title must contain only letters, and spaces.");
     }
     
     private void ValidateSynopsis(string synopsis, string title)
     {
-        Validate.OutOfRange((ulong)synopsis.Length, (ulong)title.Length, 1000, "Synopsis", Validate.Unit.Character);
-
-        Validate.Regex(synopsis, "^[a-zA-Z ,'’.?!]+$", "Synopsis must contain only letters, spaces, and punctuation.");
+        Validate.OutOfRange((ulong)synopsis.Length, (ulong)title.Length, 1000, "Synopsis", "title", Validate.Unit.Character);
+        Validate.Regex(synopsis, "^[a-zA-Z ,'’.?!]+$", "Synopsis", "Synopsis must contain only letters, spaces, and punctuation.");
     }
     
     private void ValidatePublishDate(DateOnly publishDate, DateOnly authorBirthdate)
     {
-        if (publishDate < authorBirthdate) throw new($"Publish date {publishDate} cannot be earlier than author's birthdate {authorBirthdate} unless you travel back in time.");
+        if (publishDate < authorBirthdate) throw new KeyValueException($"Publish date {publishDate} cannot be earlier than author's birthdate {authorBirthdate} unless you travel back in time.", "Publish date");
     }
     
-    private void ValidateAmountPages(ulong amountPages)
+    private void ValidateAmountPages(ulong amountPages) 
     {
-        Validate.OutOfRange(amountPages, 1, 50000, "Amount of pages", Validate.Unit.Page);
+        Validate.OutOfRange(amountPages, 1, 50000, "Amount pages", Validate.Unit.Page);
     }
     
     private void ValidateAuthors(IEnumerable<Author> authors)

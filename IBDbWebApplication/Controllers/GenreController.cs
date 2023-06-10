@@ -1,4 +1,5 @@
-﻿using Business.Container;
+﻿using System.Text.RegularExpressions;
+using Business.Container;
 using Business.Entity;
 using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels;
@@ -16,12 +17,15 @@ public class GenreController : Controller
     {
         if (HttpContext.Session.GetInt32("IsAdmin") == null)
             return RedirectToAction("Login", "Account");
-        
-        GenreViewModel genreViewModel = new(
+
+        return View(GetGenreViewModel());
+    }
+    
+    private GenreViewModel GetGenreViewModel()
+    {
+        return new(
             GetGenreModels()
         );
-        
-        return View(genreViewModel);
     }
     
     [HttpPost]
@@ -34,8 +38,20 @@ public class GenreController : Controller
         {
             return View(nameof(Index), new GenreViewModel(GetGenreModels()));
         }
-        
-        _genreContainer.Add(new((byte?)genreViewModel.Id, genreViewModel.Name));
+
+        try
+        {
+            _genreContainer.Add(new((byte?)genreViewModel.Id, genreViewModel.Name));
+        }
+        catch (AggregateException e)
+        {
+            foreach (Exception innerException in e.InnerExceptions)
+            {
+                ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
+            }
+            return View(nameof(Index), GetGenreViewModel());
+        }
+
         
         return RedirectToAction(nameof(Index));
     }

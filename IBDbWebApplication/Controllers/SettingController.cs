@@ -1,4 +1,5 @@
-﻿using Business.Container;
+﻿using System.Text.RegularExpressions;
+using Business.Container;
 using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels.SettingModels;
 using IBDbWebApplication.Models.Entity;
@@ -35,9 +36,20 @@ public class SettingController : Controller
         if (!ModelState.IsValid)
         {
             return View(nameof(Index), GetSettingViewModel());
-        }   
-        
-        _settingContainer.Add(new(settingViewModel.Id, settingViewModel.Description));
+        }
+
+        try
+        {
+            _settingContainer.Add(new(settingViewModel.Id, settingViewModel.Description));
+        }
+        catch (AggregateException e)
+        {
+            foreach (Exception innerException in e.InnerExceptions)
+            {
+                ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
+            }
+            return View(nameof(Index), GetSettingViewModel());
+        }
         
         return RedirectToAction(nameof(Index));
     }

@@ -2,7 +2,7 @@
 
 namespace Interface.Interfaces;
 
-public interface IBookData : IBase<BookDTO>
+public interface IBookData : IBase<BookDTO>, IValidateData
 {
     bool Favorite(long bookId, long userId);   
     bool Unfavorite(long bookId, long accountId);

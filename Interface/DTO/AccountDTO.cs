@@ -1,6 +1,6 @@
 ﻿namespace Interface.DTO;
 
-public record AccountDTO(long? Id, string Username, string Email, bool IsAdmin)
+public record AccountDTO(long? Id, string Username, string Email, bool IsAdmin, string Password = "")
 {
-    public AccountDTO(long? id, string reviewUsername) : this(id, reviewUsername, "", false) { }
+    public AccountDTO(long? id, string Username) : this(id, Username, "", false) { }
 }

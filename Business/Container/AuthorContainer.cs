@@ -16,6 +16,11 @@ public class AuthorContainer
     {
         return _authorData.GetAll().Select(author => new Author(author));
     }
+    
+    public IEnumerable<Author> GetByIds(IEnumerable<byte> authorIds)
+    {
+        return _authorData.GetByIds(authorIds).Select(dto => new Author(dto));
+    }
 
     public bool Add(Author author)
     {
@@ -43,20 +48,11 @@ public class AuthorContainer
         }
     }
 
-    private void ValidateDeathDate(DateOnly? authorDeathDate, DateOnly authorBirthDate)
-    {
-        if (authorDeathDate == null)
-        {
-            return;
-        }
-        
-        Validate.OutOfRange((ulong)authorDeathDate.Value.Year, (ulong)authorBirthDate.Year, (ulong)DateTime.Now.Year, "Death date", Validate.Unit.Year);
-    }
-
     private void ValidateName(string name)
     {
         Validate.OutOfRange((ulong)name.Length, 1, 1000, "Name", Validate.Unit.Character);
-        Validate.Regex(name, "^[a-zA-Z .]+$", "Name can only contain letters, spaces, and periods.");
+        Validate.Regex(name, "^[a-zA-Z .]+$", "Name", "Name can only contain letters, spaces, and periods.");
+        if (_authorData.Exist(name)) throw new KeyValueException($"Author {name} is already in use.", "Author");
     }
     
     private void ValidateDescription(string authorDescription)
@@ -67,5 +63,15 @@ public class AuthorContainer
     private void ValidateBirthDate(DateOnly birthDate)
     {
         Validate.OutOfRange((ulong)birthDate.Year, (ulong)DateTime.Now.AddYears(-150).Year, (ulong)DateTime.Now.AddYears(-6).Year, "Birth date", Validate.Unit.Year);
+    }
+    
+    private void ValidateDeathDate(DateOnly? authorDeathDate, DateOnly authorBirthDate)
+    {
+        if (authorDeathDate == null)
+        {
+            return;
+        }
+        
+        Validate.OutOfRange((ulong)authorDeathDate.Value.Year, (ulong)authorBirthDate.Year, (ulong)DateTime.Now.Year, "Death date", Validate.Unit.Year);
     }
 }

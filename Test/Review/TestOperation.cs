@@ -7,6 +7,8 @@ using Business.Entity;
 [TestFixture]
 public class TestOperation
 {
+    static AccountSTUB _accountStub = new();
+    
     private ReviewSTUB _reviewStub = null!;
     private ReviewContainer _reviewContainer;
 
@@ -26,7 +28,7 @@ public class TestOperation
             (byte?)(_reviewStub.Reviews.Count + 1),
             "This is a review title",
             "This is a review",
-            1,
+            new(_accountStub.Accounts[0]),
             5,
             null
         );

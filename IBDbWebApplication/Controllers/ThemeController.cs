@@ -1,4 +1,5 @@
-﻿using Business.Container;
+﻿using System.Text.RegularExpressions;
+using Business.Container;
 using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels.ThemeModels;
 using IBDbWebApplication.Models.Entity;
@@ -36,8 +37,19 @@ public class ThemeController : Controller
         {
             return View(nameof(Index), GetThemeViewModel());
         }
-        
-        _themeContainer.Add(new(themeViewModel.Id, themeViewModel.Description));
+
+        try
+        {
+            _themeContainer.Add(new(themeViewModel.Id, themeViewModel.Description));
+        }
+        catch (AggregateException e)
+        {
+            foreach (Exception innerException in e.InnerExceptions)
+            {
+                ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
+            }
+            return View(nameof(Index), GetThemeViewModel());
+        }
         
         return RedirectToAction(nameof(Index));
     }

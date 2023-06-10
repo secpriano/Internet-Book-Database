@@ -5,10 +5,12 @@ namespace Test.STUB;
 
 public class CommentSTUB : ICommentData
 {
+    static AccountSTUB _accountStub = new();
+    
     public List<CommentDTO> Comments = new()
     {
-        new(1, 1, "This is a comment", 1),
-        new(2, 2, "This is another comment", 2)
+        new(1, "This is a comment", _accountStub.Accounts[0], 1),
+        new(2, "This is another comment", _accountStub.Accounts[1], 2)
     };
 
     public bool Add(CommentDTO entity)

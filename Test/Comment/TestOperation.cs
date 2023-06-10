@@ -6,6 +6,8 @@ using Business.Entity;
 [TestFixture]
 public class TestOperation
 {
+    static AccountSTUB _AccountSTUB = new();
+    
     private CommentSTUB _commentStub = null!;
     private Review _commentContainer;
 
@@ -23,8 +25,8 @@ public class TestOperation
         // Arrange
         Comment expectedComment = new(
             _commentStub.Comments.Count + 1,
-            1,
             "This is a comment",
+            new(_AccountSTUB.Accounts[0]),
             1
         );
         
@@ -41,7 +43,10 @@ public class TestOperation
                 comment.Id == expectedComment.Id &&
                 comment.ReviewId == expectedComment.ReviewId &&
                 comment.Content == expectedComment.Content &&
-                comment.UserId == expectedComment.Account
+                comment.Account.Id == expectedComment.Account.Id &&
+                comment.Account.Username == expectedComment.Account.Username &&
+                comment.Account.Email == expectedComment.Account.Email &&
+                comment.Account.IsAdmin == expectedComment.Account.IsAdmin
                 )
             );
         });

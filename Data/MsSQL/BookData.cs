@@ -413,4 +413,15 @@ private static void EditItemsInTable<T>(IEnumerable<T> items, string tableName, 
         
         return (int)sqlCommand.ExecuteScalar() > 0;
     }
+
+    public bool Exist(string isbn)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        
+        using SqlCommand sqlCommand = new("SELECT COUNT(*) FROM Book WHERE Isbn = @Isbn", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@Isbn", isbn);
+        
+        return (int)sqlCommand.ExecuteScalar() > 0;
+    }
 }

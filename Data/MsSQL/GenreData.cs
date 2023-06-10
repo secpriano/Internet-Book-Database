@@ -58,4 +58,15 @@ public class GenreData : Database, IGenreData
         
         return genres;
     }
+
+    public bool Exist(string text)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        
+        using SqlCommand sqlCommand = new("SELECT COUNT(*) FROM Genre WHERE GenreText = @GenreText", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@GenreText", text);
+        
+        return (int)sqlCommand.ExecuteScalar() > 0;
+    }
 }

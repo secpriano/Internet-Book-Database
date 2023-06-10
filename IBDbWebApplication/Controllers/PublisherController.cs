@@ -1,4 +1,5 @@
-﻿using Business.Container;
+﻿using System.Text.RegularExpressions;
+using Business.Container;
 using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels.PublisherModels;
 using IBDbWebApplication.Models.Entity;
@@ -36,8 +37,26 @@ public class PublisherController : Controller
         {
             return View(nameof(Index), GetPublisherViewModel());
         }
+
+        try
+        {
+            _publisherContainer.Add(new(
+                publisherViewModel.Id, 
+                publisherViewModel.Name, 
+                DateOnly.FromDateTime(publisherViewModel.FoundingDate.Value), 
+                publisherViewModel.Description)
+            );
+        }
+        catch (AggregateException ex)
+        {
+            foreach (Exception innerException in ex.InnerExceptions)
+            {
+                ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
+            }
+            return View(nameof(Index), GetPublisherViewModel());
+        }
         
-        _publisherContainer.Add(new(publisherViewModel.Id, publisherViewModel.Name, DateOnly.FromDateTime(publisherViewModel.FoundingDate.Value), publisherViewModel.Description));
+        
         return RedirectToAction(nameof(Index));
     }
     

@@ -44,7 +44,7 @@ public class ReviewContainer
     private void ValidateTitle(string reviewTitle)
     {
         Validate.OutOfRange((ulong)reviewTitle.Length, 1, 100, "Title", Validate.Unit.Character);
-        Validate.Regex(reviewTitle, "^[a-zA-Z0-9 &]+$", "Title must only contain letters, numbers, spaces, and ampersand.");
+        Validate.Regex(reviewTitle, "^[a-zA-Z0-9 &]+$", "Title", "Title must only contain letters, numbers, spaces, and ampersand.");
     }
 
     private void ValidateContent(string reviewContent)

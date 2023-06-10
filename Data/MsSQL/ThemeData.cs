@@ -58,4 +58,15 @@ public class ThemeData : Database, IThemeData
         }
         return themes;
     }
+
+    public bool Exist(string text)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+
+        using SqlCommand sqlCommand = new("SELECT COUNT(*) FROM Theme WHERE ThemeText = @ThemeText", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@ThemeText", text);
+        
+        return (int)sqlCommand.ExecuteScalar() > 0;
+    }
 }

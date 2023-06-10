@@ -8,6 +8,8 @@ using Business.Entity;
 [TestFixture]
 public class TextException
 {
+    static AccountSTUB _accountStub = new();
+    
     private ReviewSTUB _reviewStub = null!;
     private ReviewContainer _reviewContainer;
 
@@ -27,7 +29,7 @@ public class TextException
             _reviewStub.Reviews.Count + 1,
             new('a', 101),
             "This is the best review in the world",
-            5,
+            new(_accountStub.Accounts[0]),
             1,
             null
         );
@@ -52,7 +54,7 @@ public class TextException
             _reviewStub.Reviews.Count + 1,
             String.Empty,
             "This is the best review in the world",
-            5,
+            new(_accountStub.Accounts[0]),
             1,
             null
         );
@@ -77,7 +79,7 @@ public class TextException
             _reviewStub.Reviews.Count + 1,
             "",
             "This is the best review in the world",
-            5,
+            new(_accountStub.Accounts[0]),
             1,
             null
         );
@@ -102,7 +104,7 @@ public class TextException
             _reviewStub.Reviews.Count + 1,
             "This is the best review in the world!!",
             "This is the best review in the world",
-            5,
+            new(_accountStub.Accounts[0]),
             1,
             null
         );
@@ -127,7 +129,7 @@ public class TextException
             _reviewStub.Reviews.Count + 1,
             "This is the best review in the world",
             new('a', 1),
-            5,
+            new(_accountStub.Accounts[0]),
             1,
             null
         );
@@ -152,7 +154,7 @@ public class TextException
             _reviewStub.Reviews.Count + 1,
             "This is the best review in the world",
             new('a', 2001),
-            5,
+            new(_accountStub.Accounts[0]),
             1,
             null
         );
@@ -177,7 +179,7 @@ public class TextException
             _reviewStub.Reviews.Count + 1,
             "This is the best review in the world",
             String.Empty,
-            5,
+            new(_accountStub.Accounts[0]),
             1,
             null
         );

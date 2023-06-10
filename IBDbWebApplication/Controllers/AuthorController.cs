@@ -1,4 +1,5 @@
-﻿using Business.Container;
+﻿using System.Text.RegularExpressions;
+using Business.Container;
 using Business.Entity;
 using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels.AuthorModels;
@@ -37,15 +38,26 @@ public class AuthorController : Controller
         {
             return View(nameof(Index), GetAuthorViewModel());
         }
-        
-        _authorContainer.Add(new(
-            authorViewModel.Id,
-            authorViewModel.Name,
-            authorViewModel.Description,
-            DateOnly.FromDateTime(authorViewModel.BirthDate.Value),
-            authorViewModel.DeathDate != null ? DateOnly.FromDateTime(authorViewModel.DeathDate.Value) : null,
-            authorViewModel.GenreIds.Select(genreId => new Genre(genreId))
-        ));
+
+        try
+        {
+            _authorContainer.Add(new(
+                authorViewModel.Id,
+                authorViewModel.Name,
+                authorViewModel.Description,
+                DateOnly.FromDateTime(authorViewModel.BirthDate.Value),
+                authorViewModel.DeathDate != null ? DateOnly.FromDateTime(authorViewModel.DeathDate.Value) : null,
+                authorViewModel.GenreIds.Select(genreId => new Genre(genreId))
+            ));
+        }
+        catch (AggregateException e)
+        {
+            foreach (Exception innerException in e.InnerExceptions)
+            {
+                ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
+            }
+            return View(nameof(Index), GetAuthorViewModel());
+        }
 
         return RedirectToAction(nameof(Index));
     }

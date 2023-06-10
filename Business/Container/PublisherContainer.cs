@@ -45,7 +45,8 @@ public class PublisherContainer
     private void ValidateName(string name)
     {
         Validate.OutOfRange((ulong)name.Length, 1, 50, "Name", Validate.Unit.Character);
-        Validate.Regex(name, "^[a-zA-Z &]+$", "Name must only contain letters, spaces, and ampersand.");
+        Validate.Regex(name, "^[a-zA-Z &]+$", "", "Name must only contain letters, spaces, and ampersand.");
+        if (_publisherData.Exist(name)) throw new KeyValueException($"Publisher {name} is already in use.", "Publisher");
     }
     
     private void ValidateDescription(string description)

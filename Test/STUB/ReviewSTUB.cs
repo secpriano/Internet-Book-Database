@@ -5,12 +5,13 @@ namespace Test.STUB;
 
 public class ReviewSTUB : IReviewData
 {
+    static AccountSTUB _accountStub = new();
     static CommentSTUB _commentStub = new();
     
     public List<ReviewDTO> Reviews = new()
     {
-        new(1, "This is a review title", "This is a review", 1, 5, _commentStub.GetAllByReviewId(1)),
-        new(2, "This is another review title", "This is another review", 2, 4, _commentStub.GetAllByReviewId(2)),
+        new(1, "This is a review title", "This is a review", _accountStub.Accounts[0], 5, _commentStub.GetAllByReviewId(1)),
+        new(2, "This is another review title", "This is another review", _accountStub.Accounts[1], 4, _commentStub.GetAllByReviewId(2)),
     };
 
     public bool Add(ReviewDTO entity)

@@ -62,4 +62,15 @@ public class PublisherData : Database, IPublisherData
         
         return publishers;
     }
+
+    public bool Exist(string name)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        
+        using SqlCommand sqlCommand = new("SELECT COUNT(*) FROM Publisher WHERE Name = @Name", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@Name", name);
+        
+        return (int)sqlCommand.ExecuteScalar() > 0;
+    }
 }

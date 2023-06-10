@@ -1,4 +1,5 @@
-﻿using Business.Container;
+﻿using System.Text.RegularExpressions;
+using Business.Container;
 using Business.Entity;
 using Data.MsSQL;
 using IBDbWebApplication.Models.AdminModels.BookModels;
@@ -23,7 +24,7 @@ public class BookController : Controller
         if (HttpContext.Session.GetInt32("IsAdmin") == null)
             return RedirectToAction("Login", "Account");
         
-       return View(GetBookViewModel());
+        return View(GetBookViewModel());
     }
     
     private BookViewModel GetBookViewModel()
@@ -47,21 +48,34 @@ public class BookController : Controller
         {
             return View(nameof(Index), GetBookViewModel());
         }
-        
-        _bookContainer.Add(new(
-            bookViewModel.Id,
-            bookViewModel.Isbn,
-            bookViewModel.Title,
-            bookViewModel.Synopsis,
-            DateOnly.FromDateTime(bookViewModel.PublishDate.Value),
-            bookViewModel.AmountPages,
-            bookViewModel.AuthorIds.Select(authorId => new Author(authorId)),
-            new(bookViewModel.PublisherId), 
-            bookViewModel.GenreIds.Select(genreId => new Genre(genreId)), 
-            bookViewModel.ThemeIds.Select(themeId => new Theme(themeId)),
-            bookViewModel.SettingIds.Select(settingId => new Setting(settingId)),
-            0
-        ));
+
+        try
+        {
+            IEnumerable<Author> authors = _authorContainer.GetByIds(bookViewModel.AuthorIds);
+            
+            _bookContainer.Add(new(
+                bookViewModel.Id,
+                bookViewModel.Isbn,
+                bookViewModel.Title,
+                bookViewModel.Synopsis,
+                DateOnly.FromDateTime(bookViewModel.PublishDate.Value),
+                bookViewModel.AmountPages,
+                authors,
+                new(bookViewModel.PublisherId), 
+                bookViewModel.GenreIds.Select(genreId => new Genre(genreId)), 
+                bookViewModel.ThemeIds.Select(themeId => new Theme(themeId)),
+                bookViewModel.SettingIds.Select(settingId => new Setting(settingId)),
+                0
+            ));
+        }
+        catch (AggregateException e)
+        {
+            foreach (Exception innerException in e.InnerExceptions)
+            {
+                ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
+            }
+            return View(nameof(Index), GetBookViewModel());
+        }
 
         return RedirectToAction(nameof(Index), bookViewModel);
     }
@@ -176,21 +190,32 @@ public class BookController : Controller
         {
             return View(nameof(Index), GetBookViewModel());
         }
-        
-        _bookContainer.Update(new(
-            bookViewModel.Id,
-            bookViewModel.Isbn,
-            bookViewModel.Title,
-            bookViewModel.Synopsis,
-            DateOnly.FromDateTime(bookViewModel.PublishDate.Value),
-            bookViewModel.AmountPages,
-            bookViewModel.AuthorIds.Select(authorId => new Author(authorId)),
-            new(bookViewModel.PublisherId), 
-            bookViewModel.GenreIds.Select(genreId => new Genre(genreId)), 
-            bookViewModel.ThemeIds.Select(themeId => new Theme(themeId)),
-            bookViewModel.SettingIds.Select(settingId => new Setting(settingId)),
-            0
-        ));
+
+        try
+        {
+            _bookContainer.Update(new(
+                bookViewModel.Id,
+                bookViewModel.Isbn,
+                bookViewModel.Title,
+                bookViewModel.Synopsis,
+                DateOnly.FromDateTime(bookViewModel.PublishDate.Value),
+                bookViewModel.AmountPages,
+                bookViewModel.AuthorIds.Select(authorId => new Author(authorId)),
+                new(bookViewModel.PublisherId), 
+                bookViewModel.GenreIds.Select(genreId => new Genre(genreId)), 
+                bookViewModel.ThemeIds.Select(themeId => new Theme(themeId)),
+                bookViewModel.SettingIds.Select(settingId => new Setting(settingId)),
+                0
+            ));
+        }
+        catch (AggregateException e)
+        {
+            foreach (Exception innerException in e.InnerExceptions)
+            {
+                ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
+            }
+            return View(nameof(Index), GetBookViewModel());
+        }
 
         return RedirectToAction(nameof(Index));
     }

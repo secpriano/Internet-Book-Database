@@ -59,4 +59,9 @@ public class AuthorSTUB : IAuthorData
     {
         throw new NotImplementedException();
     }
+
+    public IEnumerable<AuthorDTO> GetByIds(IEnumerable<byte> authorIds)
+    {
+        return Authors.Where(author => authorIds.Contains<>(author.Id));
+    }
 }

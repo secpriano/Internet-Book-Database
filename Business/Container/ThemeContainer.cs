@@ -43,7 +43,7 @@ public class ThemeContainer
     private void ValidateDescription(string description)
     {
         Validate.OutOfRange((ulong)description.Length, 2, 25, "Description", Validate.Unit.Character);
-        
-        Validate.Regex(description, @"^[a-zA-Z ,&+-]+$", "Description can only contain letters, spaces, commas, and ampersands.");
+        Validate.Regex(description, @"^[a-zA-Z ,&+-]+$", "Description", "Description can only contain letters, spaces, commas, and ampersands.");
+        if (_themeData.Exist(description)) throw new KeyValueException($"Theme {description} is already in use.", "Theme");
     }
 }

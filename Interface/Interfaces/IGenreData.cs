@@ -2,7 +2,7 @@
 
 namespace Interface.Interfaces;
 
-public interface IGenreData : IBase<GenreDTO>
+public interface IGenreData : IBase<GenreDTO>, IValidateData
 {
     
 }

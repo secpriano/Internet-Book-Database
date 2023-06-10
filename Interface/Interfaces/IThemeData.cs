@@ -2,7 +2,7 @@
 
 namespace Interface.Interfaces;
 
-public interface IThemeData : IBase<ThemeDTO>
+public interface IThemeData : IBase<ThemeDTO>, IValidateData
 {
     
 }
