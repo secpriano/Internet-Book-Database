@@ -2,7 +2,7 @@
 
 public class BookModel
 {
-    public long? Id { get; }
+    public long? Id { get; set; }
     
     public string Isbn { get; set; }
     

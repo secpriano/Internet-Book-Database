@@ -31,7 +31,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Name must be less or equal to 1000 Character. Not {author.Name.Length} Character."));
         }
     }
@@ -50,7 +50,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Name must be more than or equal to 1 Character. Not {author.Name.Length} Character."));
         }
     }
@@ -69,7 +69,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo("Name can only contain letters, spaces, and periods."));
         }
     }
@@ -79,7 +79,7 @@ public class TestException
     {
         // Arrange
         AuthorDTO author = _authorStub.Authors[0];
-        
+        author.Name = "John Doe";
         author.Description = new('a', 1001);
         
         // Act
@@ -88,7 +88,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Description must be less or equal to 1000 Character. Not {author.Description.Length} Character."));
         }
     }
@@ -98,7 +98,7 @@ public class TestException
     {
         // Arrange
         AuthorDTO author = _authorStub.Authors[0];
-        
+        author.Name = "John Doe";
         author.Description = String.Empty;
         
         // Act
@@ -107,7 +107,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Description must be more than or equal to 10 Character. Not {author.Description.Length} Character."));
         }
     }
@@ -117,7 +117,7 @@ public class TestException
     {
         // Arrange
         AuthorDTO author = _authorStub.Authors[0];
-        
+        author.Name = "John Doe";
         author.BirthDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-151));
         
         // Act
@@ -126,7 +126,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Birth date must be more than or equal to {DateTime.Now.AddYears(-150).Year} Year. Not {author.BirthDate.Year} Year."));
         }
     }
@@ -136,7 +136,7 @@ public class TestException
     {
         // Arrange
         AuthorDTO author = _authorStub.Authors[0];
-        
+        author.Name = "John Doe";
         author.BirthDate = DateOnly.FromDateTime(DateTime.Now.AddYears(-5));
         author.DeathDate = null;
         
@@ -146,7 +146,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Birth date must be less or equal to {DateTime.Now.AddYears(-6).Year} Year. Not {author.BirthDate.Year} Year."));
         }
     }

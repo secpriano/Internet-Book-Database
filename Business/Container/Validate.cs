@@ -6,14 +6,14 @@ public static class Validate
     {
         if (value < min) throw new KeyValueException($"{name} must be more than or equal to {min} {unit.ToString()}. Not {value} {unit.ToString()}.", name);
 
-        if (value > max) throw new($"{name} must be less or equal to {max} {unit.ToString()}. Not {value} {unit.ToString()}.");
+        if (value > max) throw new KeyValueException($"{name} must be less or equal to {max} {unit.ToString()}. Not {value} {unit.ToString()}.", name);
     }
     
     public static void OutOfRange(in ulong value, in ulong min, in ulong max, in string name, in string otherProperty, in Unit unit)
     {
         if (value < min) throw new KeyValueException($"{name} must be more than or equal to the length of {otherProperty}: {min} {unit.ToString()}. Not {value} {unit.ToString()}.", name);
 
-        if (value > max) throw new($"{name} must be less or equal to {max} {unit.ToString()}. Not {value} {unit.ToString()}.");
+        if (value > max) throw new KeyValueException($"{name} must be less or equal to {max} {unit.ToString()}. Not {value} {unit.ToString()}.", name);
     }
         
     public static void ExactValue(in ulong value, in ulong exact, in string name, in Unit unit)
@@ -35,7 +35,7 @@ public static class Validate
             for (int j = 0; j < entities.Count(); j++)
             {
                 if (i != j && entities.ElementAt(i).Equals(entities.ElementAt(j)))
-                    throw new($@"{name} is already added.");
+                    throw new KeyValueException($@"{name} is already added.", name);
             }
         }
     }

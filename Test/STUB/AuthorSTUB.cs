@@ -60,8 +60,13 @@ public class AuthorSTUB : IAuthorData
         throw new NotImplementedException();
     }
 
-    public IEnumerable<AuthorDTO> GetByIds(IEnumerable<byte> authorIds)
+    public IEnumerable<AuthorDTO> GetByIds(IEnumerable<long> authorIds)
     {
-        return Authors.Where(author => authorIds.Contains<>(author.Id));
+        return Authors.Where(author => authorIds.Contains(author.Id.Value));
+    }
+
+    public bool Exist(string uid)
+    {
+        return Authors.Exists(author => author.Name == uid);
     }
 }

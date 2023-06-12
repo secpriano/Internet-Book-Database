@@ -37,4 +37,9 @@ public class SettingSTUB : ISettingData
     {
         throw new NotImplementedException();
     }
+
+    public bool Exist(string uid)
+    {
+        return Settings.Exists(setting => setting.Description == uid);
+    }
 }

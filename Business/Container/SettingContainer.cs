@@ -44,6 +44,6 @@ public class SettingContainer
     {
         Validate.OutOfRange((ulong)description.Length, 2, 25, "Description", Validate.Unit.Character);
         Validate.Regex(description, @"^[a-zA-Z0-9 ,&]+$", "Description", "Description can only contain letters, numbers, spaces, commas, and ampersands.");
-        if (_settingData.Exist(description)) throw new KeyValueException($"Setting {description} is already in use.", "Setting");
+        if (_settingData.Exist(description)) throw new KeyValueException($"Setting {description} is already in use.", "Description");
     }
 }

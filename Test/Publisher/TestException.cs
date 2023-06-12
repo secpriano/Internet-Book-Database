@@ -31,7 +31,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Name must be less or equal to 50 Character. Not {publisher.Name.Length} Character."));
         }
     }
@@ -50,7 +50,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Name must be more than or equal to 1 Character. Not {publisher.Name.Length} Character."));
         }
     }
@@ -69,7 +69,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo("Name must only contain letters, spaces, and ampersand."));
         }
     }
@@ -79,7 +79,7 @@ public class TestException
     {
         // Arrange
         PublisherDTO publisher = _publisherStub.Publishers[0];
-        
+        publisher.Name = "Long Studio";
         publisher.Description = new('a', 9);
         
         // Act
@@ -88,7 +88,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Description must be more than or equal to 10 Character. Not {publisher.Description.Length} Character."));
         }
     }
@@ -98,7 +98,7 @@ public class TestException
     {
         // Arrange
         PublisherDTO publisher = _publisherStub.Publishers[0];
-        
+        publisher.Name = "Long Studio";
         publisher.Description = new('a', 1001);
         
         // Act
@@ -107,7 +107,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Description must be less or equal to 1000 Character. Not {publisher.Description.Length} Character."));
         }
     }
@@ -117,7 +117,7 @@ public class TestException
     {
         // Arrange
         PublisherDTO publisher = _publisherStub.Publishers[0];
-        
+        publisher.Name = "Long Studio";
         publisher.Description = String.Empty;
         
         // Act
@@ -126,7 +126,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Description must be more than or equal to 10 Character. Not {publisher.Description.Length} Character."));
         }
     }

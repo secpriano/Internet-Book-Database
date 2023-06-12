@@ -4,5 +4,5 @@ namespace Interface.Interfaces;
 
 public interface IAuthorData : IBase<AuthorDTO>, IValidateData
 {
-    public IEnumerable<AuthorDTO> GetByIds(IEnumerable<byte> authorIds);
+    public IEnumerable<AuthorDTO> GetByIds(IEnumerable<long> authorIds);
 }

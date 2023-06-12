@@ -116,7 +116,7 @@ public class AuthorData : Database, IAuthorData
         return authors;
     }
 
-    public IEnumerable<AuthorDTO> GetByIds(IEnumerable<byte> authorIds)
+    public IEnumerable<AuthorDTO> GetByIds(IEnumerable<long> authorIds)
     {
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();

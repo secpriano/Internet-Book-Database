@@ -1,5 +1,5 @@
 ﻿@using IBDbWebApplication.Models.Entity
-@model IBDbWebApplication.Models.AdminModels.BookModels.BookDetailModel
+@model IBDbWebApplication.Models.AdminModels.BookModels.BookDetailViewModel
 
 @{
     ViewData["Title"] = $"{Model.BookModel.Title} | Book";
@@ -55,9 +55,27 @@
             {
                 @using(@Html.BeginForm("Favorite", "Book", new { id = Model.BookModel.Id }, FormMethod.Post))
                 {
-                    <button type="submit">
+                    <button class="favorite" type="submit">
                         Favorites: @Model.BookModel.Favorites
                     </button>
+                }
+                @if (@Model.Shelved)
+                {
+                    @using(@Html.BeginForm("Unshelve", "Book", new { id = Model.BookModel.Id }, FormMethod.Post))
+                    {
+                        <button type="submit">
+                            Remove from bookshelve
+                        </button>
+                    }
+                }
+                else
+                {
+                    @using(@Html.BeginForm("Shelf", "Book", new { id = Model.BookModel.Id }, FormMethod.Post))
+                    {
+                        <button type="submit">
+                            Add to bookshelve
+                        </button>
+                    }
                 }
             }
             else

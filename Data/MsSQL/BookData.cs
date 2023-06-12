@@ -414,6 +414,109 @@ private static void EditItemsInTable<T>(IEnumerable<T> items, string tableName, 
         return (int)sqlCommand.ExecuteScalar() > 0;
     }
 
+    public IEnumerable<BookDTO> GetAllFavoritesByAccountId(long accountId)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new("SELECT TOP(10) * FROM Book WHERE BookID IN (SELECT BookID FROM UserBookFavorite WHERE AccountID = @AccountID)", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@AccountID", accountId);
+        
+        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        
+        List<BookDTO> books = new();
+
+        while (sqlDataReader.Read())
+        {
+            BookDTO bookDto = new()
+            {
+                Id = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("BookId"))
+                    ? null
+                    : sqlDataReader.GetInt64(sqlDataReader.GetOrdinal("BookId")),
+                Isbn = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Isbn")),
+                Title = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Title")),
+                PublishDate = DateOnly.FromDateTime(sqlDataReader.GetDateTime(sqlDataReader.GetOrdinal("PublishDate"))),
+                AmountPages = Convert.ToUInt16(sqlDataReader["AmountPages"]),
+                Authors = new List<AuthorDTO>(),
+                Publisher = new(),
+                Genres = new List<GenreDTO>(),
+                Themes = new List<ThemeDTO>(),
+                Settings = new List<SettingDTO>()
+            };
+
+            books.Add(bookDto);
+        }
+        
+        return books;
+    }
+
+    public bool Shelf(long bookId, long accountId)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new("INSERT INTO UserBookShelve (AccountID ,BookID) VALUES (@AccountID, @BookID)", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@AccountID", accountId);
+        sqlCommand.Parameters.AddWithValue("@BookID", bookId);
+        
+        return sqlCommand.ExecuteNonQuery() > 0;
+    }
+
+    public bool Unshelve(long bookId, long accountId)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new("DELETE FROM UserBookShelve WHERE AccountID = @AccountID AND BookID = @BookID", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@AccountID", accountId);
+        sqlCommand.Parameters.AddWithValue("@BookID", bookId);
+        
+        return sqlCommand.ExecuteNonQuery() > 0;
+    }
+
+    public bool Shelved(long bookId, long accountId)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new("SELECT COUNT(*) FROM UserBookShelve WHERE AccountID = @AccountID AND BookID = @BookID", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@AccountID", accountId);
+        sqlCommand.Parameters.AddWithValue("@BookID", bookId);
+        
+        return (int)sqlCommand.ExecuteScalar() > 0;
+    }
+
+    public IEnumerable<BookDTO> GetAllShelvedByAccountId(long accountId)
+    {
+        using SqlConnection sqlConnection = new(ConnectionString);
+        sqlConnection.Open();
+        using SqlCommand sqlCommand = new("SELECT * FROM Book WHERE BookID IN (SELECT BookID FROM UserBookShelve WHERE AccountID = @AccountID)", sqlConnection);
+        sqlCommand.Parameters.AddWithValue("@AccountID", accountId);
+        
+        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        
+        List<BookDTO> books = new();
+
+        while (sqlDataReader.Read())
+        {
+            BookDTO bookDto = new()
+            {
+                Id = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("BookId"))
+                    ? null
+                    : sqlDataReader.GetInt64(sqlDataReader.GetOrdinal("BookId")),
+                Isbn = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Isbn")),
+                Title = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Title")),
+                PublishDate = DateOnly.FromDateTime(sqlDataReader.GetDateTime(sqlDataReader.GetOrdinal("PublishDate"))),
+                AmountPages = Convert.ToUInt16(sqlDataReader["AmountPages"]),
+                Authors = new List<AuthorDTO>(),
+                Publisher = new(),
+                Genres = new List<GenreDTO>(),
+                Themes = new List<ThemeDTO>(),
+                Settings = new List<SettingDTO>()
+            };
+
+            books.Add(bookDto);
+        }
+        
+        return books;
+    }
+
     public bool Exist(string isbn)
     {
         using SqlConnection sqlConnection = new(ConnectionString);

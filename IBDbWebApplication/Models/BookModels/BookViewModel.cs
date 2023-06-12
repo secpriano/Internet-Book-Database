@@ -40,7 +40,7 @@ public class BookViewModel
     
     [DisplayName("Authors")]
     [Required(ErrorMessage = "Author(s) is required")]
-    public IEnumerable<byte> AuthorIds { get; set; }
+    public IEnumerable<long> AuthorIds { get; set; }
     
     [DisplayName("Publisher")]
     [Required(ErrorMessage = "Publisher is required")]

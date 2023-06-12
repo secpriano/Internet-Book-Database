@@ -37,4 +37,9 @@ public class GenreSTUB : IGenreData
     {
         throw new NotImplementedException();
     }
+
+    public bool Exist(string uid)
+    {
+        return Genres.Exists(genre => genre.Name == uid);
+    }
 }

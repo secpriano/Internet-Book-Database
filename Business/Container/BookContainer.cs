@@ -1,4 +1,5 @@
 ﻿using Business.Entity;
+using Interface.DTO;
 using Interface.Interfaces;
 
 namespace Business.Container;
@@ -52,6 +53,31 @@ public class BookContainer
         return _bookData.IsFavorite(bookId, accountId);
     }
     
+    public bool Shelf(long bookId, long accountId)
+    {
+        return _bookData.Shelf(bookId, accountId);
+    }
+    
+    public bool Unshelve(long bookId, long accountId)
+    {
+        return _bookData.Unshelve(bookId, accountId);
+    }
+    
+    public bool Shelved(long bookId, long accountId)
+    {
+        return _bookData.Shelved(bookId, accountId);
+    }
+    
+    public IEnumerable<Book> GetAllFavoritesByAccountId(long accountId) 
+    {
+        return _bookData.GetAllFavoritesByAccountId(accountId).Select(dto => new Book(dto));
+    }
+
+    public IEnumerable<Book> GetAllShelvedByAccountId(long accountId)
+    {
+        return _bookData.GetAllShelvedByAccountId(accountId).Select(dto => new Book(dto));
+    }
+
     private void ValidateBook(Book book)
     {
         try

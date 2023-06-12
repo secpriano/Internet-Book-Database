@@ -14,7 +14,7 @@ public class SettingController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         return View(GetSettingViewModel());
@@ -30,7 +30,7 @@ public class SettingController : Controller
     [HttpPost]
     public IActionResult AddSetting(SettingViewModel settingViewModel)
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         if (!ModelState.IsValid)
@@ -42,9 +42,9 @@ public class SettingController : Controller
         {
             _settingContainer.Add(new(settingViewModel.Id, settingViewModel.Description));
         }
-        catch (AggregateException e)
+        catch (AggregateException aggregateException)
         {
-            foreach (Exception innerException in e.InnerExceptions)
+            foreach (Exception innerException in aggregateException.InnerExceptions)
             {
                 ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
             }

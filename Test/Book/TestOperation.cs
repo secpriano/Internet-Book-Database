@@ -14,14 +14,18 @@ public class TestOperations
     [SetUp]
     public void Setup()
     {
-        _bookStub = new();
+        _bookStub = new()
+        {
+            UserBookFavoriteStub = new(),
+            UserBookShelfStub = new()
+        };
         _bookContainer = new(_bookStub);
     }
 
     [Test, Combinatorial]
     [Category("Create")]
     public void TestAdd(
-        [Values("9780312866272", "3957461037136", "0038400470000")] string isbn,
+        [Values("1234567890123", "3957461037136", "0038400470000")] string isbn,
         [Values("Lord ofthe Rings", "Harry Potter", "Star Wars")] string title,
         [Values("Lord of the Rings beautiful sypnosis!", "Harry Potter? beautiful sypnosis.", "StarWarsbeautifulsypnosis")] string synopsis
         )
@@ -92,47 +96,44 @@ public class TestOperations
     {
         // Arrange
         const string expectedSynopsis = "This synopsis has been updated";
-        
-        Book expectedBook = new(_bookStub.Books.Find(book => book.Id == expectedId))
-        {
-            AmountPages = expectedAmountPages,
-            Synopsis = expectedSynopsis
-        };
 
+        BookDTO expectedBook = _bookStub.Books.Find(book => book.Id == expectedId);
+        expectedBook.Isbn = "1234567890123";
+        expectedBook.AmountPages = expectedAmountPages;
+        expectedBook.Synopsis = expectedSynopsis;
+        
         // Act
-        BookDTO actual = _bookContainer.Update(expectedBook).ToDto();
+        BookDTO actual = _bookContainer.Update(new(expectedBook)).ToDto();
         
         // Assert
-        BookDTO expectedBookDto = expectedBook.ToDto();
-        
         Assert.Multiple(() =>
         {
             Assert.That(_bookStub.Books.Any(book =>
-                    book.Id == expectedBookDto.Id &&
-                    book.Isbn == expectedBookDto.Isbn &&
-                    book.Title == expectedBookDto.Title &&
-                    book.Synopsis == expectedBookDto.Synopsis &&
-                    book.PublishDate == expectedBookDto.PublishDate &&
-                    book.AmountPages == expectedBookDto.AmountPages &&
-                    book.Authors.SequenceEqual(expectedBookDto.Authors, new AuthorComparer()) &&
-                    book.Publisher == expectedBookDto.Publisher &&
-                    book.Genres.SequenceEqual(expectedBookDto.Genres, new GenreComparer()) &&
-                    book.Themes.SequenceEqual(expectedBookDto.Themes, new ThemeComparer()) &&
-                    book.Settings.SequenceEqual(expectedBookDto.Settings, new SettingComparer())
+                    book.Id == expectedBook.Id &&
+                    book.Isbn == expectedBook.Isbn &&
+                    book.Title == expectedBook.Title &&
+                    book.Synopsis == expectedBook.Synopsis &&
+                    book.PublishDate == expectedBook.PublishDate &&
+                    book.AmountPages == expectedBook.AmountPages &&
+                    book.Authors.SequenceEqual(expectedBook.Authors, new AuthorComparer()) &&
+                    book.Publisher == expectedBook.Publisher &&
+                    book.Genres.SequenceEqual(expectedBook.Genres, new GenreComparer()) &&
+                    book.Themes.SequenceEqual(expectedBook.Themes, new ThemeComparer()) &&
+                    book.Settings.SequenceEqual(expectedBook.Settings, new SettingComparer())
                 ), Is.True
             );
             Assert.That(
-                actual.Id == expectedBookDto.Id &&
-                actual.Isbn == expectedBookDto.Isbn &&
-                actual.Title == expectedBookDto.Title &&
-                actual.Synopsis == expectedBookDto.Synopsis &&
-                actual.PublishDate == expectedBookDto.PublishDate &&
-                actual.AmountPages == expectedBookDto.AmountPages &&
-                actual.Authors.SequenceEqual(expectedBookDto.Authors, new AuthorComparer()) &&
-                actual.Publisher == expectedBookDto.Publisher &&
-                actual.Genres.SequenceEqual(expectedBookDto.Genres, new GenreComparer()) &&
-                actual.Themes.SequenceEqual(expectedBookDto.Themes, new ThemeComparer()) &&
-                actual.Settings.SequenceEqual(expectedBookDto.Settings, new SettingComparer()),
+                actual.Id == expectedBook.Id &&
+                actual.Isbn == expectedBook.Isbn &&
+                actual.Title == expectedBook.Title &&
+                actual.Synopsis == expectedBook.Synopsis &&
+                actual.PublishDate == expectedBook.PublishDate &&
+                actual.AmountPages == expectedBook.AmountPages &&
+                actual.Authors.SequenceEqual(expectedBook.Authors, new AuthorComparer()) &&
+                actual.Publisher == expectedBook.Publisher &&
+                actual.Genres.SequenceEqual(expectedBook.Genres, new GenreComparer()) &&
+                actual.Themes.SequenceEqual(expectedBook.Themes, new ThemeComparer()) &&
+                actual.Settings.SequenceEqual(expectedBook.Settings, new SettingComparer()),
                 Is.True
             );
         });
@@ -153,6 +154,106 @@ public class TestOperations
             Assert.That(actual, Is.True);
             Assert.That(_bookStub.Books.Any(book => book.Id == expectedId), Is.False);
         });
+    }
+    
+    [Test]
+    [Category("Favorite")]
+    public void TestFavorite(
+        [Values(2)] long accountId,
+        [Values(1, 2)] long bookId
+        )
+    {
+        // Act
+        bool actual = _bookContainer.Favorite(bookId, accountId);
+        
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual, Is.True);
+            Assert.That(_bookStub.UserBookFavoriteStub.UserBookFavorite, Does.Contain((accountId, bookId)));
+        });
+    }
+    
+    [Test]
+    [Category("Unfavorite")]
+    public void TestUnfavorite(
+        [Values(1)] long accountId,
+        [Values(1)] long bookId
+        )
+    {
+        // Act
+        bool actual = _bookContainer.Unfavorite(bookId, accountId);
+        
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual, Is.True);
+            Assert.That(_bookStub.UserBookFavoriteStub.UserBookFavorite, Does.Not.Contain((accountId, bookId)));
+        });
+    }
+    
+    [Test]
+    [Category("IsFavorite")]
+    public void TestIsFavorite(
+        [Values(1)] long accountId,
+        [Values(1)] long bookId
+        )
+    {
+        // Act
+        bool actual = _bookContainer.IsFavorite(bookId, accountId);
+        
+        // Assert
+        Assert.That(actual, Is.True);
+    }
+    
+    [Test]
+    [Category("Shelf")]
+    public void TestShelf(
+        [Values(2)] long accountId,
+        [Values(1, 2)] long bookId
+        )
+    {
+        // Act
+        bool actual = _bookContainer.Shelf(bookId, accountId);
+        
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual, Is.True);
+            Assert.That(_bookStub.UserBookShelfStub.UserBookShelf, Does.Contain((accountId, bookId)));
+        });
+    }
+    
+    [Test]
+    [Category("Unshelve")]
+    public void TestUnshelve(
+        [Values(1)] long accountId,
+        [Values(1)] long bookId
+        )
+    {
+        // Act
+        bool actual = _bookContainer.Unshelve(bookId, accountId);
+        
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual, Is.True);
+            Assert.That(_bookStub.UserBookShelfStub.UserBookShelf, Does.Not.Contain((accountId, bookId)));
+        });
+    }
+    
+    [Test]
+    [Category("Shelved")]
+    public void TestShelved(
+        [Values(1)] long accountId,
+        [Values(1)] long bookId
+        )
+    {
+        // Act
+        bool actual = _bookContainer.Shelved(bookId, accountId);
+        
+        // Assert
+        Assert.That(actual, Is.True);
     }
     
     [TearDown]

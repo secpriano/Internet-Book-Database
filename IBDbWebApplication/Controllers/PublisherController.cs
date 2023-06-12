@@ -14,7 +14,7 @@ public class PublisherController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         return View(GetPublisherViewModel());
@@ -30,7 +30,7 @@ public class PublisherController : Controller
     [HttpPost]
     public IActionResult AddPublisher(PublisherViewModel publisherViewModel)
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         if (!ModelState.IsValid)
@@ -47,9 +47,9 @@ public class PublisherController : Controller
                 publisherViewModel.Description)
             );
         }
-        catch (AggregateException ex)
+        catch (AggregateException aggregateException)
         {
-            foreach (Exception innerException in ex.InnerExceptions)
+            foreach (Exception innerException in aggregateException.InnerExceptions)
             {
                 ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
             }

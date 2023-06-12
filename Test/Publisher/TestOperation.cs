@@ -21,7 +21,7 @@ public class TestOperation
     [Test, Combinatorial]
     [Category("Create")]
     public void TestAdd(
-        [Values("HarperCollins", "Faber & Faber", "Penguin Random House")] string name,
+        [Values("HarperCollins", "Faber & Faber", "Long Studio")] string name,
         [Values("2nd of Big Three", "Indie publisher", "1st of Big Three")] string description
     )
     {

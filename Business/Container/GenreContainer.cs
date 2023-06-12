@@ -45,6 +45,6 @@ public class GenreContainer
     {
         Validate.OutOfRange((ulong)name.Length, 2, 25, "Genre", Validate.Unit.Character);
         Validate.Regex(name, @"^[a-zA-Z ,&]+$", "Name", "Name can only contain letters, spaces, commas, and ampersands.");
-        if (_genreData.Exist(name)) throw new KeyValueException($"Genre {name} is already in use.", "Genre");
+        if (_genreData.Exist(name)) throw new KeyValueException($"Genre {name} is already in use.", "Name");
     }
 }

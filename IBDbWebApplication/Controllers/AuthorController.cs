@@ -15,7 +15,7 @@ public class AuthorController : Controller
 
     public IActionResult Index()
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         return View(GetAuthorViewModel());
@@ -31,7 +31,7 @@ public class AuthorController : Controller
     
     public IActionResult AddAuthor(AuthorViewModel authorViewModel)
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         if (!ModelState.IsValid)
@@ -50,9 +50,9 @@ public class AuthorController : Controller
                 authorViewModel.GenreIds.Select(genreId => new Genre(genreId))
             ));
         }
-        catch (AggregateException e)
+        catch (AggregateException aggregateException)
         {
-            foreach (Exception innerException in e.InnerExceptions)
+            foreach (Exception innerException in aggregateException.InnerExceptions)
             {
                 ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
             }

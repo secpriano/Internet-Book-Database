@@ -36,4 +36,9 @@ public class ThemeSTUB : IThemeData
     {
         throw new NotImplementedException();
     }
+
+    public bool Exist(string uid)
+    {
+        return Themes.Exists(theme => theme.Description == uid);
+    }
 }

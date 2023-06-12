@@ -21,7 +21,7 @@ public class BookController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         return View(GetBookViewModel());
@@ -41,7 +41,7 @@ public class BookController : Controller
 
     public IActionResult AddBook(BookViewModel bookViewModel)
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         if (!ModelState.IsValid)
@@ -68,9 +68,9 @@ public class BookController : Controller
                 0
             ));
         }
-        catch (AggregateException e)
+        catch (AggregateException aggregateException)
         {
-            foreach (Exception innerException in e.InnerExceptions)
+            foreach (Exception innerException in aggregateException.InnerExceptions)
             {
                 ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
             }
@@ -83,15 +83,23 @@ public class BookController : Controller
     [HttpGet]
     public IActionResult Detail(long id)
     {
-        BookDetailModel bookDetailModel = new(GetBookModelById(id), GetBookReviewViewModelsByBookId(id));
-        
-        return View(bookDetailModel);
+        BookDetailViewModel bookDetailViewModel;
+        if (HttpContext.Session.GetInt32("Account") == null)
+        {
+            bookDetailViewModel = new(GetBookModelById(id), GetBookReviewViewModelsByBookId(id), false);
+        }
+        else
+        {
+            long accountId = HttpContext.Session.GetInt32("Account").Value;
+            bookDetailViewModel = new(GetBookModelById(id), GetBookReviewViewModelsByBookId(id), _bookContainer.Shelved(id, accountId));
+        }
+        return View(bookDetailViewModel);
     }
 
     [HttpPost]
     public IActionResult Favorite(long id)
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("Account") == 0)
             return RedirectToAction("Login", "Account");
         
         long accountId = HttpContext.Session.GetInt32("Account").Value;
@@ -107,19 +115,72 @@ public class BookController : Controller
         return RedirectToAction(nameof(Detail), new {id});
     }
     
+    [HttpGet]
+    public IActionResult Shelf()
+    {
+        if (HttpContext.Session.GetInt32("Account") == 0)
+            return RedirectToAction("Login", "Account");
+        
+        long accountId = HttpContext.Session.GetInt32("Account").Value;
+        
+        
+        return View(GetBookshelfViewModel(accountId));
+    }
+    
+    private BookshelfViewModel GetBookshelfViewModel(long accountId)
+    {
+        return new(GetAllShelvedByAccountId(accountId));
+    }
+    
+    private IEnumerable<BookModel> GetAllShelvedByAccountId(long accountId)
+    {
+        return _bookContainer.GetAllShelvedByAccountId(accountId).Select(book => new BookModel()
+        {
+            Id = book.Id,
+            Isbn = book.Isbn,
+            Title = book.Title,
+            PublishDate = book.PublishDate,
+            AmountPages = book.AmountPages
+        });
+    }
+    
+    [HttpPost]
+    public IActionResult Shelf(long id)
+    {
+        if (HttpContext.Session.GetInt32("Account") == 0)
+            return RedirectToAction("Login", "Account");
+        
+        long accountId = HttpContext.Session.GetInt32("Account").Value;
+        _bookContainer.Shelf(id, accountId);
+        
+        return RedirectToAction(nameof(Detail), new {id});
+    }
+    
+    [HttpPost]
+    public IActionResult Unshelve(long id)
+    {
+        if (HttpContext.Session.GetInt32("Account") == 0)
+            return RedirectToAction("Login", "Account");
+        
+        long accountId = HttpContext.Session.GetInt32("Account").Value;
+        _bookContainer.Unshelve(id, accountId);
+        
+        return RedirectToAction(nameof(Detail), new {id});
+    }
+    
     [HttpPost]
     public IActionResult CreateReview(ReviewModel reviewModel)
     {
-        if (HttpContext.Session.GetInt32("Account") == null)
+        if (HttpContext.Session.GetInt32("Account") == 0)
             return RedirectToAction("Login", "Account");
         
-        BookDetailModel bookDetailModel;
+        BookDetailViewModel bookDetailViewModel;
 
         if (!ModelState.IsValid)
         {
-            bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewViewModelsByBookId(reviewModel.BookId));
+            bookDetailViewModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewViewModelsByBookId(reviewModel.BookId), Shelved(reviewModel.BookId));
 
-            return View(nameof(Detail), bookDetailModel);
+            return View(nameof(Detail), bookDetailViewModel);
 
         }
         
@@ -132,24 +193,24 @@ public class BookController : Controller
             null
         ));
 
-        bookDetailModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewViewModelsByBookId(reviewModel.BookId));
+        bookDetailViewModel = new(GetBookModelById(reviewModel.BookId), GetBookReviewViewModelsByBookId(reviewModel.BookId), Shelved(reviewModel.BookId));
 
-        return View(nameof(Detail), bookDetailModel);
+        return View(nameof(Detail), bookDetailViewModel);
     }
 
     [HttpPost]
     public IActionResult CreateComment(CommentModel commentModel)
     {
-        if (HttpContext.Session.GetInt32("Account") == null)
+        if (HttpContext.Session.GetInt32("Account") == 0)
             return RedirectToAction("Login", "Account");
         
-        BookDetailModel bookDetailModel;
+        BookDetailViewModel bookDetailViewModel;
         
         if (!ModelState.IsValid)
         {
-            bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewViewModelsByBookId(commentModel.BookId));
+            bookDetailViewModel = new(GetBookModelById(commentModel.BookId), GetBookReviewViewModelsByBookId(commentModel.BookId), Shelved(commentModel.BookId));
 
-            return View(nameof(Detail), bookDetailModel);
+            return View(nameof(Detail), bookDetailViewModel);
         }
 
         Review review = new(new CommentData());
@@ -160,14 +221,14 @@ public class BookController : Controller
             commentModel.ReviewId
         ));
         
-        bookDetailModel = new(GetBookModelById(commentModel.BookId), GetBookReviewViewModelsByBookId(commentModel.BookId));
+        bookDetailViewModel = new(GetBookModelById(commentModel.BookId), GetBookReviewViewModelsByBookId(commentModel.BookId), Shelved(commentModel.BookId));
 
-        return View(nameof(Detail), bookDetailModel);
+        return View(nameof(Detail), bookDetailViewModel);
     }
 
     public IActionResult Delete(long? id)
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         if (id == null)
@@ -183,7 +244,7 @@ public class BookController : Controller
     [HttpPost]
     public IActionResult EditBook(BookViewModel bookViewModel)
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         if (!ModelState.IsValid)
@@ -208,9 +269,9 @@ public class BookController : Controller
                 0
             ));
         }
-        catch (AggregateException e)
+        catch (AggregateException aggregateException)
         {
-            foreach (Exception innerException in e.InnerExceptions)
+            foreach (Exception innerException in aggregateException.InnerExceptions)
             {
                 ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
             }
@@ -364,4 +425,6 @@ public class BookController : Controller
     {
         return _settingContainer.GetAll().Select(setting => new SettingModel(setting.Id, setting.Description));
     }
+
+    private bool Shelved(long bookId) => _bookContainer.Shelved(bookId, HttpContext.Session.GetInt32("Account").Value);
 }

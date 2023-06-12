@@ -422,6 +422,18 @@ section.detail .items {
   border-radius: 25px;
 }
 
+.favorite {
+  margin-bottom: 20px;
+}
+
+.favorite__container__books ul,
+.shelf__container__books ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+}
+
 /* Footer */
 
 footer {

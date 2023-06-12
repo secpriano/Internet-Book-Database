@@ -14,7 +14,7 @@ public class ThemeController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         return View(GetThemeViewModel());
@@ -30,7 +30,7 @@ public class ThemeController : Controller
     [HttpPost]
     public IActionResult AddTheme(ThemeViewModel themeViewModel)
     {
-        if (HttpContext.Session.GetInt32("IsAdmin") == null)
+        if (HttpContext.Session.GetInt32("IsAdmin") == 0)
             return RedirectToAction("Login", "Account");
         
         if (!ModelState.IsValid)
@@ -42,9 +42,9 @@ public class ThemeController : Controller
         {
             _themeContainer.Add(new(themeViewModel.Id, themeViewModel.Description));
         }
-        catch (AggregateException e)
+        catch (AggregateException aggregateException)
         {
-            foreach (Exception innerException in e.InnerExceptions)
+            foreach (Exception innerException in aggregateException.InnerExceptions)
             {
                 ModelState.AddModelError($"{Regex.Replace(innerException.GetType().GetProperty("Type").GetValue(innerException) as string, @"\s", "")}", innerException.Message);
             }

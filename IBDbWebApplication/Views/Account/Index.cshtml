@@ -1,4 +1,5 @@
-﻿@model IBDbWebApplication.Models.Entity.AccountModel
+﻿@using IBDbWebApplication.Models.Entity
+@model IBDbWebApplication.Models.AccountModels.AccountViewModel
 
 @{
     ViewData["Title"] = "IBDb | Profile";
@@ -11,13 +12,25 @@
     <section>
         <div class="profile-container">
             <div class="profile-image">
-                <img src="https://picsum.photos/seed/@Model.Id QZJVKW/50/50" alt="Profile image">
+                <img src="https://picsum.photos/seed/@Model.AccountModel.Id QZJVKW/50/50" alt="Profile image">
             </div>
             <div class="profile-info">
-                <p>@Model.Id</p>
-                <h2>@Model.Username</h2>
-                <p>@Model.IsAdmin</p>
+                <h2>Username: @Model.AccountModel.Username</h2>
+                <p>Is admin: @Model.AccountModel.IsAdmin</p>
             </div>
+        </div>
+        <div class="favorite__container__books">
+            <h2>Favorites</h2>
+            <ul>
+                @foreach(BookModel favorite in Model.FavoriteBookModels)
+                {
+                    <li>
+                        <img src="https://picsum.photos/seed/@favorite.Isbn/275/400" alt="Book image">
+                        <p>@favorite.Title | @favorite.AmountPages</p>
+                        <p>@favorite.PublishDate</p>
+                    </li>
+                }
+            </ul>
         </div>
     </section>
 </div>

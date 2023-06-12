@@ -20,7 +20,7 @@ public class TestOperation
     [Test, Combinatorial]
     [Category("Create")]
     public void TestAdd(
-        [Values("Fantasy", "Science Fiction", "Horror")] string name
+        [Values("Space Opera", "Self Help", "Daylight Horror")] string name
     )
     {
         // Arrange

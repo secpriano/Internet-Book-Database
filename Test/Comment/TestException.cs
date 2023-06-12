@@ -1,4 +1,5 @@
-﻿using Interface.DTO;
+﻿using Business.Container;
+using Interface.DTO;
 using Test.STUB;
 
 namespace Test.Comment;
@@ -37,7 +38,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Content must be less or equal to 4000 Character. Not {expectedComment.Content.Length} Character."));
         }
     }
@@ -60,7 +61,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Content must be more than or equal to 2 Character. Not {expectedComment.Content.Length} Character."));
         }
     }
@@ -83,7 +84,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>()); 
+            Assert.That(innerException, Is.TypeOf<KeyValueException>()); 
             Assert.That(innerException.Message, Is.EqualTo($"Content must be more than or equal to 2 Character. Not {expectedComment.Content.Length} Character."));
         }
     }

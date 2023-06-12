@@ -11,10 +11,10 @@ public class ThemeViewModel
     [DisplayName("Description")]
     [Required(ErrorMessage = "Description is required")]
     [StringLength(25, ErrorMessage = "Description must be between 2 and 25 characters", MinimumLength = 2 )]
-    [RegularExpression(@"^[a-zA-Z ,&]+$", ErrorMessage = "Description can only contain letters, spaces, commas, and ampersands.")]
+    [RegularExpression(@"^[a-zA-Z ,&+-]+$", ErrorMessage = "Description can only contain letters, spaces, commas, plus, minus, and ampersands.")]
     public string Description { get; set; }
     
-    public IEnumerable<ThemeModel> ThemeModels { get; set; }
+    public IEnumerable<ThemeModel> ThemeModels { get; set; } = new List<ThemeModel>();
     
     public ThemeViewModel(IEnumerable<ThemeModel> themeModels) => ThemeModels = themeModels;
     

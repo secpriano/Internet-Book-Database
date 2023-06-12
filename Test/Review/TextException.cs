@@ -40,7 +40,7 @@ public class TextException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Title must be less or equal to 100 Character. Not {expectedReview.Title.Length} Character.", innerException.Message);
         }
     }
@@ -65,7 +65,7 @@ public class TextException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Title must be more than or equal to 1 Character. Not {expectedReview.Title.Length} Character.", innerException.Message);
         }
     }
@@ -90,7 +90,7 @@ public class TextException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Title must be more than or equal to 1 Character. Not {expectedReview.Title.Length} Character.", innerException.Message);
         }
     }
@@ -115,7 +115,7 @@ public class TextException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual("Title must only contain letters, numbers, spaces, and ampersand.", innerException.Message);
         }
     }
@@ -140,7 +140,7 @@ public class TextException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Content must be more than or equal to 2 Character. Not {expectedReview.Content.Length} Character.", innerException.Message);
         }
     }
@@ -165,7 +165,7 @@ public class TextException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Content must be less or equal to 2000 Character. Not {expectedReview.Content.Length} Character.", innerException.Message);
         }
     }
@@ -190,7 +190,7 @@ public class TextException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Content must be more than or equal to 2 Character. Not {expectedReview.Content.Length} Character.", innerException.Message);
         }
     }

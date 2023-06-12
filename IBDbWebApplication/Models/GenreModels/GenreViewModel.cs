@@ -15,7 +15,7 @@ public class GenreViewModel
     [RegularExpression(@"^[a-zA-Z ,&]+$", ErrorMessage = "Name can only contain letters, spaces, commas, and ampersands.")]
     public string Name { get; set; }
 
-    public IEnumerable<GenreModel> GenreModels { get; set; }
+    public IEnumerable<GenreModel> GenreModels { get; set; } = new List<GenreModel>();
 
     public GenreViewModel(IEnumerable<GenreModel> genreModels) => GenreModels = genreModels;
 

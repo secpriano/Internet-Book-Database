@@ -1,0 +1,28 @@
+﻿@using IBDbWebApplication.Models.Entity
+@model IBDbWebApplication.Models.AdminModels.BookModels.BookshelfViewModel
+
+@{
+    ViewData["Title"] = "Shelf | Book";
+}
+
+<div class="MainContainer">
+    <div class="hero">
+        <h1>Bookshelf</h1>
+    </div>
+    <section class="shelf">
+        <div class="shelf__container">
+            <div class="shelf__container__books">
+                <ul>
+                    @foreach (BookModel book in Model.ShelvedBookModels)
+                    {
+                        <li>
+                            <img src="https://picsum.photos/seed/@book.Isbn/275/400" alt="Book image">
+                            <p>@book.Title | @book.AmountPages</p>
+                            <p>@book.PublishDate</p>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </section>
+</div>

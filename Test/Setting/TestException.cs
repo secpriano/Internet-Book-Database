@@ -33,7 +33,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Description must be less or equal to 25 Character. Not {expectedSetting.Description.Length} Character.", innerException.Message);
         }
     }
@@ -54,7 +54,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Description must be more than or equal to 2 Character. Not {expectedSetting.Description.Length} Character.", innerException.Message);
         }
     }
@@ -76,7 +76,7 @@ public class TestException
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
-            Assert.That(innerException, Is.TypeOf<Exception>());
+            Assert.That(innerException, Is.TypeOf<KeyValueException>());
             Assert.AreEqual($"Description can only contain letters, numbers, spaces, commas, and ampersands.", innerException.Message);
         }
     }

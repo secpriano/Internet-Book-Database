@@ -40,4 +40,9 @@ public class PublisherSTUB : IPublisherData
     {
         throw new NotImplementedException();
     }
+
+    public bool Exist(string uid)
+    {
+        return Publishers.Exists(publisher => publisher.Name == uid);
+    }
 }
