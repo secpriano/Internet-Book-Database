@@ -27,12 +27,13 @@ public class TestException
     )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[bookIndex];
-
-        book.Isbn = isbn;
+        Book book = new(_bookStub.Books[bookIndex])
+        {
+            Isbn = isbn
+        };
 
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
 
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -51,12 +52,13 @@ public class TestException
     )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[bookIndex];
-
-        book.Isbn = isbn;
+        Book book = new(_bookStub.Books[bookIndex])
+        {
+            Isbn = isbn
+        };
 
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
 
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -73,11 +75,13 @@ public class TestException
         )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = isbn;
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = isbn
+        };
 
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
 
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -94,12 +98,14 @@ public class TestException
         )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Title = new('a', length);
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            Title = new('a', length)
+        };
         
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -114,12 +120,14 @@ public class TestException
     public void Test_Exception_AddBook_When_Title_IsEmpty()
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Title = string.Empty;
-        
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            Title = string.Empty
+        };
+
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -136,12 +144,14 @@ public class TestException
         )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Title = title;
-        
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            Title = title
+        };
+
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -158,12 +168,14 @@ public class TestException
     )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Synopsis = new('a', length);
-        
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            Synopsis = new('a', length)
+        };
+
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -181,13 +193,15 @@ public class TestException
     )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Title = new('a', titleLength);
-        book.Synopsis = new('a', synopsisLength);
-        
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            Title = new('a', titleLength),
+            Synopsis = new('a', synopsisLength)
+        };
+
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -204,12 +218,14 @@ public class TestException
     )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Synopsis = synopsis;
-        
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            Synopsis = synopsis
+        };
+
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -227,21 +243,23 @@ public class TestException
         )
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];        
-        book.Isbn = "1234567890123";
-        book.PublishDate = new(publishYear, 1, 1);
-        AuthorDTO authorDto = book.Authors.First();
-        authorDto.BirthDate = new(birthYear, 1, 1); 
-        book.Authors = new List<AuthorDTO>{authorDto};
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            PublishDate = new(publishYear, 1, 1)
+        };
+        Author author = book.Authors.First();
+        author.BirthDate = new(birthYear, 1, 1); 
+        book.Authors = new List<Author>{author};
 
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
         {
             Assert.That(innerException, Is.TypeOf<KeyValueException>());
-            Assert.That(innerException.Message, Is.EqualTo($"Publish date {book.PublishDate} cannot be earlier than author's birthdate {authorDto.BirthDate} unless you travel back in time."));
+            Assert.That(innerException.Message, Is.EqualTo($"Publish date {book.PublishDate} cannot be earlier than author's birthdate {author.BirthDate} unless you travel back in time."));
         } 
     }
     
@@ -250,12 +268,14 @@ public class TestException
     public void Test_Exception_AddBook_When_AmountPages_IsMore_Than50000()
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.AmountPages = 50001;
-        
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            AmountPages = 50001
+        };
+
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)));
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book));
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -270,12 +290,14 @@ public class TestException
     public void Test_Exception_AddBook_When_AmountPages_IsLess_Than1()
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.AmountPages = 0;
-        
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123",
+            AmountPages = 0
+        };
+
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -290,16 +312,18 @@ public class TestException
     public void Test_Exception_AddBook_When_Author_IsAlreadyAdded()
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Authors = new List<AuthorDTO>
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123"
+        };
+        book.Authors = new List<Author>
         {
             book.Authors.First(),
             book.Authors.First()
         };
         
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -314,16 +338,18 @@ public class TestException
     public void Test_Exception_AddBook_When_Genre_IsAlreadyAdded()
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Genres = new List<GenreDTO>
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123"
+        };
+        book.Genres = new List<Genre>
         {
             book.Genres.First(),
             book.Genres.First()
         };
         
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -338,16 +364,18 @@ public class TestException
     public void Test_Exception_AddBook_When_Setting_IsAlreadyAdded()
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Settings = new List<SettingDTO>
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123"
+        };
+        book.Settings = new List<Setting>
         {
             book.Settings.First(),
             book.Settings.First()
         };
         
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)
@@ -362,16 +390,18 @@ public class TestException
     public void Test_Exception_AddBook_When_Theme_IsAlreadyAdded()
     {
         // Arrange
-        BookDTO book = _bookStub.Books[0];
-        book.Isbn = "1234567890123";
-        book.Themes = new List<ThemeDTO>
+        Book book = new(_bookStub.Books[0])
+        {
+            Isbn = "1234567890123"
+        };
+        book.Themes = new List<Theme>
         {
             book.Themes.First(),
             book.Themes.First()
         };
         
         // Act
-        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(new(book)))!;
+        AggregateException aggregateException = Assert.Throws<AggregateException>(() => _bookContainer.Add(book))!;
         
         // Assert
         foreach (Exception innerException in aggregateException.InnerExceptions)

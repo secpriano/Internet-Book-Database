@@ -5,16 +5,16 @@ namespace Business.Entity;
 public class Book : IEqualityComparer<Book>
 {
     public long? Id { get; }
-    public string Isbn { get; }
-    public string Title { get; }
+    public string Isbn { get; set; }
+    public string Title { get; set; }
     public string Synopsis { get; set; }
     public DateOnly PublishDate { get; set; }
     public ushort AmountPages { get; set; }
     public IEnumerable<Author> Authors { get; set; }
     public Publisher Publisher { get; }
-    public IEnumerable<Genre> Genres { get; }
-    public IEnumerable<Theme> Themes { get; }
-    public IEnumerable<Setting> Settings { get; }
+    public IEnumerable<Genre> Genres { get; set; }
+    public IEnumerable<Theme> Themes { get; set; }
+    public IEnumerable<Setting> Settings { get; set; }
     public ulong Favorites { get; }
 
     public Book(

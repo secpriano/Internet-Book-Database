@@ -63,25 +63,29 @@ public class TestOperations
         bool actual = _bookContainer.Add(expectedBook); 
         
         // Assert
-        BookDTO expectedBookDto = expectedBook.ToDto();
-        
+        List<AuthorDTO> expectedAuthorDto = expectedBook.Authors.Select(author => author.ToDto()).ToList();
+        PublisherDTO expectedPublisherDto = expectedBook.Publisher.ToDto();
+        List<GenreDTO> expectedGenreDto = expectedBook.Genres.Select(genre => genre.ToDto()).ToList();
+        List<ThemeDTO> expectedThemeDto = expectedBook.Themes.Select(theme => theme.ToDto()).ToList();
+        List<SettingDTO> expectedSettingDto = expectedBook.Settings.Select(setting => setting.ToDto()).ToList();
+
         Assert.Multiple(() =>
         {
             Assert.That(_bookStub.Books, Is.Not.Null);
             Assert.That(_bookStub.Books, Is.Not.Empty);
             Assert.That(actual);   
             Assert.That(_bookStub.Books.Exists(book => 
-                book.Id == expectedBookDto.Id &&
-                book.Isbn == expectedBookDto.Isbn &&
-                book.Title == expectedBookDto.Title &&
-                book.Synopsis == expectedBookDto.Synopsis &&
-                book.PublishDate == expectedBookDto.PublishDate &&
-                book.AmountPages == expectedBookDto.AmountPages &&
-                book.Authors.SequenceEqual(expectedBookDto.Authors, new AuthorComparer()) &&
-                book.Publisher == expectedBookDto.Publisher &&
-                book.Genres.SequenceEqual(expectedBookDto.Genres, new GenreComparer()) &&
-                book.Themes.SequenceEqual(expectedBookDto.Themes, new ThemeComparer()) &&
-                book.Settings.SequenceEqual(expectedBookDto.Settings, new SettingComparer())
+                book.Id == expectedBook.Id &&
+                book.Isbn == expectedBook.Isbn &&
+                book.Title == expectedBook.Title &&
+                book.Synopsis == expectedBook.Synopsis &&
+                book.PublishDate == expectedBook.PublishDate &&
+                book.AmountPages == expectedBook.AmountPages &&
+                book.Authors.SequenceEqual(expectedAuthorDto, new AuthorComparer()) &&
+                book.Publisher == expectedPublisherDto &&
+                book.Genres.SequenceEqual(expectedGenreDto, new GenreComparer()) &&
+                book.Themes.SequenceEqual(expectedThemeDto, new ThemeComparer()) &&
+                book.Settings.SequenceEqual(expectedSettingDto, new SettingComparer())
                 )
             );
         });
@@ -97,15 +101,21 @@ public class TestOperations
         // Arrange
         const string expectedSynopsis = "This synopsis has been updated";
 
-        BookDTO expectedBook = _bookStub.Books.Find(book => book.Id == expectedId);
+        Book expectedBook = new(_bookStub.Books.Find(book => book.Id == expectedId));
         expectedBook.Isbn = "1234567890123";
         expectedBook.AmountPages = expectedAmountPages;
         expectedBook.Synopsis = expectedSynopsis;
         
         // Act
-        BookDTO actual = _bookContainer.Update(new(expectedBook)).ToDto();
+        Book actual = _bookContainer.Update(expectedBook);
         
         // Assert
+        List<AuthorDTO> expectedAuthorDto = expectedBook.Authors.Select(author => author.ToDto()).ToList();
+        PublisherDTO expectedPublisherDto = expectedBook.Publisher.ToDto();
+        List<GenreDTO> expectedGenreDto = expectedBook.Genres.Select(genre => genre.ToDto()).ToList();
+        List<ThemeDTO> expectedThemeDto = expectedBook.Themes.Select(theme => theme.ToDto()).ToList();
+        List<SettingDTO> expectedSettingDto = expectedBook.Settings.Select(setting => setting.ToDto()).ToList();
+        
         Assert.Multiple(() =>
         {
             Assert.That(_bookStub.Books.Any(book =>
@@ -115,26 +125,12 @@ public class TestOperations
                     book.Synopsis == expectedBook.Synopsis &&
                     book.PublishDate == expectedBook.PublishDate &&
                     book.AmountPages == expectedBook.AmountPages &&
-                    book.Authors.SequenceEqual(expectedBook.Authors, new AuthorComparer()) &&
-                    book.Publisher == expectedBook.Publisher &&
-                    book.Genres.SequenceEqual(expectedBook.Genres, new GenreComparer()) &&
-                    book.Themes.SequenceEqual(expectedBook.Themes, new ThemeComparer()) &&
-                    book.Settings.SequenceEqual(expectedBook.Settings, new SettingComparer())
+                    book.Authors.SequenceEqual(expectedAuthorDto, new AuthorComparer()) &&
+                    book.Publisher == expectedPublisherDto &&
+                    book.Genres.SequenceEqual(expectedGenreDto, new GenreComparer()) &&
+                    book.Themes.SequenceEqual(expectedThemeDto, new ThemeComparer()) &&
+                    book.Settings.SequenceEqual(expectedSettingDto, new SettingComparer())
                 ), Is.True
-            );
-            Assert.That(
-                actual.Id == expectedBook.Id &&
-                actual.Isbn == expectedBook.Isbn &&
-                actual.Title == expectedBook.Title &&
-                actual.Synopsis == expectedBook.Synopsis &&
-                actual.PublishDate == expectedBook.PublishDate &&
-                actual.AmountPages == expectedBook.AmountPages &&
-                actual.Authors.SequenceEqual(expectedBook.Authors, new AuthorComparer()) &&
-                actual.Publisher == expectedBook.Publisher &&
-                actual.Genres.SequenceEqual(expectedBook.Genres, new GenreComparer()) &&
-                actual.Themes.SequenceEqual(expectedBook.Themes, new ThemeComparer()) &&
-                actual.Settings.SequenceEqual(expectedBook.Settings, new SettingComparer()),
-                Is.True
             );
         });
     }
@@ -274,43 +270,43 @@ public class TestOperations
             return HashCode.Combine(obj.Id, obj.Name, obj.Description, obj.BirthDate, obj.DeathDate);
         }
     }
-    
-    private struct GenreComparer : IEqualityComparer<GenreDTO>
-    {
-        public bool Equals(GenreDTO x, GenreDTO y)
-        {
-            return x.Id == y.Id && x.Name == y.Name;
-        }
+}
 
-        public int GetHashCode(GenreDTO obj)
-        {
-            return HashCode.Combine(obj.Id, obj.Name);
-        }
+public struct SettingComparer : IEqualityComparer<SettingDTO>
+{
+    public bool Equals(SettingDTO x, SettingDTO y)
+    {
+        return x.Id == y.Id && x.Description == y.Description;
     }
-    
-    private struct ThemeComparer : IEqualityComparer<ThemeDTO>
-    {
-        public bool Equals(ThemeDTO x, ThemeDTO y)
-        {
-            return x.Id == y.Id && x.Description == y.Description;
-        }
 
-        public int GetHashCode(ThemeDTO obj)
-        {
-            return HashCode.Combine(obj.Id, obj.Description);
-        }
+    public int GetHashCode(SettingDTO obj)
+    {
+        return HashCode.Combine(obj.Id, obj.Description);
     }
-    
-    private struct SettingComparer : IEqualityComparer<SettingDTO>
-    {
-        public bool Equals(SettingDTO x, SettingDTO y)
-        {
-            return x.Id == y.Id && x.Description == y.Description;
-        }
+}
 
-        public int GetHashCode(SettingDTO obj)
-        {
-            return HashCode.Combine(obj.Id, obj.Description);
-        }
+public struct ThemeComparer : IEqualityComparer<ThemeDTO>
+{
+    public bool Equals(ThemeDTO x, ThemeDTO y)
+    {
+        return x.Id == y.Id && x.Description == y.Description;
+    }
+
+    public int GetHashCode(ThemeDTO obj)
+    {
+        return HashCode.Combine(obj.Id, obj.Description);
+    }
+}
+
+public struct GenreComparer : IEqualityComparer<GenreDTO>
+{
+    public bool Equals(GenreDTO x, GenreDTO y)
+    {
+        return x.Id == y.Id && x.Name == y.Name;
+    }
+
+    public int GetHashCode(GenreDTO obj)
+    {
+        return HashCode.Combine(obj.Id, obj.Name);
     }
 }
