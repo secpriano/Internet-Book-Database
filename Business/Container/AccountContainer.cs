@@ -6,6 +6,7 @@ namespace Business.Container;
 public class AccountContainer
 {
     private readonly IAccountData _accountData;
+    Validate Validate = new();
     
     public AccountContainer(IAccountData accountData)
     {

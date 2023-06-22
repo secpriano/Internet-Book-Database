@@ -33,6 +33,7 @@ public class Review
     }
     
     private readonly ICommentData _commentData;
+    Validate Validate = new();
 
     public Review(ICommentData commentData)
     {

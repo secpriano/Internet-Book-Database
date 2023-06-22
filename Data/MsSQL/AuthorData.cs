@@ -78,8 +78,8 @@ public class AuthorData : Database, IAuthorData
         
         using SqlConnection sqlConnection = new(ConnectionString);
         sqlConnection.Open();
-        using SqlCommand sqlCommand = new("SELECT Author.AuthorID, Name, Description, BirthDate, DeathDate, AuthorGenre.GenreID, GenreText FROM Author LEFT JOIN AuthorGenre ON Author.AuthorID = AuthorGenre.AuthorID LEFT JOIN Genre ON AuthorGenre.GenreID = Genre.GenreID", sqlConnection);
-        using SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+        using SqlCommand sqlCommand = new("SELECT Author.AuthorID, Name, Description, BirthDate, DeathDate FROM Author", sqlConnection);
+        SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
         
         while (sqlDataReader.Read())
         {
@@ -88,29 +88,36 @@ public class AuthorData : Database, IAuthorData
             string Description = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Description"));
             DateTime BirthDate = sqlDataReader.GetDateTime(sqlDataReader.GetOrdinal("BirthDate"));
             DateTime? DeathDate = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("DeathDate")) ? null : (DateTime?)sqlDataReader["DeathDate"];
-            
-            List<GenreDTO> genres = new();
-            
-            while (authorId == (long)sqlDataReader["AuthorID"])
-            {
-                byte? genreId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreId")) ? null : sqlDataReader["GenreId"] as byte?;
-                string genreName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreText")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("GenreText"));
-                if (genreId != null)
-                {
-                    genres.Add(new(genreId, genreName));
-                }
 
-                if (!sqlDataReader.Read()) break;
-            }
-            
             authors.Add(new(
                 authorId,
                 Name,
                 Description,
                 DateOnly.FromDateTime(BirthDate),
                 DeathDate != null ? DateOnly.FromDateTime((DateTime)DeathDate) : null,
-                genres
+                new()
             ));
+        }
+        
+        sqlDataReader.Close();
+        
+
+        foreach (AuthorDTO author in authors)
+        {
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "SELECT Genre.GenreID, GenreText FROM AuthorGenre LEFT JOIN Genre ON AuthorGenre.GenreID = Genre.GenreID WHERE AuthorID = @AuthorID";
+            sqlCommand.Parameters.AddWithValue("@AuthorID", author.Id);
+            
+            sqlDataReader = sqlCommand.ExecuteReader();
+            
+            while (sqlDataReader.Read())
+            {
+                byte? genreId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreId")) ? null : sqlDataReader["GenreId"] as byte?;
+                string genreName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreText")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("GenreText"));
+                author.Genres.Add(new(genreId, genreName));
+            }
+            
+            sqlDataReader.Close();
         }
 
         return authors;
@@ -124,47 +131,61 @@ public class AuthorData : Database, IAuthorData
         sqlCommand.Connection = sqlConnection;
 
         List<AuthorDTO> authors = new();
-        
-        foreach (byte AddedAuthorId in authorIds)
+
+        SqlDataReader sqlDataReader;
+            
+        foreach (long authorIdentity in authorIds)
         {
-            sqlCommand.CommandText = "SELECT Author.AuthorID, Name, Description, BirthDate, DeathDate, AuthorGenre.GenreID, GenreText FROM Author LEFT JOIN AuthorGenre ON Author.AuthorID = AuthorGenre.AuthorID LEFT JOIN Genre ON AuthorGenre.GenreID = Genre.GenreID WHERE Author.AuthorID IN (@AuthorID)";
-            sqlCommand.Parameters.AddWithValue("@AuthorID", AddedAuthorId);
+            sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "SELECT Author.AuthorID, Name, Description, BirthDate, DeathDate FROM Author WHERE AuthorID = @AuthorID";
+            sqlCommand.Parameters.AddWithValue("@AuthorID", authorIdentity);
             
-            SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
-            
+            sqlDataReader = sqlCommand.ExecuteReader();
+
             while (sqlDataReader.Read())
             {
-                long? authorId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorID")) ? null : (long?)sqlDataReader["AuthorID"];
+                long? authorId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("AuthorID"))
+                    ? null
+                    : (long?) sqlDataReader["AuthorID"];
                 string Name = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Name"));
                 string Description = sqlDataReader.GetString(sqlDataReader.GetOrdinal("Description"));
                 DateTime BirthDate = sqlDataReader.GetDateTime(sqlDataReader.GetOrdinal("BirthDate"));
-                DateTime? DeathDate = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("DeathDate")) ? null : (DateTime?)sqlDataReader["DeathDate"];
-                
-                List<GenreDTO> genres = new();
-            
-                while (authorId == (long)sqlDataReader["AuthorID"])
-                {
-                    byte? genreId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreId")) ? null : sqlDataReader["GenreId"] as byte?;
-                    string genreName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreText")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("GenreText"));
-                    if (genreId != null)
-                    {
-                        genres.Add(new(genreId, genreName));
-                    }
+                DateTime? DeathDate = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("DeathDate"))
+                    ? null
+                    : (DateTime?) sqlDataReader["DeathDate"];
 
-                    if (!sqlDataReader.Read()) break;
-                }
-                
                 authors.Add(new(
                     authorId,
                     Name,
                     Description,
                     DateOnly.FromDateTime(BirthDate),
-                    DeathDate != null ? DateOnly.FromDateTime((DateTime)DeathDate) : null,
-                    genres
+                    DeathDate != null ? DateOnly.FromDateTime((DateTime) DeathDate) : null,
+                    new()
                 ));
             }
+            sqlDataReader.Close();
+        }
+
+        sqlCommand.Parameters.Clear();
             
+            
+        
+        foreach (AuthorDTO author in authors)
+        {
             sqlCommand.Parameters.Clear();
+            sqlCommand.CommandText = "SELECT Genre.GenreID, GenreText FROM AuthorGenre LEFT JOIN Genre ON AuthorGenre.GenreID = Genre.GenreID WHERE AuthorID = @AuthorID";
+            sqlCommand.Parameters.AddWithValue("@AuthorID", author.Id);
+            
+            sqlDataReader = sqlCommand.ExecuteReader();
+            
+            while (sqlDataReader.Read())
+            {
+                byte? genreId = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreId")) ? null : sqlDataReader["GenreId"] as byte?;
+                string genreName = sqlDataReader.IsDBNull(sqlDataReader.GetOrdinal("GenreText")) ? null : sqlDataReader.GetString(sqlDataReader.GetOrdinal("GenreText"));
+                author.Genres.Add(new(genreId, genreName));
+            }
+            
+            sqlDataReader.Close();
         }
         
         return authors;

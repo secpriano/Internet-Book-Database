@@ -55,11 +55,11 @@ public class Book : IEqualityComparer<Book>
         Synopsis, 
         PublishDate, 
         AmountPages, 
-        Authors.Select(author => author.ToDto()), 
+        Authors.Select(author => author.ToDto()).ToList(), 
         Publisher.ToDto(), 
-        Genres.Select(genre => genre.ToDto()), 
-        Themes.Select(theme => theme.ToDto()), 
-        Settings.Select(setting => setting.ToDto()),
+        Genres.Select(genre => genre.ToDto()).ToList(), 
+        Themes.Select(theme => theme.ToDto()).ToList(), 
+        Settings.Select(setting => setting.ToDto()).ToList(),
         Favorites
     );
 

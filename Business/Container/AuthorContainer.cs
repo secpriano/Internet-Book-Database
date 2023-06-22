@@ -6,7 +6,8 @@ namespace Business.Container;
 public class AuthorContainer
 {
     private readonly IAuthorData _authorData;
-    
+    Validate Validate = new();
+
     public AuthorContainer(IAuthorData authorData)
     {
         _authorData = authorData;

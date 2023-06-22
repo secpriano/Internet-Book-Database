@@ -7,6 +7,8 @@ namespace Business.Container;
 public class BookContainer
 {
     private readonly IBookData _bookData;
+    Validate Validate = new();
+
     public BookContainer(IBookData bookData)
     {
         _bookData = bookData;

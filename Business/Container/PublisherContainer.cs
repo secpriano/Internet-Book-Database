@@ -6,7 +6,8 @@ namespace Business.Container;
 public class PublisherContainer
 {
     private readonly IPublisherData _publisherData;
-    
+    Validate Validate = new();
+
     public PublisherContainer(IPublisherData publisherData)
     {
         _publisherData = publisherData;

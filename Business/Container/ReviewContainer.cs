@@ -6,6 +6,7 @@ namespace Business.Container;
 public class ReviewContainer
 {
     private readonly IReviewData _reviewData;
+    Validate Validate = new();
 
     public ReviewContainer(IReviewData reviewData)
     {

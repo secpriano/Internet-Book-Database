@@ -7,6 +7,8 @@ namespace Business.Container;
 public class GenreContainer
 {
     private readonly IGenreData _genreData;
+    Validate Validate = new();
+
     
     public GenreContainer(IGenreData genreData)
     {

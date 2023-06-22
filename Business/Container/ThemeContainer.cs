@@ -6,7 +6,8 @@ namespace Business.Container;
 public class ThemeContainer
 {
     private readonly IThemeData _themeData;
-    
+    Validate Validate = new();
+
     public ThemeContainer(IThemeData themeData)
     {
         _themeData = themeData;

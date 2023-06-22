@@ -6,7 +6,8 @@ namespace Business.Container;
 public class SettingContainer
 {
     private readonly ISettingData _settingData;
-    
+    Validate Validate = new();
+
     public SettingContainer(ISettingData settingData)
     {
         _settingData = settingData;
